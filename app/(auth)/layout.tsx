@@ -6,11 +6,14 @@ export default function AuthLayout({
   children: React.ReactNode;
 }>) {
   return (
-   <main>
-    <div className="h-screen flex flex-col items-center justify-center">
-      <Logo/>
+    <main className="h-screen relative bg-cover bg-center" style={{ backgroundImage: "url('/images/dog.jpg')" }}>
+      <div className="absolute top-4 left-4">
+        <Logo />
+      </div>
+
+      <div className="h-full flex items-center justify-center">
         {children}
-    </div>
-   </main>
+      </div>
+    </main>
   );
 }

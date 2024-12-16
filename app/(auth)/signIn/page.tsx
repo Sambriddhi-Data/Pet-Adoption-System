@@ -10,7 +10,6 @@ import { z } from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Image from 'next/image';
 
 const formSchema = z.object({
   email: z.string().min(2).max(50),
@@ -36,12 +35,6 @@ export default function SignIn() {
   }
 
   return (
-    <div
-      className="h-screen w-full bg-cover bg-center flex items-center justify-center"
-      style={{
-        backgroundImage: "url('/images/dog.jpg')",
-      }}
-    >
       <Card className="w-full max-w-md bg-white bg-opacity-85 shadow-lg px-4 ">
         <CardHeader className="flex items-center justify-center">
           <CardTitle>Welcome back!</CardTitle>
@@ -95,6 +88,5 @@ export default function SignIn() {
           </p>
         </CardFooter>
       </Card>
-    </div>
   );
 }
