@@ -35,12 +35,12 @@ export default function SignIp() {
       <CardHeader className=" flex items-center justify-center">
         <CardTitle>Join Fur-Ever Friends Today!</CardTitle>
         <CardDescription>
-          Sign up to search for your furever friend.
+          Sign up to present the shelter animals.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Link href='/shelterSignUp' className='text-primary flex justify-end hover:underline'>
-          Shelter SignUp
+        <Link href='/signUp' className='text-primary flex justify-end last: hover:underline'>
+          Customer SignUp
         </Link>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -49,20 +49,35 @@ export default function SignIp() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel> Shelter Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ramhettri C" {...field} />
+                    <Input placeholder="SS Shelter" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel> Location </FormLabel>
+                  <FormControl>
+                    <Input placeholder="City name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Shelter Email</FormLabel>
                   <FormControl>
                     <Input placeholder="abc@mail.com" {...field} />
                   </FormControl>
