@@ -10,7 +10,7 @@ import { z } from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { signInFormSchema } from "@/lib/auth";
+import { signInFormSchema } from "@/lib/auth-schema";
 
 const formSchema = z.object({
   email: z.string().min(2).max(50),

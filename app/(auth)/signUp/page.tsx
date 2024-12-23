@@ -10,21 +10,22 @@ import { z } from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { formSchema } from "@/lib/auth";
+import { signUpFormSchema } from "@/lib/auth-schema";
 
-export default function SignIp() {
+export default function SignUp() {
   //form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof signUpFormSchema>>({
+    resolver: zodResolver(signUpFormSchema),
     defaultValues: {
       name: "",
+      phonenumber:"",
       email: "",
       password: "",
     },
   })
 
   // a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof signUpFormSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values)
@@ -52,6 +53,20 @@ export default function SignIp() {
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Ramhettri C" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="phonenumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel> Phone number </FormLabel>
+                  <FormControl>
+                    <Input placeholder="9000000000" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

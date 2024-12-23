@@ -10,14 +10,16 @@ import { z } from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { formSchema } from "@/lib/auth";
+import { formSchema } from "@/lib/auth-schema";
 
-export default function SignIp() {
+export default function SignIn() {
   //form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      location: "",
+      phonenumber: "",
       email: "",
       password: "",
     },
@@ -60,12 +62,26 @@ export default function SignIp() {
 
             <FormField
               control={form.control}
-              name="name"
+              name="location"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel> Location </FormLabel>
                   <FormControl>
                     <Input placeholder="City name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="phonenumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel> Phone number </FormLabel>
+                  <FormControl>
+                    <Input placeholder="9000000000" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
