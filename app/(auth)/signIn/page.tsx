@@ -11,12 +11,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signInFormSchema } from "@/lib/auth-schema";
-
-const formSchema = z.object({
-  email: z.string().min(2).max(50),
-  password: z.string().min(2).max(50),
-})
-
+import { authClient } from "@/lib/auth-client";
+import { toast } from "@/hooks/use-toast";
 
 export default function SignIn() {
   //form.
@@ -29,11 +25,33 @@ export default function SignIn() {
   })
 
   // a submit handler.
-  function onSubmit(values: z.infer<typeof signInFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof signInFormSchema>) {
+    const { email, password } = values;
+
+    const { data, error } = await authClient.signIn.email(
+      {
+        email,
+        password,
+        callbackURL: "/customerHomepage",
+      },
+      {
+        onRequest: () => {
+          toast({ title: 'Signing In...' });
+        },
+        onSuccess: () => {
+          form.reset();
+        },
+        onError: (ctx) => {
+          toast({ title: ctx.error.message, variant: 'destructive' });
+          form.setError('email', {
+            type: 'manual',
+            message: ctx.error.message,
+          });
+        },
+      }
+    );
   }
+  
 
   return (
       <Card className="w-full max-w-md bg-white bg-opacity-85 shadow-lg px-4 ">
@@ -49,7 +67,7 @@ export default function SignIn() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Email<span style={{ color: 'red' }}> *</span></FormLabel>
                     <FormControl>
                       <Input placeholder="abc@mail.com" {...field} />
                     </FormControl>
@@ -62,7 +80,7 @@ export default function SignIn() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Password<span style={{ color: 'red' }}> *</span></FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="Enter your password" {...field} />
                     </FormControl>
@@ -84,7 +102,7 @@ export default function SignIn() {
           <p className="text-sm text-muted-foreground">
             Don&apos;t have an account yet?{' '}
             <Link href="/signUp" className="text-primary hover:underline">
-              Sign up
+              Sign up now
             </Link>
           </p>
         </CardFooter>

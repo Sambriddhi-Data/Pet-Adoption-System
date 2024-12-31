@@ -11,6 +11,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signUpFormSchema } from "@/lib/auth-schema";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "@/hooks/use-toast";
 
 export default function SignUp() {
   //form.
@@ -21,14 +23,35 @@ export default function SignUp() {
       phonenumber:"",
       email: "",
       password: "",
+      
     },
   })
 
   // a submit handler.
-  function onSubmit(values: z.infer<typeof signUpFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof signUpFormSchema>) {
+    const { name, email, password } = values;
+    const {data,error} = await authClient.signUp.email({
+      email: email,
+      password: password,
+      name: name,
+      callbackURL: "/signIn",
+    },{
+      onRequest: () => {
+        toast({
+          title: 'Signing up...'
+        })
+      },
+      onSuccess: () => {
+        form.reset()
+      },
+      onError: (ctx) => {
+        toast({ title: ctx.error.message, variant: 'destructive' });
+        form.setError('email', {
+          type: 'manual',
+          message: ctx.error.message
+        })
+      },
+    });
   }
 
   return (
@@ -50,7 +73,7 @@ export default function SignUp() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Name<span style={{ color: 'red' }}> *</span></FormLabel>
                   <FormControl>
                     <Input placeholder="Ramhettri C" {...field} />
                   </FormControl>
@@ -64,7 +87,7 @@ export default function SignUp() {
               name="phonenumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel> Phone number </FormLabel>
+                  <FormLabel>Phone number<span style={{ color: 'red' }}> *</span></FormLabel>
                   <FormControl>
                     <Input placeholder="9000000000" {...field} />
                   </FormControl>
@@ -77,7 +100,7 @@ export default function SignUp() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Email<span style={{ color: 'red' }}> *</span></FormLabel>
                   <FormControl>
                     <Input placeholder="abc@mail.com" {...field} />
                   </FormControl>
@@ -112,7 +135,7 @@ export default function SignUp() {
         <p className='text-sm text-muted-foreground'>
           Already have an account?{' '}
           <Link href='/signIn' className='text-primary hover:underline'>
-            Sign in
+            Sign in now
           </Link>
         </p>
       </CardFooter>

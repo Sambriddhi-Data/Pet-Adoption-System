@@ -51,7 +51,7 @@ export default function SignIn() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel> Shelter Name</FormLabel>
+                  <FormLabel>Shelter Name<span style={{ color: 'red' }}> *</span></FormLabel>
                   <FormControl>
                     <Input placeholder="SS Shelter" {...field} />
                   </FormControl>
@@ -65,7 +65,7 @@ export default function SignIn() {
               name="location"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel> Location </FormLabel>
+                  <FormLabel> Location<span style={{ color: 'red' }}> *</span></FormLabel>
                   <FormControl>
                     <Input placeholder="City name" {...field} />
                   </FormControl>
@@ -79,7 +79,7 @@ export default function SignIn() {
               name="phonenumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel> Phone number </FormLabel>
+                  <FormLabel> Phone number<span style={{ color: 'red' }}> *</span></FormLabel>
                   <FormControl>
                     <Input placeholder="9000000000" {...field} />
                   </FormControl>
@@ -93,7 +93,7 @@ export default function SignIn() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Shelter Email</FormLabel>
+                  <FormLabel>Shelter Email<span style={{ color: 'red' }}> *</span></FormLabel>
                   <FormControl>
                     <Input placeholder="abc@mail.com" {...field} />
                   </FormControl>
@@ -106,7 +106,7 @@ export default function SignIn() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Password<span style={{ color: 'red' }}> *</span></FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="Enter your password" {...field} />
                   </FormControl>
@@ -117,10 +117,6 @@ export default function SignIn() {
             <Button className="w-full" type="submit">
               Submit
             </Button>
-            <h3 className="flex items-center justify-center">----------- OR -----------</h3>
-            <Button className="w-full" type="button">
-              Sign in with google
-            </Button>
           </form>
         </Form>
       </CardContent>
@@ -128,7 +124,7 @@ export default function SignIn() {
         <p className='text-sm text-muted-foreground'>
           Already have an account?{' '}
           <Link href='/signIn' className='text-primary hover:underline'>
-            Sign in
+            Sign in now
           </Link>
         </p>
       </CardFooter>
