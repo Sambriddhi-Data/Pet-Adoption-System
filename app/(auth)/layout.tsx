@@ -1,4 +1,5 @@
 import { Logo } from "@/components/Logo";
+import Link from "next/link";
 
 export default function AuthLayout({
   children,
@@ -8,9 +9,10 @@ export default function AuthLayout({
   return (
     <main className="h-screen relative bg-cover bg-center" style={{ backgroundImage: "url('/images/dog.jpg')" }}>
       <div className="absolute top-4 left-4">
-        <Logo />
+        <Link href="/">
+          <Logo />
+        </Link>
       </div>
-
       <div className="h-full flex items-center justify-center">
         {children}
       </div>

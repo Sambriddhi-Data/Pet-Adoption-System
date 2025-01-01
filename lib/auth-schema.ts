@@ -15,7 +15,8 @@ export const formSchema = z.object({
     phonenumber: z
         .string()
         .trim()
-        .regex( /^9\d{9}$/, { message: "Please enter a valid phone number" }),
+        .regex( /^9\d{9}$/, { message: "Please enter a valid phone number" })
+        .optional(),
 
     email: z
         .string()

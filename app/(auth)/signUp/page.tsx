@@ -23,13 +23,12 @@ export default function SignUp() {
       phonenumber:"",
       email: "",
       password: "",
-      
     },
   })
 
   // a submit handler.
   async function onSubmit(values: z.infer<typeof signUpFormSchema>) {
-    const { name, email, password } = values;
+    const { name, email, password} = values;
     const {data,error} = await authClient.signUp.email({
       email: email,
       password: password,
