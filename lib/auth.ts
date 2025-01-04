@@ -9,11 +9,10 @@ export const auth = betterAuth({
     emailAndPassword: {  
         enabled: true,
     },
-    // socialProviders: {
-    //     autoSignIn: false,
-    //     google: { 
-    //         clientId: '1057347288323-9otv96hv7v5g8irpqpm46m2qe08dbl1m.apps.googleusercontent.com', 
-    //         clientSecret: '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',
-    //     }
-    // }
+    socialProviders: {
+        google: { 
+            clientId: process.env.GOOGLE_CLIENT_ID as string, 
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string, 
+        }
+    }
 })

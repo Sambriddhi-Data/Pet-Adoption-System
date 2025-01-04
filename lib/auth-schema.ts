@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { optional, z } from "zod";
 
-export const formSchema = z.object({
+export const baseSchema = z.object({
     name: z
         .string()
         .trim()
@@ -15,8 +15,7 @@ export const formSchema = z.object({
     phonenumber: z
         .string()
         .trim()
-        .regex( /^9\d{9}$/, { message: "Please enter a valid phone number" })
-        .optional(),
+        .regex( /^9\d{9}$/, { message: "Please enter a valid phone number" }),
 
     email: z
         .string()
@@ -29,17 +28,36 @@ export const formSchema = z.object({
         .string()
         .trim()
         .min(8, { message: "Password must be at least 8 characters long" })
-        .max(50, { message: "Password cannot exceed 50 characters" })
-
+        .max(50, { message: "Password cannot exceed 50 characters" }),
+    confirmpassword: z
+        .string()
+        .trim()
+        .min(8, { message: "Passwords did not match" })
 })
-export const signInFormSchema = formSchema.pick({
+
+export const formSchema = baseSchema.refine(
+    (data) => data.password === data.confirmpassword,
+    {
+        path: ["confirmpassword"],
+        message: "Passwords did not match",
+    }
+);
+
+export const signInFormSchema = baseSchema.pick({
     email: true,
     password: true
 })
 
-export const signUpFormSchema = formSchema.pick({
+export const signUpFormSchema = baseSchema.pick({
     name: true,
     email: true,
     phonenumber: true,
-    password: true
-})
+    password: true,
+    confirmpassword: true
+}).refine(
+    (data) => data.password === data.confirmpassword,
+    {
+        path: ["confirmpassword"],
+        message: "Passwords did not match",
+    }
+);

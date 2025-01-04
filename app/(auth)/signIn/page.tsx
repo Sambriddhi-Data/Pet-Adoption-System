@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { signInFormSchema } from "@/lib/auth-schema";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/hooks/use-toast";
+import GoogleSignInButton from "@/components/ui/GoogleSignInButton";
 
 export default function SignIn() {
   //form.
@@ -92,9 +93,7 @@ export default function SignIn() {
                 Submit
               </Button>
               <h3 className="flex items-center justify-center">----------- OR -----------</h3>
-              <Button className="w-full" type="button">
-                Sign in with google
-              </Button>
+              <GoogleSignInButton>Sign in with Google</GoogleSignInButton>
             </form>
           </Form>
         </CardContent>

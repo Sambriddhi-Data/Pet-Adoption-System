@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { signUpFormSchema } from "@/lib/auth-schema";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/hooks/use-toast";
+import GoogleSignInButton from "@/components/ui/GoogleSignInButton";
 
 export default function SignUp() {
   //form.
@@ -23,6 +24,7 @@ export default function SignUp() {
       phonenumber:"",
       email: "",
       password: "",
+      confirmpassword: "",
     },
   })
 
@@ -112,9 +114,22 @@ export default function SignUp() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Password<span style={{ color: 'red' }}> *</span></FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="Enter your password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmpassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password<span style={{ color: 'red' }}> *</span></FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="Re-enter your password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -123,10 +138,7 @@ export default function SignUp() {
             <Button className="w-full" type="submit">
               Submit
             </Button>
-            <h3 className="flex items-center justify-center">----------- OR -----------</h3>
-            <Button className="w-full" type="button">
-              Sign in with google
-            </Button>
+
           </form>
         </Form>
       </CardContent>
