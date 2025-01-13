@@ -4,7 +4,8 @@ export default function Home() {
   return (
     <div>
       <Navbar />
-      <h1>Hello world</h1>
+      <div>Adopt a pet?</div>
+      <h1>Lost a Pet?</h1>
     </div>
   );
 }

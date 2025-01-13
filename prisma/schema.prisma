@@ -14,19 +14,28 @@ datasource db {
 }
 
 enum Role {
+  ADMIN
   CUSTOMER
   SHELTER_MANAGER
 }
 
+enum Sex {
+  MALE
+  FEMALE
+  UNKNOWN
+}
+
 model User {
-  id            String    @id 
-  email         String    @unique
-  name          String
-  emailVerified Boolean
-  createdAt     DateTime
-  updatedAt     DateTime
-  sessions      Session[]
-  accounts      Account[]
+  id                  String    @id
+  email               String    @unique
+  name                String
+  emailVerified       Boolean @default(true)
+  role                Role  @default(CUSTOMER)
+  createdAt           DateTime
+  updatedAt           DateTime
+  sessions            Session[]
+  accounts            Account[]
+  shelter             Shelter?
 
   @@map("user")
 }
@@ -57,12 +66,44 @@ model Account {
   idToken               String?
   accessTokenExpiresAt  DateTime?
   refreshTokenExpiresAt DateTime?
-  scope                 String?
   password              String?
+  phoneNumber           String? @unique
   createdAt             DateTime
   updatedAt             DateTime
 
   @@map("account")
+}
+
+model Shelter {
+  id                    String    @id
+  shelterName           String?
+  location              String?
+  userId                String @unique
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isVerified             Boolean @default(false)
+  animals               Animals[]
+  @@map("shelter")
+}
+
+model Animals{
+  id String @id
+  name                   String
+  species                String
+  sex                    Sex          @default(UNKNOWN)
+  description            String
+  shelterId              String
+  shelter                Shelter      @relation(fields: [shelterId], references: [id], onDelete: Cascade)
+  @@map("animals")
+
+}
+
+model LostPets{
+  id String @id
+  name String
+  description String
+  images  Bytes?
+  @@map("lostpets")
+
 }
 
 model Verification {
