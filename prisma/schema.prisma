@@ -33,6 +33,7 @@ model User {
   role                Role  @default(CUSTOMER)
   createdAt           DateTime
   updatedAt           DateTime
+  phoneNumber           String? @unique
   sessions            Session[]
   accounts            Account[]
   shelter             Shelter?
@@ -67,7 +68,6 @@ model Account {
   accessTokenExpiresAt  DateTime?
   refreshTokenExpiresAt DateTime?
   password              String?
-  phoneNumber           String? @unique
   createdAt             DateTime
   updatedAt             DateTime
 
@@ -75,24 +75,21 @@ model Account {
 }
 
 model Shelter {
-  id                    String    @id
+  id Int @id @default(autoincrement())
   shelterName           String?
   location              String?
   userId                String @unique
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   isVerified             Boolean @default(false)
-  animals               Animals[]
   @@map("shelter")
 }
 
 model Animals{
-  id String @id
+  id Int @id @default(autoincrement())
   name                   String
   species                String
   sex                    Sex          @default(UNKNOWN)
-  description            String
-  shelterId              String
-  shelter                Shelter      @relation(fields: [shelterId], references: [id], onDelete: Cascade)
+  description            String @db.Text
   @@map("animals")
 
 }
