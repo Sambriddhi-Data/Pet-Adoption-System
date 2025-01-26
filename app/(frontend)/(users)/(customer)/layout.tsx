@@ -1,6 +1,6 @@
 'use client'
 
-import CustomerNavbar from "../_components/customer-navbar";
+import CustomerNavbar from "@/components/navbar";
 
 export default function CustomerLayout({
   children,

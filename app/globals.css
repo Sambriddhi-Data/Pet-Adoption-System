@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fondamento&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fondamento&family=Fontdiner+Swanky&family=Josefin+Sans:ital,wght@0,700;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fondamento&family=Fontdiner+Swanky&family=Fruktur&family=Josefin+Sans:ital,wght@0,700;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;700;900&display=swap');
 @tailwind base;
 @tailwind components;
@@ -14,10 +13,17 @@ body {
 .font-swanky {
   font-family: 'Fontdiner Swanky';
 }
+.font-fruktur{
+  font-family: "Fruktur", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
 
 @layer base {
   :root {
     --background: 0 0% 100%;
+    --shelter-background: 220 22% 96%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;

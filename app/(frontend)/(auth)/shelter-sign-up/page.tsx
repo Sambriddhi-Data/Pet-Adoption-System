@@ -13,6 +13,7 @@ import { formSchema } from "@/app/(frontend)/(auth)/auth-schema";
 import { signUp } from "@/auth-client";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { redirect } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react"
 import LoadingButton from "@/components/loading-button";
 
@@ -47,7 +48,6 @@ export default function ShelterSignUp() {
       password,
       name,
       role,
-      callbackURL: "/sign-in",
     }, {
       onRequest: () => {
         setPending(true);
@@ -57,6 +57,7 @@ export default function ShelterSignUp() {
         toast({ title: "Account created",
           description: "Admin needs to verify your account in order for you to login as a shelter manager. This might take some hours to a few days."
          })
+         redirect("/shelter-landing-page");
       },
       onError: (ctx) => {
         toast({ title: ctx.error.message, variant: 'destructive' });

@@ -1,10 +1,19 @@
-'use client'
+import { CldImage } from 'next-cloudinary';
+import Link from "next/link";
+import { auth } from "@/auth";
+import { headers } from "next/headers";
+import { Heart } from "lucide-react"
+import { PetCard } from '../../_components/pet-card';
+import { Button } from '@/components/ui/button';
+import InfoCard from '../../_components/info-card';
 
-import { useSession } from "@/auth-client";
+export default async function ShelterHomepage() {
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
 
-export default function ShelterHomepage() {
-    const session = useSession();
-  
+  const user = session?.user;
+
   if (!session) {
     return {
       redirect: {
@@ -13,16 +22,22 @@ export default function ShelterHomepage() {
       },
     }
   }
-  const user = session?.data?.user;
-
-    return (
-      <div className='mt-10 text-center'>
-        <h1 className='text-2xl font-bold underline'> Welcome to Shelter Homepage </h1>
-        <ul>
-          <li>Shelter Name: {user?.name}</li>
-        </ul>
-        
+  return (
+    <div className='mt-2 text-center'>
+      <div className='flex items-center gap-20'>
+        <div className="w-80">
+          <InfoCard status="Available for Adoption" number = {3} color="#fdef4e"/>
+        </div>
+        <div className="w-80">
+          <InfoCard status="Adopted" number = {4} color="#12d929"/>
+        </div>
+        <Button>Add new pet</Button>
       </div>
-    );
+      <div>
+        <PetCard />
+      </div>
+    </div>
+
+  );
 
 }

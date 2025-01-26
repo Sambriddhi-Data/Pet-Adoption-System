@@ -52,12 +52,12 @@ export default function SignIn() {
       password: "",
     },
   })
-  console.log("Form",form.getValues());
+  // console.log("Form",form.getValues());
   
   // a submit handler.
   async function onSubmit(values: TSignInForm) {
     const { email, password } = values;
-    console.log("Submit",values)
+    // console.log("Submit",values)
 
     const { data, error } = await signIn.email(
       {
@@ -84,7 +84,7 @@ export default function SignIn() {
       }
     );
     setPending(false);
-    console.log("Session", session);
+    // console.log("Session", session);
     if (session?.data?.user?.role) {
       toast({ title: "Redirecting to Homepage..." });
     }

@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { redirect } from "next/navigation";
+import { CldImage } from 'next-cloudinary';
 import Image from 'next/image'
 import {
   DropdownMenu,
@@ -27,20 +28,27 @@ import { signOut, useSession } from '@/auth-client';
 
 export default function ShelterNavbar() {
   const session = useSession();
+  const user = session?.data?.user;
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState<boolean>();
   return (
     <div className="border-b px-4">
-      <div className="flex items-center justify-between mx-auto max-w-4xl h-16">
+      <div className="flex items-center justify-between mx-auto p-4 h-16">
         <div></div>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <div>
-              <Image
-                src='/images/shelterlogo1.png'
-                alt="Logo of the shelter"
-                width={200}
-                height={50}
-              />
+            {/* Shelter Name + Logo */}
+            <div className='flex items-center gap-2 text-lg'>
+            <h1 className='font-fruktur'>{user?.name}</h1>
+            <CldImage
+              src="https://res.cloudinary.com/dhdhgmjzg/image/upload/v1737357663/Screenshot_2025-01-20_at_1.04.36_PM_cz8xey.png" // Use this sample image or upload your own via the Media Explorer
+              width="26" // Transform the image: auto-crop to square aspect_ratio
+              height="26"
+              alt="Sample"
+              crop={{
+                type: 'auto',
+                source: true
+              }}
+            />
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent>

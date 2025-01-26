@@ -15,7 +15,9 @@ import { signUp } from "@/auth-client";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { redirect } from "next/navigation";
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react";
+import LoadingButton from "@/components/loading-button";
+
 
 export default function SignUp() {
 
@@ -50,9 +52,7 @@ export default function SignUp() {
       role,
     }, {
       onRequest: () => {
-        toast({
-          title: "Signing up",
-        })
+        setPending(true);
       },
       onSuccess: () => {
         form.reset()
@@ -70,6 +70,7 @@ export default function SignUp() {
         })
       },
     });
+    setPending(false);
   }
 
 
@@ -166,7 +167,7 @@ export default function SignUp() {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">Submit</Button>
+              <LoadingButton pending={pending}>Sign Up</LoadingButton>
           </form>
         </Form>
 
