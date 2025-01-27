@@ -10,6 +10,11 @@ export const addPetSchema = z.object({
     species: z
         .string()
         .trim()
-        .min(3, { message: "Soecies name must be atleast 3 characters long" }),
+        .min(3, { message: "Species name must be atleast 3 characters long" }),
+
+    description: z
+        .string()
+        .trim()
+        .min(7, { message: "Description name must be atleast 7 characters long" }),
 
 })

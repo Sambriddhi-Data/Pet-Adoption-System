@@ -4,8 +4,9 @@ import { auth } from "@/auth";
 import { headers } from "next/headers";
 import { Heart } from "lucide-react"
 import { PetCard } from '../../_components/pet-card';
-import { Button } from '@/components/ui/button';
 import InfoCard from '../../_components/info-card';
+import AddPetButton from '../../_components/add-pet-button';
+
 
 export default async function ShelterHomepage() {
   const session = await auth.api.getSession({
@@ -31,7 +32,7 @@ export default async function ShelterHomepage() {
         <div className="w-80">
           <InfoCard status="Adopted" number = {4} color="#12d929"/>
         </div>
-        <Button>Add new pet</Button>
+        <AddPetButton/>
       </div>
       <div>
         <PetCard />
