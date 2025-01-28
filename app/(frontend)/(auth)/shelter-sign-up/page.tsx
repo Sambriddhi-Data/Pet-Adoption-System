@@ -30,11 +30,11 @@ export default function ShelterSignUp() {
     defaultValues: {
       name: "",
       location: "",
-      phonenumber: "",
+      phoneNumber: "",
       email: "",
       password: "",
       confirmpassword: "",
-      role: "SHELTER_MANAGER"
+      role: "SHELTER_MANAGER",
     },
   })
 
@@ -42,22 +42,28 @@ export default function ShelterSignUp() {
 
   // a submit handler.
   async function onSubmit(values: TShelterSignUpForm) {
-    const { name, email, password, role} = values;
+    const { name, email, password, role, location, phoneNumber } = values;
+    console.log('Form values:', values);
+    console.log('Location value:', location);
     const { data, error } = await signUp.email({
       email,
       password,
       name,
       role,
+      location,
+      phoneNumber,
+      isVerifiedUser: false,
     }, {
       onRequest: () => {
         setPending(true);
       },
       onSuccess: () => {
         form.reset()
-        toast({ title: "Account created",
+        toast({
+          title: "Account created",
           description: "Admin needs to verify your account in order for you to login as a shelter manager. This might take some hours to a few days."
-         })
-         redirect("/shelter-landing-page");
+        })
+        redirect("/shelter-landing-page");
       },
       onError: (ctx) => {
         toast({ title: ctx.error.message, variant: 'destructive' });
@@ -103,7 +109,7 @@ export default function ShelterSignUp() {
               name="location"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel> Location<span style={{ color: 'red' }}> *</span></FormLabel>
+                  <FormLabel>Location<span style={{ color: 'red' }}> *</span></FormLabel>
                   <FormControl>
                     <Input placeholder="City name" {...field} />
                   </FormControl>
@@ -114,7 +120,7 @@ export default function ShelterSignUp() {
 
             <FormField
               control={form.control}
-              name="phonenumber"
+              name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel> Phone number<span style={{ color: 'red' }}> *</span></FormLabel>

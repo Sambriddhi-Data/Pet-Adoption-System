@@ -14,12 +14,12 @@ import { signInFormSchema } from "@/app/(frontend)/(auth)/auth-schema";
 import { toast } from "@/hooks/use-toast";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 import { useRouter } from "next/navigation";
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react"
 import { signIn, useSession } from "@/auth-client";
 
 export default function SignIn() {
-  
+
   const session = useSession();
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -29,6 +29,20 @@ export default function SignIn() {
 
   useEffect(() => {
     if (session?.data?.user?.role) {
+      // Handle shelter manager verification check
+      if (session.data.user.role === "SHELTER_MANAGER") {
+        if (!session.data.user.isVerifiedUser) {
+          toast({
+            title: "Your shelter has not been verified yet!",
+            description: "Please wait for the admin to verify your shelter credentials."
+          });
+          router.push("/sign-in");
+          return;
+        }
+      }
+
+      // Handle successful login routing and toast for all verified users
+      toast({ title: "Sign In Successful..." });
       switch (session.data.user.role) {
         case "CUSTOMER":
           router.push("/");
@@ -53,7 +67,7 @@ export default function SignIn() {
     },
   })
   // console.log("Form",form.getValues());
-  
+
   // a submit handler.
   async function onSubmit(values: TSignInForm) {
     const { email, password } = values;
@@ -69,8 +83,9 @@ export default function SignIn() {
         },
         onSuccess: () => {
           form.reset();
-          toast({ title: "Sign In Successful!!",
-           });
+          toast({
+            title: "Sign In Successful!!",
+          });
 
         },
         onError: (ctx) => {
@@ -85,7 +100,6 @@ export default function SignIn() {
     setPending(false);
     // console.log("Session", session);
     if (session?.data?.user?.role) {
-      toast({ title: "Redirecting to Homepage..." });
     }
   }
 

@@ -4,5 +4,4 @@ export interface LogoProps {
     
   }
 
-export type TRoles = "ADMIN" | "CUSTOMER" | "SHELTER_MANAGER"
 

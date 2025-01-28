@@ -1,4 +1,4 @@
-import { betterAuth, BetterAuthOptions } from "better-auth";
+import { betterAuth, BetterAuthOptions, undefined } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "./prisma/client";
 import { openAPI } from "better-auth/plugins";
@@ -9,23 +9,44 @@ export const auth = betterAuth({
         additionalFields: {
             role: {
                 type: 'string',
+            },
+            location:{
+                type: 'string',
+                required: false,
+            },
+            phoneNumber: {
+                type: 'string',
+            },
+            isVerifiedUser:{
+                type: 'boolean',
             }
         }
     },
+
     database: prismaAdapter(prisma, {
         provider: "postgresql"
     }),
+
+    // session:{
+    //     cookieCache:{
+    //         enabled: true,
+    //         maxAge: 5 * 60,
+    //     }
+    // },
+
     plugins: [openAPI()], // api/auth/reference
+
     emailAndPassword: {
         enabled: true,
-        requireEmailVerification: true,
-        sendResetPassword: async ({ user, url }) => {
-            await sendEmail({
-                to: user.email,
-                subject: "Reset your password",
-                text: `Click the link to reset your password: ${url}`,
-            });
-        }
+        autoSignIn: false,
+        requireEmailVerification: false,
+        // sendResetPassword: async ({ user, url }) => {
+        //     await sendEmail({
+        //         to: user.email,
+        //         subject: "Reset your password",
+        //         text: `Click the link to reset your password: ${url}`,
+        //     });
+        // }
     },
     socialProviders: {
         google: { 

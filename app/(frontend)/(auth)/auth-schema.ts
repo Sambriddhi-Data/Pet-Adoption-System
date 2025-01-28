@@ -12,7 +12,7 @@ export const baseSchema = z.object({
         .trim()
         .min(3, { message: "City name must be atleast 3 characters long" }),
 
-    phonenumber: z
+    phoneNumber: z
         .string()
         .trim()
         .regex( /^9\d{9}$/, { message: "Please enter a valid phone number" }),
@@ -34,6 +34,7 @@ export const baseSchema = z.object({
         .string()
         .trim()
         .min(8, { message: "Passwords did not match" }),
+        
     role: z
     .enum(["ADMIN","CUSTOMER","SHELTER_MANAGER"])
     
@@ -55,7 +56,7 @@ export const signInFormSchema = baseSchema.pick({
 export const signUpFormSchema = baseSchema.pick({
     name: true,
     email: true,
-    phonenumber: true,
+    phoneNumber: true,
     password: true,
     confirmpassword: true,
     role: true,

@@ -29,7 +29,7 @@ export default function SignUp() {
     resolver: zodResolver(signUpFormSchema),
     defaultValues: {
       name: "",
-      phonenumber: "",
+      phoneNumber: "",
       email: "",
       password: "",
       confirmpassword: "",
@@ -44,12 +44,14 @@ export default function SignUp() {
 
     console.log("Submit",values)
 
-    const { name, email, password,role } = values;
+    const { name, email, password,role, phoneNumber } = values;
     const { data, error } = await signUp.email({
       email,
       password,
+      phoneNumber,
       name,
       role,
+      isVerifiedUser: true,
     }, {
       onRequest: () => {
         setPending(true);
@@ -104,7 +106,7 @@ export default function SignUp() {
 
             <FormField
               control={form.control}
-              name="phonenumber"
+              name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phone number<span style={{ color: 'red' }}> *</span></FormLabel>

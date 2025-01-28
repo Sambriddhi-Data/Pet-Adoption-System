@@ -3,7 +3,7 @@ import { LogoProps } from '../app/(frontend)/(auth)/type';
 import { PawPrint } from 'lucide-react';
 import Image from 'next/image';
 
-export const Logo: React.FC<LogoProps> = ({className = '', color='white'}) => {
+export const Logo: React.FC<LogoProps> = ({className = '', color=''}) => {
   return (
     <div className={`flex gap-3 items-center ${className}`}>
       <Image

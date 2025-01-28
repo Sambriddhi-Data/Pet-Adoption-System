@@ -10,7 +10,7 @@ export default function AuthLayout({
     <main className="h-screen relative bg-cover bg-center" style={{ backgroundImage: "url('/images/dog.jpg')"}}>
       <div className="absolute top-4 left-4">
         <Link href="/">
-          <Logo />
+          <Logo color="white"/>
         </Link>
       </div>
       <div className="h-full flex items-center justify-center">

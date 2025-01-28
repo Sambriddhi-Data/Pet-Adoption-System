@@ -45,7 +45,7 @@ export default function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>
-            <Logo />
+            <Logo color="white" />
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className=" text-white flex flex-col gap-8">

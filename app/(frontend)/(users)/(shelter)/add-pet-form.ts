@@ -1,20 +1,46 @@
 import { z } from "zod";
 
 export const addPetSchema = z.object({
+    // Basic details
     name: z
         .string()
         .trim()
-        .min(2, { message: 'Name must be at least 2 characters long' })
-        .max(50, { message: 'Name cannot exceed 50 characters' }),
+        .min(1, { message: 'Pet\'s name must be at least 1 character long' })
+        .max(50, { message: 'Pet\'s name cannot exceed 50 characters' }),
 
     species: z
         .string()
-        .trim()
-        .min(3, { message: "Species name must be atleast 3 characters long" }),
+        .min(3, { message: "Species name must be  atleast 3 characters long" }),
+
+    gender: z
+        .string(),
 
     description: z
         .string()
         .trim()
         .min(7, { message: "Description name must be atleast 7 characters long" }),
+
+    age: z
+        .string()
+        .trim()
+        .optional(),
+
+    dominantBreed: z
+        .string(),
+
+    size: z
+        .string(),
+
+    arrivedAtShelter: z
+        .string(),
+
+    shelter_id: z
+        .string(),
+
+    //Health details
+
+
+
+
 
 })

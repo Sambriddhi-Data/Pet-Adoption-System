@@ -34,6 +34,8 @@ model User {
   createdAt           DateTime
   updatedAt           DateTime
   phoneNumber           String? @unique
+  location              String?
+  isVerifiedUser        Boolean @default(true)
   sessions            Session[]
   accounts            Account[]
   shelter             Shelter?
@@ -76,11 +78,8 @@ model Account {
 
 model Shelter {
   id Int @id @default(autoincrement())
-  shelterName           String?
-  location              String?
   userId                String @unique
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  isVerified             Boolean @default(false)
   @@map("shelter")
 }
 
