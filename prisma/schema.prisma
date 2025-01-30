@@ -14,7 +14,7 @@ datasource db {
 }
 
 enum Role {
-  ADMIN
+  admin
   CUSTOMER
   SHELTER_MANAGER
 }
@@ -26,19 +26,19 @@ enum Sex {
 }
 
 model User {
-  id                  String    @id
-  email               String    @unique
-  name                String
-  emailVerified       Boolean @default(true)
-  role                Role  @default(CUSTOMER)
-  createdAt           DateTime
-  updatedAt           DateTime
-  phoneNumber           String? @unique
-  location              String?
-  isVerifiedUser        Boolean @default(true)
-  sessions            Session[]
-  accounts            Account[]
-  shelter             Shelter?
+  id             String    @id
+  email          String    @unique
+  name           String
+  emailVerified  Boolean   @default(true)
+  role           Role      @default(CUSTOMER)
+  createdAt      DateTime
+  updatedAt      DateTime
+  phoneNumber    String?   @unique
+  location       String?
+  isVerifiedUser Boolean   @default(true)
+  sessions       Session[]
+  accounts       Account[]
+  shelter        Shelter?
 
   @@map("user")
 }
@@ -77,29 +77,30 @@ model Account {
 }
 
 model Shelter {
-  id Int @id @default(autoincrement())
-  userId                String @unique
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     Int    @id @default(autoincrement())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@map("shelter")
 }
 
-model Animals{
-  id Int @id @default(autoincrement())
-  name                   String
-  species                String
-  sex                    Sex          @default(UNKNOWN)
-  description            String @db.Text
-  @@map("animals")
+model Animals {
+  id          Int    @id @default(autoincrement())
+  name        String
+  species     String
+  sex         Sex    @default(UNKNOWN)
+  description String @db.Text
 
+  @@map("animals")
 }
 
-model LostPets{
-  id String @id
-  name String
+model LostPets {
+  id          String @id
+  name        String
   description String
-  images  Bytes?
-  @@map("lostpets")
+  images      Bytes?
 
+  @@map("lostpets")
 }
 
 model Verification {

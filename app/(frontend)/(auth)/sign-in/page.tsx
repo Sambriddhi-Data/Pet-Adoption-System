@@ -50,7 +50,7 @@ export default function SignIn() {
         case "SHELTER_MANAGER":
           router.push("/shelter-homepage");
           break;
-        case "ADMIN":
+        case "admin":
           router.push("/admin-homepage");
           break;
         default:

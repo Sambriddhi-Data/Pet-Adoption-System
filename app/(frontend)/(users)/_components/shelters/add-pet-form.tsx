@@ -1,15 +1,15 @@
 'use client'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import z from "zod";
-import { addPetSchema } from "../(shelter)/add-pet-form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import CancelFormButton from "./cancel-form-button";
 import { useSession } from "@/auth-client";
+import { addPetSchema } from "../../(shelter)/add-pet-form";
+import CancelFormButton from "../cancel-form-button";
 
 
 export default function AddPet() {

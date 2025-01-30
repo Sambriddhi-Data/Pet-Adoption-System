@@ -44,7 +44,7 @@ export default function SignUp() {
 
     console.log("Submit",values)
 
-    const { name, email, password,role, phoneNumber } = values;
+    const { name, email, password, role, phoneNumber } = values;
     const { data, error } = await signUp.email({
       email,
       password,

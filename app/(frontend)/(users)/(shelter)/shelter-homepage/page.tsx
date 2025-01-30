@@ -4,8 +4,8 @@ import { auth } from "@/auth";
 import { headers } from "next/headers";
 import { Heart } from "lucide-react"
 import { PetCard } from '../../_components/pet-card';
-import InfoCard from '../../_components/info-card';
-import AddPetButton from '../../_components/add-pet-button';
+import InfoCard from '../../_components/shelters/info-card';
+import AddPetButton from '../../_components/shelters/add-pet-button';
 
 
 export default async function ShelterHomepage() {

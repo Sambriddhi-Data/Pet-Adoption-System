@@ -1,7 +1,7 @@
 import { betterAuth, BetterAuthOptions, undefined } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "./prisma/client";
-import { openAPI } from "better-auth/plugins";
+import { admin } from "better-auth/plugins"
 import { sendEmail } from "./actions/email";
 
 export const auth = betterAuth({
@@ -22,7 +22,6 @@ export const auth = betterAuth({
             }
         }
     },
-
     database: prismaAdapter(prisma, {
         provider: "postgresql"
     }),
@@ -33,8 +32,6 @@ export const auth = betterAuth({
     //         maxAge: 5 * 60,
     //     }
     // },
-
-    plugins: [openAPI()], // api/auth/reference
 
     emailAndPassword: {
         enabled: true,
@@ -67,6 +64,9 @@ export const auth = betterAuth({
     //     }
 
     // },
+    plugins: [
+        admin() 
+    ]
 } satisfies BetterAuthOptions);
 
 export type Session = typeof auth.$Infer.Session

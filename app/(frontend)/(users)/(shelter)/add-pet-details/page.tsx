@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
-import AddPet from "../../_components/add-pet-form";
 import Link from "next/link";
+import AddPet from "../../_components/shelters/add-pet-form";
 
 export default function AddPetPage() {
     return (
