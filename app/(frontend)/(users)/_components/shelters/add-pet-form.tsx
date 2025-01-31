@@ -10,14 +10,18 @@ import { Card } from "@/components/ui/card";
 import { useSession } from "@/auth-client";
 import { addPetSchema } from "../../(shelter)/add-pet-form";
 import CancelFormButton from "../cancel-form-button";
+import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 
 export default function AddPet() {
     type TAddPetForm = z.infer<typeof addPetSchema>
 
     const session = useSession();
+    const router = useRouter();
 
     const shelter_id = session?.data?.user?.id;
+    console.log("shelter", shelter_id);
     const form = useForm<TAddPetForm>({
         resolver: zodResolver(addPetSchema),
         defaultValues: {
@@ -28,15 +32,42 @@ export default function AddPet() {
             dominantBreed: "",
             gender: "",
             size: "",
+            status: "available",
             arrivedAtShelter: "",
-            shelter_id: shelter_id,
+            shelterId: shelter_id,
         },
     });
 
 
     async function onSubmit(values: TAddPetForm) {
-        const { data } = await axios.post('/api/animals', values);
-        console.log(data);
+        if (!session?.data?.user?.id) {
+            toast({
+                title: "Error",
+                description: "Shelter ID not found. Please try again.",
+            });
+            return;
+        }
+        values.shelterId = session.data.user.id;
+        console.log("submit", values);
+        try {
+            const { data } =
+                await axios.post('/api/animals', values);
+            form.reset()
+            toast({
+                title: "Pet added successfully!",
+                description: `${values.name} has been added to the family`,
+            });
+            console.log(data);
+            router.push('/shelter-homepage');
+        }
+        catch (error: any) {
+            console.error("API error:", error.response?.data || error.message);
+            toast({
+                title: "Error",
+                description: error.response?.data?.message || "An error occurred. Please try again later.",
+            });
+        }
+
     }
 
     return (

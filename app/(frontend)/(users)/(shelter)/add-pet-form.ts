@@ -15,6 +15,8 @@ export const addPetSchema = z.object({
     gender: z
         .string(),
 
+    status: z.enum(['available', 'adopted']),
+
     description: z
         .string()
         .trim()
@@ -34,7 +36,7 @@ export const addPetSchema = z.object({
     arrivedAtShelter: z
         .string(),
 
-    shelter_id: z
+    shelterId: z
         .string(),
 
     //Health details

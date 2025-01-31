@@ -34,7 +34,7 @@ export default function ShelterSignUp() {
       email: "",
       password: "",
       confirmpassword: "",
-      role: "SHELTER_MANAGER",
+      role: "shelter_manager",
     },
   })
 
@@ -46,12 +46,12 @@ export default function ShelterSignUp() {
     console.log('Form values:', values);
     console.log('Location value:', location);
     const { data, error } = await signUp.email({
-      email,
-      password,
-      name,
-      role,
-      location,
-      phoneNumber,
+      email:email,
+      password:password,
+      name:name,
+      role:role,
+      location:location,
+      phoneNumber:phoneNumber,
       isVerifiedUser: false,
     }, {
       onRequest: () => {

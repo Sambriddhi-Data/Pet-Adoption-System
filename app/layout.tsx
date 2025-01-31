@@ -3,7 +3,10 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: "Fur-Ever Friends",
+  title: {
+    default: "Fur-Ever Friends",
+    template:"%s | Fur-Ever Friends"
+  },
   description: "Pet Adoption Website",
 };
 

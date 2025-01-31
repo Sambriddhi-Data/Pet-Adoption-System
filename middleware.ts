@@ -3,13 +3,18 @@ import { NextResponse, type NextRequest } from "next/server";
 import { Session } from "./auth";
 
 const authRoutes = ["/sign-in", "/sign-up", "/shelter-sign-up"];
-const publicRoutes = ["/", "/adopt-pet", "/about-us","/rehome-pet","/customer-profile","/blog"];
+const publicRoutes = ["/", "/adopt-pet", "/about-us","/rehome-pet","/customer-profile","/blog","/shelter-landing-page"];
 const shelterRoutes = [
   "/shelter-homepage",
+  "/pets/[petId]",
   "/shelter-profile",
   "/public-page",
-  "/adoption-requests"
+  "/adoption-requests",
+  "/add-pet-details/details",
+  "/add-pet-details/images",
+
 ];
+const petIdPattern = /^\/pets\/[\w-]+$/; // Matches /pets/{dynamicId}
 const adminRoutes = ["/admin-homepage"]; // Add admin routes here
 
 export default async function authMiddleware(request: NextRequest) {
@@ -17,7 +22,7 @@ export default async function authMiddleware(request: NextRequest) {
   
   // Check which type of route is being accessed
   const isAuthRoute = authRoutes.includes(pathName);
-  const isPublicRoute = publicRoutes.includes(pathName);
+  const isPublicRoute = publicRoutes.includes(pathName) || petIdPattern.test(pathName);
   const isShelterRoute = shelterRoutes.includes(pathName);
   const isAdminRoute = adminRoutes.includes(pathName);
 
@@ -46,10 +51,10 @@ export default async function authMiddleware(request: NextRequest) {
   const userRole = session.user?.role;
 
   // Handle shelter manager access
-  if (userRole === "SHELTER_MANAGER") {
+  if (userRole === "shelter_manager") {
     // Check if shelter manager is verified
     if (!session.user?.isVerifiedUser && isShelterRoute) {
-      return NextResponse.redirect(new URL("/", request.url));
+      return NextResponse.redirect(new URL("/shelter-landing-page", request.url));
     }
     // Prevent access to auth routes
     if (isAuthRoute) {
@@ -62,7 +67,7 @@ export default async function authMiddleware(request: NextRequest) {
   }
 
   // Handle customer access
-  if (userRole === "CUSTOMER") {
+  if (userRole === "customer") {
     // Prevent access to auth routes
     if (isAuthRoute) {
       return NextResponse.redirect(new URL("/", request.url));

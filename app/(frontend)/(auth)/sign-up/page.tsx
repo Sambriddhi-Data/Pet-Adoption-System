@@ -33,7 +33,7 @@ export default function SignUp() {
       email: "",
       password: "",
       confirmpassword: "",
-      role:"CUSTOMER"
+      role:"customer"
     },
   })
   console.log("Form",form.getValues())
@@ -57,7 +57,7 @@ export default function SignUp() {
         setPending(true);
       },
       onSuccess: () => {
-        form.reset()
+        form.reset();
         toast({
           title: "Account created",
           description: "Your account has been successfully created. Please log In."

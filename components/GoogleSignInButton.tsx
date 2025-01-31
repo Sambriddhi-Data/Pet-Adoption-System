@@ -11,13 +11,12 @@ interface GoogleSignInButtonProps {
 const GoogleSignInButton: FC<GoogleSignInButtonProps> = ({ children }) => {
     const loginWithGoogle = async () => {
         try {
-          toast({ title: "Redirecting to Google..." }); // Notify user (optional)
+          toast({ title: "Redirecting to Google..." }); 
           
-          // Adjust authClient configuration to include prompt parameter
           await signIn.social(
             {
-              provider: "google", // Specify the provider as "google"
-              callbackURL: "/", // Redirect after login
+              provider: "google", 
+              callbackURL:"/",
               errorCallbackURL:"/api/auth/error",
             },
             {
@@ -25,7 +24,6 @@ const GoogleSignInButton: FC<GoogleSignInButtonProps> = ({ children }) => {
                 toast({ title: "Processing request..." });
               },
               onSuccess: () => {
-                toast({ title: "Redirecting to homepage!" });
               },
               onError: (ctx) => {
                 toast({ title: "Cannot find user!",

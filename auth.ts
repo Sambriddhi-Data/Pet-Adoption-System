@@ -67,6 +67,6 @@ export const auth = betterAuth({
     plugins: [
         admin() 
     ]
-} satisfies BetterAuthOptions);
+}satisfies BetterAuthOptions);
 
 export type Session = typeof auth.$Infer.Session

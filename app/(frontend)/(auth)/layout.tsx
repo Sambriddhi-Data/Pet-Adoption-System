@@ -1,6 +1,10 @@
 import { Logo } from "@/components/Logo";
+import { Metadata } from "next";
 import Link from "next/link";
 
+export const metadata: Metadata = {
+  title:"Register",
+}
 export default function AuthLayout({
   children,
 }: Readonly<{

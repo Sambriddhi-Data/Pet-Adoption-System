@@ -19,14 +19,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-const frameworks = [
+const species = [
   {
-    value: "next.js",
-    label: "Next.js",
+    value: "dog",
+    label: "dog",
   },
   {
-    value: "sveltekit",
-    label: "SvelteKit",
+    value: "cat",
+    label: "cat",
   },
   {
     value: "nuxt.js",
@@ -56,18 +56,18 @@ export function ComboboxDemo() {
           className="w-[200px] justify-between"
         >
           {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select framework..."}
+            ? species.find((framework) => framework.value === value)?.label
+            : "Select species..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="Search species..." />
           <CommandList>
             <CommandEmpty>No framework found.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => (
+              {species.map((framework) => (
                 <CommandItem
                   key={framework.value}
                   value={framework.value}

@@ -15,14 +15,19 @@ datasource db {
 
 enum Role {
   admin
-  CUSTOMER
-  SHELTER_MANAGER
+  customer
+  shelter_manager
 }
 
 enum Sex {
-  MALE
-  FEMALE
-  UNKNOWN
+  male
+  female
+  unknown
+}
+
+enum Status {
+  available
+  adopted
 }
 
 model User {
@@ -30,7 +35,7 @@ model User {
   email          String    @unique
   name           String
   emailVerified  Boolean   @default(true)
-  role           Role      @default(CUSTOMER)
+  role           Role      @default(customer)
   createdAt      DateTime
   updatedAt      DateTime
   phoneNumber    String?   @unique
@@ -39,6 +44,11 @@ model User {
   sessions       Session[]
   accounts       Account[]
   shelter        Shelter?
+
+  image      String?
+  banned     Boolean?
+  banReason  String?
+  banExpires DateTime?
 
   @@map("user")
 }
@@ -53,6 +63,8 @@ model Session {
   userAgent String?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  impersonatedBy String?
 
   @@unique([token])
   @@map("session")
@@ -73,23 +85,29 @@ model Account {
   createdAt             DateTime
   updatedAt             DateTime
 
+  scope String?
+
   @@map("account")
 }
 
 model Shelter {
-  id     Int    @id @default(autoincrement())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     Int      @id @default(autoincrement())
+  userId String   @unique
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  animal Animals[]
 
   @@map("shelter")
 }
 
 model Animals {
-  id          Int    @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   species     String
-  sex         Sex    @default(UNKNOWN)
-  description String @db.Text
+  sex         Sex      @default(unknown)
+  status      Status   @default(available)
+  description String   @db.Text
+  shelterId   String   
+  shelter     Shelter? @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
 
   @@map("animals")
 }

@@ -1,5 +1,7 @@
 'use client'
 
+import AdminNavbar from "../_components/admin/admin-navbar";
+
 export default function AdminLayout({
   children,
 }: Readonly<{
@@ -8,6 +10,7 @@ export default function AdminLayout({
   return (
     <main >
       <div>
+        <AdminNavbar/>
         {children}
       </div>
     </main>

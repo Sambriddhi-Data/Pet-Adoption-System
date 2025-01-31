@@ -18,7 +18,7 @@ export default function UsersTable() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<Error | null>(null);
 
-	// Function to handle user verification
+	// Function to handle user shelter verification
 	async function verifyUser(userId: string) {
 		try {
 			const response = await fetch("/api/shelters", {
@@ -45,6 +45,38 @@ export default function UsersTable() {
 		} catch (err) {
 			alert("An error occurred while verifying the user.");
 		}
+	}
+
+	// Function to add the user as a shelter 
+
+	async function addShelter(userId: string) {
+		try {
+			const response = await fetch("/api/addShelter", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ userId }),
+			});
+
+			const data = await response.json();
+
+			if (data.success) {
+				alert("Shelter added successfully!");
+			} else {
+				alert(data.message || "Failed to add shelter.");
+			}
+		} catch (err) {
+			alert("An error occurred while adding the shelter.");
+		}
+	}
+
+	async function handleVerifyAndAddShelter(userId: string) {
+		// First, verify the user
+		await verifyUser(userId);
+
+		// Then, add the shelter
+		await addShelter(userId);
 	}
 
 	useEffect(() => {
@@ -111,7 +143,15 @@ export default function UsersTable() {
 							{new Date(user.createdAt).toLocaleDateString()}
 						</TableCell>
 						<TableCell>
-							<Button onClick={() => verifyUser(user.id)}>Verify</Button>
+							{user.role === "shelter_manager" ? (
+								user.isVerifiedUser === false ? (
+									<Button onClick={() => handleVerifyAndAddShelter(user.id)}>Verify</Button>
+								) :
+									<Button>Verified</Button>
+
+							) :
+								<Button className="bg-secondary hover:bg-secondary">Verify</Button>
+							}
 						</TableCell>
 					</TableRow>
 				))}

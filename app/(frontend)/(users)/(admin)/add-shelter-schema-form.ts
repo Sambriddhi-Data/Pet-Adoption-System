@@ -34,6 +34,6 @@ export const baseSchema = z.object({
         .trim()
         .min(8, { message: "Passwords did not match" }),
     role: z
-    .enum(["admin","CUSTOMER","SHELTER_MANAGER"])
+    .enum(["admin","customer","shelter_manager"])
     
 })

@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(validation.error.errors, { status: 400 });
 
     const newPet = await prisma.animals.create({
-        data: { name: body.name, species: body.species, description: body.description }
+        data: { name: body.name, species: body.species, status:body.status, description: body.description, shelterId: body.shelterId }
     });
 
     return NextResponse.json(newPet, { status: 201 });

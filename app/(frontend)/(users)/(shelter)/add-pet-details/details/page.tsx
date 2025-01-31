@@ -1,17 +1,17 @@
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
-import AddPet from "../../_components/shelters/add-pet-form";
+import AddPet from "../../../_components/shelters/add-pet-form";
 
-export default function AddPetPage() {
+export default function AddPetDetails() {
     return (
         <main className="p-6 space-y-4 flex flex-col pace-y-4">
             <div>
-                <Card className="flex items-center p-6 gap-5 ">
+                <Card className="flex items-center p-4 gap-5">
                     <div>
-                        <Link href="/add-pet-details">Details</Link>
+                        <Link href="/add-pet-details/details">Details</Link>
                     </div>
                     <div>
-                        <Link href="/add-pet-images">Images</Link>
+                        <Link href="/add-pet-details/images">Images</Link>
                     </div>
                 </Card>
             </div>
