@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { Session } from "./auth";
 
 const authRoutes = ["/sign-in", "/sign-up", "/shelter-sign-up"];
-const publicRoutes = ["/", "/adopt-pet", "/about-us","/rehome-pet","/customer-profile","/blog","/shelter-landing-page"];
+const publicRoutes = ["/", "/adopt-pet", "/about-us", "/rehome-pet", "/customer-profile", "/blog"];
 const shelterRoutes = [
   "/shelter-homepage",
   "/pets/[petId]",
@@ -12,19 +12,21 @@ const shelterRoutes = [
   "/adoption-requests",
   "/add-pet-details/details",
   "/add-pet-details/images",
-
 ];
+const landingPageRoute = ["/shelter-landing-page"];
+
 const petIdPattern = /^\/pets\/[\w-]+$/; // Matches /pets/{dynamicId}
 const adminRoutes = ["/admin-homepage"]; // Add admin routes here
 
 export default async function authMiddleware(request: NextRequest) {
   const pathName = request.nextUrl.pathname;
-  
+
   // Check which type of route is being accessed
   const isAuthRoute = authRoutes.includes(pathName);
   const isPublicRoute = publicRoutes.includes(pathName) || petIdPattern.test(pathName);
   const isShelterRoute = shelterRoutes.includes(pathName);
   const isAdminRoute = adminRoutes.includes(pathName);
+  const isLandingPageRoute = landingPageRoute.includes(pathName);
 
   // Get session
   const { data: session } = await betterFetch<Session>(
@@ -52,19 +54,27 @@ export default async function authMiddleware(request: NextRequest) {
 
   // Handle shelter manager access
   if (userRole === "shelter_manager") {
-    // Check if shelter manager is verified
-    if (!session.user?.isVerifiedUser && isShelterRoute) {
+    // Check if shelter manager is unverified
+    if (!session.user?.isVerifiedUser) {
+      // Allow access to the landing page and public routes
+      if (isLandingPageRoute || isPublicRoute) {
+        return NextResponse.next();
+      }
+      // Redirect unverified shelter managers to the landing page
       return NextResponse.redirect(new URL("/shelter-landing-page", request.url));
     }
+
+    // If verified, allow access to shelter routes
+    if (isShelterRoute) {
+      return NextResponse.next();
+    }
+
     // Prevent access to auth routes
     if (isAuthRoute) {
       return NextResponse.redirect(new URL("/shelter-homepage", request.url));
     }
-    // Allow access to shelter routes
-    if (isShelterRoute) {
-      return NextResponse.next();
-    }
   }
+
 
   // Handle customer access
   if (userRole === "customer") {
@@ -82,9 +92,8 @@ export default async function authMiddleware(request: NextRequest) {
     }
   }
 
-  // Handle admin access (when you implement it)
   if (userRole === "admin") {
-    if (isAuthRoute) {
+    if (isAuthRoute || isPublicRoute) {
       return NextResponse.redirect(new URL("/admin-homepage", request.url));
     }
     if (isAdminRoute) {

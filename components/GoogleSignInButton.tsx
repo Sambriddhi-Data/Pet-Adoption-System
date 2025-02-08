@@ -3,12 +3,14 @@ import { FC, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/auth-client"; 
 import { toast } from "@/hooks/use-toast"; 
+import { useRouter } from "next/navigation";
 
 interface GoogleSignInButtonProps {
   children: ReactNode;
 }
 
 const GoogleSignInButton: FC<GoogleSignInButtonProps> = ({ children }) => {
+  const router = useRouter();
     const loginWithGoogle = async () => {
         try {
           toast({ title: "Redirecting to Google..." }); 
@@ -16,7 +18,6 @@ const GoogleSignInButton: FC<GoogleSignInButtonProps> = ({ children }) => {
           await signIn.social(
             {
               provider: "google", 
-              callbackURL:"/",
               errorCallbackURL:"/api/auth/error",
             },
             {
@@ -26,8 +27,10 @@ const GoogleSignInButton: FC<GoogleSignInButtonProps> = ({ children }) => {
               onSuccess: () => {
               },
               onError: (ctx) => {
-                toast({ title: "Cannot find user!",
-                  description: "Please Sign Up First." });
+                if (ctx.error?.message === "unable_to_create_user") {
+                  router.push("/no-user"); // ✅ Redirect to specific page
+                }
+                
               },
             }
           );

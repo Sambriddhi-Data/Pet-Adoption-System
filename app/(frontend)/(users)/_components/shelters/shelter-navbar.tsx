@@ -40,7 +40,7 @@ export default function ShelterNavbar() {
             <div className='flex items-center gap-2 text-lg'>
             <h1 className='font-fruktur'>{user?.name}</h1>
             <CldImage
-              src="https://res.cloudinary.com/dhdhgmjzg/image/upload/v1737357663/Screenshot_2025-01-20_at_1.04.36_PM_cz8xey.png" // Use this sample image or upload your own via the Media Explorer
+              src="https://res.cloudinary.com/dasa1mcpz/image/upload/v1739022787/FurEverFriendsPetImages/kracd2oevfyabh2scuqk.png" // Use this sample image or upload your own via the Media Explorer
               width="26" // Transform the image: auto-crop to square aspect_ratio
               height="26"
               alt="Sample"

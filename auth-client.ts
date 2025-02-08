@@ -4,13 +4,13 @@ import { auth } from "./auth";
 import { adminClient } from "better-auth/client/plugins";
 
 
-const authClient = createAuthClient({
+export const authClient = createAuthClient({
     baseURL: "http://localhost:3000", // the base url of your server
     plugins: [
         inferAdditionalFields<typeof auth>(),
         adminClient(),
     ], 
-})
+});
 // const signIn = async () => {
 //     const data = await authClient.signIn.social({
 //         provider: "google"

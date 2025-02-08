@@ -15,7 +15,8 @@ import { toast } from "@/hooks/use-toast";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react";
+import Image from 'next/image';
 import { signIn, useSession } from "@/auth-client";
 
 export const SignIn =() => {
@@ -36,7 +37,7 @@ export const SignIn =() => {
             title: "Your shelter has not been verified yet!",
             description: "Please wait for the admin to verify your shelter credentials."
           });
-          router.push("/helter-landing-page");
+          router.push("/shelter-landing-page");
           return;
         }
       }
@@ -157,7 +158,12 @@ export const SignIn =() => {
           </form>
           <h3 className="flex items-center justify-center ">----------- OR -----------</h3>
         </Form>
-        <GoogleSignInButton>Sign in with Google</GoogleSignInButton>
+        <GoogleSignInButton><Image
+                    src= '/images/google_g_icon.svg'
+                    alt = 'paw'
+                    width = {30}
+                    height = {30}
+                  />Sign in with Google</GoogleSignInButton>
       </CardContent>
       <CardFooter className="flex justify-center">
         <p className="text-sm text-muted-foreground">

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
-import z from "zod";
 import { addPetSchema } from "@/app/(frontend)/(users)/(shelter)/add-pet-form";
 
 export async function POST(req: NextRequest) {
@@ -10,7 +9,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(validation.error.errors, { status: 400 });
 
     const newPet = await prisma.animals.create({
-        data: { name: body.name, species: body.species, status:body.status, description: body.description, shelterId: body.shelterId }
+        data: { name: body.name, species: body.species, age:body.age , status:body.status, description: body.description, shelterId: body.shelterId }
     });
 
     return NextResponse.json(newPet, { status: 201 });

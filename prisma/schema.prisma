@@ -106,6 +106,7 @@ model Animals {
   sex         Sex      @default(unknown)
   status      Status   @default(available)
   description String   @db.Text
+  age         String
   shelterId   String   
   shelter     Shelter? @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
 

@@ -41,6 +41,10 @@ export const addPetSchema = z.object({
 
     //Health details
 
+    
+
+    
+
 
 
 

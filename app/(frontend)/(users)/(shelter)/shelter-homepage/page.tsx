@@ -8,6 +8,12 @@ import InfoCard from '../../_components/shelters/info-card';
 import AddPetButton from '../../_components/shelters/add-pet-button';
 import { getpetcount } from '@/actions/getpetcount';
 import { toast } from '@/hooks/use-toast';
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Shelter Homepage",
+  description: "Shelter Management System",
+};
 
 export default async function ShelterHomepage() {
   const session = await auth.api.getSession({
@@ -38,6 +44,8 @@ export default async function ShelterHomepage() {
   const availableCount = availableCountResponse?.count || 0;
   const adoptedCount = adoptedCountResponse?.count || 0;
 
+  const response = await fetch(`http://localhost:3000/api/getPet?shelterId=${user.id}`);
+  const pets = await response.json();
 
   return (
     <div className='mt-2 text-center'>
@@ -58,8 +66,20 @@ export default async function ShelterHomepage() {
         </div>
         <AddPetButton />
       </div>
-      <div>
-        <PetCard />
+      <div className="grid grid-cols-3 gap-4 mt-6">
+        {pets.length > 0 ? (
+          pets.map((pet: any) => (
+            <PetCard
+              key={pet.id}
+              name={pet.name}
+              age={pet.age}
+              status={pet.status}
+              address={pet.address}
+            />
+          ))
+        ) : (
+          <p>No available pets at the moment.</p>
+        )}
       </div>
     </div>
   );

@@ -51,7 +51,7 @@ export default function AddPet() {
         console.log("submit", values);
         try {
             const { data } =
-                await axios.post('/api/animals', values);
+                await axios.post('/api/addPet', values);
             form.reset()
             toast({
                 title: "Pet added successfully!",
