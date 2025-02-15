@@ -84,6 +84,12 @@ export default function SignUp() {
           Sign up to search for your furever friend.
         </CardDescription>
       </CardHeader>
+      {/* 
+        <div className= "p-2 px-6 flex justify-between items-center bg-slate-200 opacity-80 rounded-sm">
+        <CardDescription>Are you a shelter manager? <br/>Please use this link:</CardDescription>
+        <Link href='/shelter-sign-up' className='text-primary font-bold justify-end hover:underline'> Shelter SignUp</Link>
+      </div>
+       */}
       <CardContent>
         <Link href='/shelter-sign-up' className='text-primary flex justify-end hover:underline'>
           Shelter SignUp

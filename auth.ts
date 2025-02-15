@@ -1,33 +1,53 @@
 import { betterAuth, BetterAuthOptions, undefined } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { createAuthMiddleware, APIError } from "better-auth/api";
+
 import prisma from "./prisma/client";
-import { admin } from "better-auth/plugins"
-import { sendEmail } from "./actions/email";
+import { admin, phoneNumber } from "better-auth/plugins"
 
 export const auth = betterAuth({
+
     user: {
         additionalFields: {
             role: {
                 type: 'string',
             },
-            location:{
+            location: {
                 type: 'string',
                 required: false,
             },
             phoneNumber: {
                 type: 'string',
             },
-            isVerifiedUser:{
+            isVerifiedUser: {
                 type: 'boolean',
             }
         }
     },
+    hooks: {
+        before: createAuthMiddleware(async (ctx) => {
+            if (ctx.path !== "/sign-up/email") {
+                return;
+            }
+            const phoneNumber = ctx.body?.phoneNumber
+            const existingUser = await prisma.user.findUnique({
+                where: { phoneNumber },
+            });
+            if (existingUser) {
+                // Throw error if phone number already exists
+                throw new APIError("BAD_REQUEST", {
+                    message: "Phone number is already in use",
+                    path: ["phoneNumber"], 
+                });
+            }
+
+        }),
+    },
 
     account: {
         accountLinking: {
-            enabled: true, 
+            enabled: true,
             trustedProviders: ["google"]
-
         }
     },
 
@@ -35,12 +55,15 @@ export const auth = betterAuth({
         provider: "postgresql"
     }),
 
-    // session:{
-    //     cookieCache:{
-    //         enabled: true,
-    //         maxAge: 5 * 60,
-    //     }
-    // },
+    plugins: [
+        admin({
+            defaultRole: false
+        })
+    ],
+    session: {
+        expiresIn: 60 * 60 * 24 * 7,
+        updateAge: 60 * 60 * 24
+    },
 
     emailAndPassword: {
         enabled: true,
@@ -55,10 +78,11 @@ export const auth = betterAuth({
         // }
     },
     socialProviders: {
-        google: { 
-            clientId: process.env.GOOGLE_CLIENT_ID as string, 
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string, 
-        }, 
+        google: {
+            clientId: process.env.GOOGLE_CLIENT_ID as string,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+        },
+
     },
     // emailVerification: {
     //     sendOnSignUp: true,
@@ -73,9 +97,7 @@ export const auth = betterAuth({
     //     }
 
     // },
-    plugins: [
-        admin() 
-    ]
-}satisfies BetterAuthOptions);
+} satisfies BetterAuthOptions);
 
 export type Session = typeof auth.$Infer.Session
+export type User = typeof auth.$Infer.Session.user;

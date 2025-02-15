@@ -33,7 +33,7 @@ export default function AdminNavbar() {
   const user = session?.data?.user;
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState<boolean>();
   return (
-    <div className="border-b px-4">
+    <div className="border-b px-16">
       <div className="flex items-center justify-between mx-auto p-4 h-16">
         <div>
           <Link href={"/"}>

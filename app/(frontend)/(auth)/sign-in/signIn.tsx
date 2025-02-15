@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
@@ -10,7 +10,7 @@ import { z } from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import LoadingButton from "@/components/loading-button";
-import { signInFormSchema } from "@/app/(frontend)/(auth)/auth-schema";
+import { signInFormSchema, TSignInForm } from "@/app/(frontend)/(auth)/auth-schema";
 import { toast } from "@/hooks/use-toast";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 import { useRouter } from "next/navigation";
@@ -19,14 +19,13 @@ import { Eye, EyeOff } from "lucide-react";
 import Image from 'next/image';
 import { signIn, useSession } from "@/auth-client";
 
-export const SignIn =() => {
+export const SignIn = () => {
 
-  const session = useSession();
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  type TSignInForm = z.infer<typeof signInFormSchema>
+  const session = useSession();
+  const role = session?.data?.user?.role;
 
   useEffect(() => {
     if (session?.data?.user?.role) {
@@ -99,9 +98,6 @@ export const SignIn =() => {
       }
     );
     setPending(false);
-    // console.log("Session", session);
-    if (session?.data?.user?.role) {
-    }
   }
 
   return (
@@ -159,11 +155,11 @@ export const SignIn =() => {
           <h3 className="flex items-center justify-center ">----------- OR -----------</h3>
         </Form>
         <GoogleSignInButton><Image
-                    src= '/images/google_g_icon.svg'
-                    alt = 'paw'
-                    width = {30}
-                    height = {30}
-                  />Sign in with Google</GoogleSignInButton>
+          src='/images/google_g_icon.svg'
+          alt='paw'
+          width={30}
+          height={30}
+        />Sign in with Google</GoogleSignInButton>
       </CardContent>
       <CardFooter className="flex justify-center">
         <p className="text-sm text-muted-foreground">

@@ -85,7 +85,10 @@ export default function UsersTable() {
 				setIsLoading(true);
 
 				const response = await admin.listUsers({
-					query: { limit: 10 },
+					query: {
+						limit: 10,
+						sortBy: "createdAt",
+					},
 				});
 				if (response?.data) {
 					setUsers(response.data.users as User[]);
@@ -147,10 +150,10 @@ export default function UsersTable() {
 								user.isVerifiedUser === false ? (
 									<Button onClick={() => handleVerifyAndAddShelter(user.id)}>Verify</Button>
 								) :
-									<Button>Verified</Button>
+									<p className="pl-3">Verified</p>
 
 							) :
-								<Button className="bg-secondary hover:bg-secondary">Verify</Button>
+								<p className="text-neutral-500">Unavailable</p>
 							}
 						</TableCell>
 					</TableRow>

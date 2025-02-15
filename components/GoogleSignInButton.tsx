@@ -1,51 +1,65 @@
-'use client'
+"use client";
 import { FC, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { signIn } from "@/auth-client"; 
-import { toast } from "@/hooks/use-toast"; 
+import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { signIn } from "@/auth-client";
 
 interface GoogleSignInButtonProps {
   children: ReactNode;
 }
 
+// Google Sign-In Function
+export const loginWithGoogle = async () => {
+  try {
+    const data = await signIn.social({
+      provider: "google",
+      callbackURL: "/?postAuth=true",
+      newUserCallbackURL:"/new-user"
+    });
+
+    console.log("Google Sign-In Response:", data);
+
+    if (data?.error) {
+      throw new Error;
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Google Sign-In Error:", error);
+    throw error;
+  }
+};
+
 const GoogleSignInButton: FC<GoogleSignInButtonProps> = ({ children }) => {
   const router = useRouter();
-    const loginWithGoogle = async () => {
-        try {
-          toast({ title: "Redirecting to Google..." }); 
-          
-          await signIn.social(
-            {
-              provider: "google", 
-              errorCallbackURL:"/api/auth/error",
-            },
-            {
-              onRequest: () => {
-                toast({ title: "Processing request..." });
-              },
-              onSuccess: () => {
-              },
-              onError: (ctx) => {
-                if (ctx.error?.message === "unable_to_create_user") {
-                  router.push("/no-user"); // ✅ Redirect to specific page
-                }
-                
-              },
-            }
-          );
-        } catch (error) {
-          console.error("Google Sign-In Error:", error);
-          toast({
-            title: "Sign-In Failed",
-            description: "Unable to sign in with Google.",
-            variant: "destructive",
-          });
-        }
-      };      
+
+  const handleGoogleSignIn = async () => {
+    try {
+      toast({ title: "Redirecting to Google..." });
+
+      const result = await loginWithGoogle(); 
+
+      if (result?.error) {
+        throw new Error(result.error);
+      }      
+    } catch (error: any) {
+      console.error("Google Sign-In Error:", error);
+
+      if (error.message === "unable_to_create_user") {
+        router.push("/no-user"); 
+      } else {
+        toast({
+          title: "Sign-In Failed",
+          description: "Unable to sign in with Google.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
 
   return (
-    <Button onClick={loginWithGoogle} className="w-full">
+    <Button onClick={handleGoogleSignIn} className="w-full">
       {children}
     </Button>
   );

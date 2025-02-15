@@ -52,6 +52,7 @@ export const signInFormSchema = baseSchema.pick({
     email: true,
     password: true,
 })
+export type TSignInForm = z.infer<typeof signInFormSchema>
 
 export const signUpFormSchema = baseSchema.pick({
     name: true,

@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { Session } from "./auth";
 
 const authRoutes = ["/sign-in", "/sign-up", "/shelter-sign-up"];
-const publicRoutes = ["/", "/adopt-pet", "/about-us", "/rehome-pet", "/customer-profile", "/blog"];
+const publicRoutes = ["/", "/adopt-pet", "/about-us", "/rehome-pet", "/customer-profile", "/blog", "/new-user"];
 const shelterRoutes = [
   "/shelter-homepage",
   "/pets/[petId]",
@@ -20,6 +20,8 @@ const adminRoutes = ["/admin-homepage"]; // Add admin routes here
 
 export default async function authMiddleware(request: NextRequest) {
   const pathName = request.nextUrl.pathname;
+  const searchParams = request.nextUrl.searchParams;
+  const isPostAuth = searchParams.get('postAuth') === 'true';
 
   // Check which type of route is being accessed
   const isAuthRoute = authRoutes.includes(pathName);
@@ -52,6 +54,25 @@ export default async function authMiddleware(request: NextRequest) {
   // If user is logged in
   const userRole = session.user?.role;
 
+  // Handle post-authentication redirects
+  if (isPostAuth) {
+    switch (userRole) {
+      case "customer":
+        return NextResponse.redirect(new URL("/", request.url));
+      case "shelter_manager":
+        return NextResponse.redirect(
+          new URL(
+            session.user?.isVerifiedUser ? "/shelter-homepage" : "/shelter-landing-page",
+            request.url
+          )
+        );
+      case "admin":
+        return NextResponse.redirect(new URL("/admin-homepage", request.url));
+      default:
+        return NextResponse.redirect(new URL("/new-user", request.url));
+    }
+  }
+
   // Handle shelter manager access
   if (userRole === "shelter_manager") {
     // Check if shelter manager is unverified
@@ -73,8 +94,12 @@ export default async function authMiddleware(request: NextRequest) {
     if (isAuthRoute) {
       return NextResponse.redirect(new URL("/shelter-homepage", request.url));
     }
-  }
 
+    // Prevent access to admin routes
+    if (isAdminRoute) {
+      return NextResponse.redirect(new URL("/shelter-homepage", request.url));
+    }
+  }
 
   // Handle customer access
   if (userRole === "customer") {
@@ -93,10 +118,10 @@ export default async function authMiddleware(request: NextRequest) {
   }
 
   if (userRole === "admin") {
-    if (isAuthRoute || isPublicRoute) {
+    if (isAuthRoute) {
       return NextResponse.redirect(new URL("/admin-homepage", request.url));
     }
-    if (isAdminRoute) {
+    if (isAdminRoute || isPublicRoute) {
       return NextResponse.next();
     }
   }

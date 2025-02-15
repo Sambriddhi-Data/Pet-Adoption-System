@@ -7,7 +7,7 @@ import { CldImage } from 'next-cloudinary';
 export function PetCard({name = "Unknown", age = "Unknown", status = "Unknown", address = "Unknown"}) {
   return (
     <div className='mt-10'>
-        <Card className="flex-col justify-center w-full max-w-md bg-white bg-opacity-85 shadow-lg p-4 ">
+        <Card className="flex-col justify-center max-w-md min-w-28 bg-white bg-opacity-85 shadow-lg p-4 ">
           <CardContent className="flex justify-center">
             <CldImage
               src="https://res.cloudinary.com/dasa1mcpz/image/upload/v1739022787/FurEverFriendsPetImages/kracd2oevfyabh2scuqk.png" // Use this sample image or upload your own via the Media Explorer

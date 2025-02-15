@@ -27,6 +27,7 @@ enum Sex {
 
 enum Status {
   available
+  processing
   adopted
 }
 
@@ -34,18 +35,19 @@ model User {
   id             String    @id
   email          String    @unique
   name           String
-  emailVerified  Boolean   @default(true)
+  emailVerified  Boolean   @default(false)
   role           Role      @default(customer)
   createdAt      DateTime
   updatedAt      DateTime
   phoneNumber    String?   @unique
   location       String?
-  isVerifiedUser Boolean   @default(true)
+  isVerifiedUser Boolean   @default(false)
   sessions       Session[]
   accounts       Account[]
   shelter        Shelter?
 
-  image      String?
+  image String?
+
   banned     Boolean?
   banReason  String?
   banExpires DateTime?
@@ -91,9 +93,10 @@ model Account {
 }
 
 model Shelter {
-  id     Int      @id @default(autoincrement())
-  userId String   @unique
-  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     Int       @id @default(autoincrement())
+  userId String    @unique
+  
+  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   animal Animals[]
 
   @@map("shelter")
@@ -103,11 +106,15 @@ model Animals {
   id          Int      @id @default(autoincrement())
   name        String
   species     String
+  size        String?
   sex         Sex      @default(unknown)
   status      Status   @default(available)
   description String   @db.Text
   age         String
-  shelterId   String   
+  dominantBreed String?
+  arrivedAtShelter String?
+  shelterId   String
+
   shelter     Shelter? @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
 
   @@map("animals")

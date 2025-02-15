@@ -46,12 +46,12 @@ export default function ShelterSignUp() {
     console.log('Form values:', values);
     console.log('Location value:', location);
     const { data, error } = await signUp.email({
-      email:email,
-      password:password,
-      name:name,
-      role:role,
-      location:location,
-      phoneNumber:phoneNumber,
+      email: email,
+      password: password,
+      name: name,
+      role: role,
+      location: location,
+      phoneNumber: phoneNumber,
       isVerifiedUser: false,
     }, {
       onRequest: () => {
@@ -84,6 +84,14 @@ export default function ShelterSignUp() {
           Sign up to list shelter animals.
         </CardDescription>
       </CardHeader>
+      {/* 
+        <div className= "p-2 px-6 flex justify-between items-center bg-slate-200 opacity-80 rounded-sm">
+        <CardDescription>Are you a normal user? <br/>Please use this link:</CardDescription>
+        <Link href='/sign-up' className='text-primary justify-end last: hover:underline'>
+          Customer SignUp
+        </Link>
+      </div>
+       */}
       <CardContent>
         <Link href='/sign-up' className='text-primary flex justify-end last: hover:underline'>
           Customer SignUp
