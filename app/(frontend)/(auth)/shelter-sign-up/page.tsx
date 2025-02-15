@@ -21,6 +21,7 @@ export default function ShelterSignUp() {
 
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showCPassword, setShowCPassword] = useState(false);
 
   type TShelterSignUpForm = z.infer<typeof formSchema>
 
@@ -34,22 +35,20 @@ export default function ShelterSignUp() {
       email: "",
       password: "",
       confirmpassword: "",
-      role: "shelter_manager",
+      user_role: "shelter_manager",
     },
   })
 
-  console.log(form.getValues())
-
   // a submit handler.
   async function onSubmit(values: TShelterSignUpForm) {
-    const { name, email, password, role, location, phoneNumber } = values;
+    const { name, email, password, user_role, location, phoneNumber } = values;
     console.log('Form values:', values);
-    console.log('Location value:', location);
+    
     const { data, error } = await signUp.email({
       email: email,
       password: password,
       name: name,
-      role: role,
+      user_role: user_role,
       location: location,
       phoneNumber: phoneNumber,
       isVerifiedUser: false,
@@ -84,14 +83,7 @@ export default function ShelterSignUp() {
           Sign up to list shelter animals.
         </CardDescription>
       </CardHeader>
-      {/* 
-        <div className= "p-2 px-6 flex justify-between items-center bg-slate-200 opacity-80 rounded-sm">
-        <CardDescription>Are you a normal user? <br/>Please use this link:</CardDescription>
-        <Link href='/sign-up' className='text-primary justify-end last: hover:underline'>
-          Customer SignUp
-        </Link>
-      </div>
-       */}
+
       <CardContent>
         <Link href='/sign-up' className='text-primary flex justify-end last: hover:underline'>
           Customer SignUp
@@ -186,9 +178,21 @@ export default function ShelterSignUp() {
                 <FormItem>
                   <FormLabel>Confirm Password<span style={{ color: 'red' }}> *</span></FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Re-enter your password" {...field} />
+                    <div className="relative">
+                      <Input
+                        type={showCPassword ? "text" : "password"}
+                        placeholder="Re-enter your password"
+                        {...field}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowCPassword(!showCPassword)}
+                        className="absolute right-2 top-2"
+                      >
+                        {showCPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    </div>
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />

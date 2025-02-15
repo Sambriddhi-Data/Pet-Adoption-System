@@ -3,24 +3,26 @@ import { LogoProps } from '../app/(frontend)/(auth)/type';
 import { PawPrint } from 'lucide-react';
 import Image from 'next/image';
 
-export const Logo: React.FC<LogoProps> = ({className = '', color=''}) => {
+export const Logo: React.FC<LogoProps> = ({ className = '', color = '' }) => {
   return (
     <div className={`flex gap-3 items-center ${className}`}>
       {
-        color==="black"?(
+        color === "black" ? (
           <Image
-            src= '/images/paw-black.svg'
-            alt = 'paw'
-            width = {50}
-            height = {50}
+            src='/images/paw-black.svg'
+            alt='paw'
+            width={0}
+            height={0} // Auto height
+            style={{ height: "auto", width:"auto"}} // Ensures proper aspect ratio
           />
 
-        ):
-        <Image
-            src= '/images/paw.svg'
-            alt = 'paw'
-            width = {50}
-            height = {50}
+        ) :
+          <Image
+            src='/images/paw.svg'
+            alt='paw'
+            width={0}
+            height={0} // Auto height
+            style={{ height: "auto", width:"auto"}} // Ensures proper aspect ratio
           />
       }
       <div className={`flex flex-col items-center self-stretch my-auto w-[99px] text-${color}`}>

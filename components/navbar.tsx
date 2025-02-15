@@ -21,9 +21,9 @@ export default function Navbar() {
 
     let items = [{ label: "Profile", path: "/customer-profile" }];
 
-    if (user.role === "shelter_manager") {
+    if (user.user_role === "shelter_manager") {
       items.unshift({ label: "Shelter Controls", path: "/shelter-homepage" });
-    } else if (user.role === "admin") {
+    } else if (user.user_role === "admin") {
       items.unshift({ label: "Admin Controls", path: "/admin-homepage" });
     }
 

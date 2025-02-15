@@ -35,7 +35,7 @@ export const baseSchema = z.object({
         .trim()
         .min(8, { message: "Passwords did not match" }),
         
-    role: z
+    user_role: z
     .enum(["admin","customer","shelter_manager"])
     
 })
@@ -60,7 +60,7 @@ export const signUpFormSchema = baseSchema.pick({
     phoneNumber: true,
     password: true,
     confirmpassword: true,
-    role: true,
+    user_role: true,
     
 }).refine(
     (data) => data.password === data.confirmpassword,

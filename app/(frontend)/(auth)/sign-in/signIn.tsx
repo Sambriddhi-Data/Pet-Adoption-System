@@ -25,12 +25,12 @@ export const SignIn = () => {
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const session = useSession();
-  const role = session?.data?.user?.role;
+  const role = session?.data?.user?.user_role;
 
   useEffect(() => {
     if (session?.data?.user?.role) {
       // Handle shelter manager verification check
-      if (session.data.user.role === "shelter_manager") {
+      if (role === "shelter_manager") {
         if (!session.data.user.isVerifiedUser) {
           toast({
             title: "Your shelter has not been verified yet!",
@@ -43,7 +43,7 @@ export const SignIn = () => {
 
       // Handle successful login routing and toast for all verified users
       toast({ title: "Sign In Successful..." });
-      switch (session.data.user.role) {
+      switch (role) {
         case "customer":
           router.push("/");
           break;

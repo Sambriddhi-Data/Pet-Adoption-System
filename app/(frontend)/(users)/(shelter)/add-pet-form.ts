@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const addPetSchema = z.object({
+export const petBasicDetailsSchema = z.object({
     // Basic details
     name: z
         .string()
@@ -12,10 +12,9 @@ export const addPetSchema = z.object({
         .string()
         .min(3, { message: "Species name must be  atleast 3 characters long" }),
 
-    gender: z
-        .string(),
+    sex: z.enum(['male', 'female', 'unknown']),
 
-    status: z.enum(['available', 'adopted']),
+    status: z.enum(['available', 'processing', 'adopted']),
 
     description: z
         .string()
@@ -24,29 +23,73 @@ export const addPetSchema = z.object({
 
     age: z
         .string()
-        .trim()
-        .optional(),
+        .trim(),
 
     dominantBreed: z
-        .string(),
+        .string() || undefined,
 
     size: z
         .string(),
 
     arrivedAtShelter: z
-        .string(),
+        .string() || undefined,
 
     shelterId: z
         .string(),
 
-    //Health details
+})
+export type TPetBasicDetailsForm = z.infer<typeof petBasicDetailsSchema>;
 
-    
+//Health details
+export const petHealthSchema = z.object({
+    vaccinationStatus: z
+        .enum(["vaccinated", "needsSecondVaccination", "notVaccinated", "unknown"])
+        .optional(),
 
-    
+    neuteredStatus: z
+        .enum(["neutered", "notNeutered", "pending"])
+        .optional(),
+
+    dateDewormed: z
+        .string()
+        .optional(),
+
+    healthIssues: z
+        .enum(["none", "blind", "deaf", "missing limbs", "medication required", "others"])
+        .optional(),
+
+    otherHealthIssues: z
+        .string()
+        .trim()
+        .optional(),
+
+    notes: z.string().optional()
+})
+export type TAddPetHealthForm = z.infer<typeof petHealthSchema>;
 
 
+//Personality details
+export const petPersonalitySchema = z.object({
+    social: z
+        .string()
+        .optional(),
 
+    personalitySummary: z
+        .string()
+        .optional(),
+
+    houseTrained: z
+        .enum(["fully", "almost", "not trained"])
 
 
 })
+export type TPetPersonalityForm = z.infer<typeof petPersonalitySchema>
+
+
+export const formDataSchema = z.object({
+    basicDetails: petBasicDetailsSchema,
+    healthDetails: petHealthSchema,
+    personalityDetails: petPersonalitySchema,
+});
+
+export type PetFormData = z.infer<typeof formDataSchema>;

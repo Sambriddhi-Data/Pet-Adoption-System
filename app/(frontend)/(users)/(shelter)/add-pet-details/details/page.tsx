@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
-import AddPet from "../../../_components/shelters/add-pet-form";
+import AddPet from "../../../_components/shelters/(form)/add-pet-form";
+import ProgressBar from "../../../_components/shelters/(form)/progress-bar";
 
 export default function AddPetDetails() {
     return (

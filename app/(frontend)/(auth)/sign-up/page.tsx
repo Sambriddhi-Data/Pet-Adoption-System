@@ -17,6 +17,7 @@ import { useState } from "react";
 import { redirect } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import LoadingButton from "@/components/loading-button";
+import { flushAllTraces } from "next/dist/trace";
 
 
 export default function SignUp() {
@@ -33,25 +34,25 @@ export default function SignUp() {
       email: "",
       password: "",
       confirmpassword: "",
-      role:"customer"
+      user_role:"customer"
     },
   })
-  console.log("Form",form.getValues())
-  console.log(form.formState.errors)
+  // console.log("Form",form.getValues())
+  // console.log(form.formState.errors)
 
   // a submit handler.
   async function onSubmit(values: TSignUpForm) {
 
     console.log("Submit",values)
 
-    const { name, email, password, role, phoneNumber } = values;
+    const { name, email, password, user_role, phoneNumber } = values;
     const { data, error } = await signUp.email({
       email,
       password,
       phoneNumber,
       name,
-      role,
-      isVerifiedUser: true,
+      user_role: user_role,
+      isVerifiedUser: false,
     }, {
       onRequest: () => {
         setPending(true);

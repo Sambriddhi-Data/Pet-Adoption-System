@@ -6,8 +6,9 @@ import RegisterButton from "@/components/registerButton";
 import { useSession } from "@/auth-client";
 import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
-import { Card, CardDescription, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import LostPetCarousel from "@/components/lost-pet-carousel";
+import FlipCardComponent from "./(frontend)/(users)/_components/flippableCards";
 
 
 export default function HomePage() {
@@ -21,7 +22,7 @@ export default function HomePage() {
     return (
         <div className="space-x-4 space-y-4">
             <Navbar />
-            <div className="p-4">
+            <div className=" space-x-4 space-y-4 p-4">
                 <Card className="p-2">
                     <CardHeader className="text-center text-3xl text-red-600 relative">
                         Lost Pet Alert
@@ -34,21 +35,25 @@ export default function HomePage() {
                         <LostPetCarousel />
                     </div>
                 </Card>
-                <h1>Welcome to Fur-Ever Friends</h1>
+                <h1 className="text-5xl text-center">Welcome to Fur-Ever Friends</h1>
 
-                <div>Adopt a pet?</div>
-                <h1>Lost a Pet?</h1>
+                <FlipCardComponent/>
                 <div>
-                    {session?.data?.user?.role ?
+                    {session?.data ?
                         (
-                            session?.data?.user?.role === "shelter_manager" ?
+                            session?.data?.user?.user_role === "shelter_manager" ?
                                 (
                                     <Button onClick={handleClick}>Shelter Controls</Button>
                                 ) :
-                                <div>___WORKING___</div>
+                                <div>
+                                    <p>Are you are a shelter manager? Register as a shelter manager and use Fur-Ever Friends as a platform
+                                        to showcase the furry friends in your care!!
+                                    </p>
+                                    <RegisterButton route="/shelter-sign-up" />
+                                </div>
                         ) : <div>
                             <p>New to the website? </p>
-                            <RegisterButton />
+                            <RegisterButton route="/sign-up" />
                         </div>
                     }
                 </div>

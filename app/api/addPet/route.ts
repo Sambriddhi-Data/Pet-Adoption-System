@@ -1,16 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
-import { addPetSchema } from "@/app/(frontend)/(users)/(shelter)/add-pet-form";
+import { formDataSchema } from "@/app/(frontend)/(users)/(shelter)/add-pet-form";
 
 export async function POST(req: NextRequest) {
-    const body = await req.json();
-    const validation = addPetSchema.safeParse(body);
-    if (!validation.success)
-        return NextResponse.json(validation.error.errors, { status: 400 });
+    try {
+        const body = await req.json();
 
-    const newPet = await prisma.animals.create({
-        data: { name: body.name, species: body.species, age:body.age , status:body.status, description: body.description, shelterId: body.shelterId }
-    });
+        // Validate the entire form data
+        const validation = formDataSchema.safeParse(body);
+        if (!validation.success) {
+            return NextResponse.json(validation.error.errors, { status: 400 });
+        }
 
-    return NextResponse.json(newPet, { status: 201 });
+        // Destructure all validated fields
+        const {
+            basicDetails: { name, species, description, age, status, sex, dominantBreed, arrivedAtShelter, shelterId, size },
+            healthDetails: { vaccinationStatus, neuteredStatus, dateDewormed, healthIssues, otherHealthIssues, notes },
+            personalityDetails: { social, personalitySummary, houseTrained }
+        } = body;
+
+        // Insert into the database
+        const newPet = await prisma.animals.create({
+            data: {
+                name,
+                species,
+                description,
+                age,
+                status,
+                sex,
+                dominantBreed,
+                arrivedAtShelter,
+                shelterId,
+                size,
+                vaccinationStatus,
+                neuteredStatus,
+                dateDewormed,
+                healthIssues,
+                otherHealthIssues,
+                notes,
+                social,
+                personalitySummary,
+                houseTrained
+            }
+        });
+
+        return NextResponse.json(newPet, { status: 201 });
+    } catch (error) {
+        console.error("Error creating pet:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
 }

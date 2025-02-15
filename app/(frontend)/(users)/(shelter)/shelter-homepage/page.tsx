@@ -1,11 +1,8 @@
-import { CldImage } from 'next-cloudinary';
-import Link from "next/link";
 import { auth } from "@/auth";
 import { headers } from "next/headers";
-import { Heart } from "lucide-react";
 import { PetCard } from '../../_components/pet-card';
 import InfoCard from '../../_components/shelters/info-card';
-import AddPetButton from '../../_components/shelters/add-pet-button';
+import AddPetButton from '../../_components/shelters/(form)/add-pet-button';
 import { getpetcount } from '@/actions/getpetcount';
 import { toast } from '@/hooks/use-toast';
 import type { Metadata } from "next";
@@ -48,7 +45,7 @@ export default async function ShelterHomepage() {
   const pets = await response.json();
 
   return (
-    <div className='mt-2 text-center'>
+    <div className='p-2 text-center w-full'>
       <div className='flex items-center gap-20'>
         <div className="w-80">
           <InfoCard
@@ -66,6 +63,7 @@ export default async function ShelterHomepage() {
         </div>
         <AddPetButton />
       </div>
+      
       <div className="grid grid-cols-3 gap-4 mt-6">
         {pets.length > 0 ? (
           pets.map((pet: any) => (

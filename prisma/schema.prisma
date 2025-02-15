@@ -31,12 +31,40 @@ enum Status {
   adopted
 }
 
+enum VaccinationStatus {
+  vaccinated
+  needsSecondVaccination
+  notVaccinated
+  unknown
+}
+
+enum NeuteredStatus {
+  neutered
+  notNeutered
+  pending
+}
+
+enum HealthIssues {
+  none
+  blind
+  deaf
+  missing_limbs
+  medication_required
+  others
+}
+
+enum HouseTrainedStatus {
+  fully
+  almost
+  not_trained
+}
+
 model User {
   id             String    @id
   email          String    @unique
   name           String
   emailVerified  Boolean   @default(false)
-  role           Role      @default(customer)
+  user_role      Role @default(customer)
   createdAt      DateTime
   updatedAt      DateTime
   phoneNumber    String?   @unique
@@ -51,6 +79,8 @@ model User {
   banned     Boolean?
   banReason  String?
   banExpires DateTime?
+
+  role Role @default(customer)
 
   @@map("user")
 }
@@ -95,7 +125,6 @@ model Account {
 model Shelter {
   id     Int       @id @default(autoincrement())
   userId String    @unique
-  
   user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   animal Animals[]
 
@@ -103,19 +132,29 @@ model Shelter {
 }
 
 model Animals {
-  id          Int      @id @default(autoincrement())
-  name        String
-  species     String
-  size        String?
-  sex         Sex      @default(unknown)
-  status      Status   @default(available)
-  description String   @db.Text
-  age         String
-  dominantBreed String?
+  id               Int     @id @default(autoincrement())
+  name             String
+  species          String
+  size             String?
+  sex              Sex     @default(unknown)
+  status           Status  @default(available)
+  description      String  @db.Text
+  age              String
+  dominantBreed    String?
   arrivedAtShelter String?
-  shelterId   String
+  shelterId        String
 
-  shelter     Shelter? @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
+  vaccinationStatus  VaccinationStatus?
+  neuteredStatus     NeuteredStatus?
+  dateDewormed       String?
+  healthIssues       HealthIssues?
+  otherHealthIssues  String?
+  notes              String?
+  social             String?
+  personalitySummary String?
+  houseTrained       HouseTrainedStatus
+
+  shelter Shelter? @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
 
   @@map("animals")
 }

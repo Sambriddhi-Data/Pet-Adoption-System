@@ -4,42 +4,52 @@ import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useSession } from "@/auth-client";
-import { addPetSchema } from "../../(shelter)/add-pet-form";
-import CancelFormButton from "../cancel-form-button";
+import CancelFormButton from "../../cancel-form-button";
 import { toast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
+import { Combobox } from "@/app/(frontend)/(users)/_components/combo-box";
+import { petBasicDetailsSchema, TPetBasicDetailsForm } from "../../../(shelter)/add-pet-form";
+import usePetRegistrationStore from "./store";
 
+const species = [
+    { value: "dog", label: "Dog" },
+    { value: "cat", label: "Cat" },
+    { value: "rabbit", label: "Rabbit" },
+    { value: "parrot", label: "Parrot" },
+    { value: "others", label: "Others" },
+]
 
-export default function AddPet() {
-    type TAddPetForm = z.infer<typeof addPetSchema>
+const sex = [
+    { value: "male", label: "Male" },
+    { value: "female", label: "Female" },
+    { value: "unknown", label: "Unknown" },
+]
+
+const size = [
+    { value: "small", label: "Small (0-5 kg)" },
+    { value: "medium", label: "Medium (5-15 kg)" },
+    { value: "large", label: "Large (15+ kg)" },
+]
+
+export default function BasicDetails() {
 
     const session = useSession();
-    const router = useRouter();
-
+    const { nextStep, formData, setBasicInfo } = usePetRegistrationStore();
     const shelter_id = session?.data?.user?.id;
-    console.log("shelter", shelter_id);
-    const form = useForm<TAddPetForm>({
-        resolver: zodResolver(addPetSchema),
+    const form = useForm<TPetBasicDetailsForm>({
+        resolver: zodResolver(petBasicDetailsSchema),
         defaultValues: {
-            name: "",
-            species: "",
-            description: "",
-            age: "",
-            dominantBreed: "",
-            gender: "",
-            size: "",
-            status: "available",
-            arrivedAtShelter: "",
+            ...formData.basicDetails,
             shelterId: shelter_id,
         },
     });
+    // console.log(shelter_id);
+    // console.log("Form", form.getValues());
+    // console.log(form.formState.errors);
 
-
-    async function onSubmit(values: TAddPetForm) {
+    const onSubmit = async (values: TPetBasicDetailsForm) => {
         if (!session?.data?.user?.id) {
             toast({
                 title: "Error",
@@ -47,31 +57,26 @@ export default function AddPet() {
             });
             return;
         }
-        values.shelterId = session.data.user.id;
-        console.log("submit", values);
         try {
-            const { data } =
-                await axios.post('/api/addPet', values);
-            form.reset()
-            toast({
-                title: "Pet added successfully!",
-                description: `${values.name} has been added to the family`,
+            // Update store with form data
+            setBasicInfo({
+                ...values,
+                shelterId: session.data.user.id
             });
-            console.log(data);
-            router.push('/shelter-homepage');
+            console.log("Submit Basic Details: ",values);
+            // Move to next step
+            nextStep();
         }
         catch (error: any) {
-            console.error("API error:", error.response?.data || error.message);
+            console.error("Validation error:", error);
             toast({
                 title: "Error",
-                description: error.response?.data?.message || "An error occurred. Please try again later.",
+                description: "Please check all required fields.",
             });
         }
-
     }
-
     return (
-        <main className="">
+        <main>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <div className="border-b">Basic Details</div>
@@ -90,7 +95,6 @@ export default function AddPet() {
                                     </FormItem>
                                 )}
                             />
-
                             <FormField
                                 control={form.control}
                                 name="species"
@@ -98,13 +102,17 @@ export default function AddPet() {
                                     <FormItem>
                                         <FormLabel>Species<span style={{ color: 'red' }}> *</span></FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Dog/Cat" {...field} />
+                                            <Combobox
+                                                options={species}
+                                                placeholder="Select species..."
+                                                selectedValue={field.value}
+                                                onSelect={(value) => field.onChange(value)} // Update form state
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-
                             <FormField
                                 control={form.control}
                                 name="description"
@@ -118,7 +126,6 @@ export default function AddPet() {
                                     </FormItem>
                                 )}
                             />
-
                             <FormField
                                 control={form.control}
                                 name="age"
@@ -134,12 +141,17 @@ export default function AddPet() {
                             />
                             <FormField
                                 control={form.control}
-                                name="gender"
+                                name="sex"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Gender<span style={{ color: 'red' }}> *</span></FormLabel>
                                         <FormControl>
-                                            <Input placeholder="3 months" {...field} />
+                                            <Combobox
+                                                options={sex}
+                                                placeholder="Select gender..."
+                                                selectedValue={field.value}
+                                                onSelect={(value) => field.onChange(value)} // Update form state
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -149,10 +161,15 @@ export default function AddPet() {
                                 control={form.control}
                                 name="size"
                                 render={({ field }) => (
-                                    <FormItem>
+                                    <FormItem className="flex flex-col">
                                         <FormLabel>Size (when adult)<span style={{ color: 'red' }}> *</span></FormLabel>
                                         <FormControl>
-                                            <Input placeholder="3 months" {...field} />
+                                            <Combobox
+                                                options={size}
+                                                placeholder="Select size (when adult)..."
+                                                selectedValue={field.value}
+                                                onSelect={(value) => field.onChange(value)} // Update form state
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -160,19 +177,14 @@ export default function AddPet() {
                             />
                         </div>
                     </Card>
-                    <div className="border-b">Health</div>
-                    <Card className="p-6">
-
-                    </Card>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 justify-end">
                         <CancelFormButton route="/shelter-homepage" />
                         <Button type="submit">
-                            Submit
+                            Next
                         </Button>
                     </div>
                 </form>
             </Form>
-
         </main>
     );
 }

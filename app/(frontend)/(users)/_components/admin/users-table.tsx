@@ -32,7 +32,7 @@ export default function UsersTable() {
 			const data = await response.json();
 
 			if (data.success) {
-				alert("User verified successfully!");
+				alert("Shelter verified successfully!");
 				// Update the UI to reflect the change
 				setUsers((prevUsers) =>
 					prevUsers.map((user) =>
@@ -139,14 +139,14 @@ export default function UsersTable() {
 					<TableRow key={user.id}>
 						<TableCell>{user.name}</TableCell>
 						<TableCell>{user.email}</TableCell>
-						<TableCell>{user.role}</TableCell>
+						<TableCell>{user.user_role}</TableCell>
 						<TableCell>{user.isVerifiedUser ? "Yes" : "No"}</TableCell>
 						<TableCell>{user.phoneNumber}</TableCell>
 						<TableCell>
 							{new Date(user.createdAt).toLocaleDateString()}
 						</TableCell>
 						<TableCell>
-							{user.role === "shelter_manager" ? (
+							{user.user_role === "shelter_manager" ? (
 								user.isVerifiedUser === false ? (
 									<Button onClick={() => handleVerifyAndAddShelter(user.id)}>Verify</Button>
 								) :

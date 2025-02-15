@@ -3,13 +3,13 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { createAuthMiddleware, APIError } from "better-auth/api";
 
 import prisma from "./prisma/client";
-import { admin, phoneNumber } from "better-auth/plugins"
+import { admin } from "better-auth/plugins"
 
 export const auth = betterAuth({
 
     user: {
         additionalFields: {
-            role: {
+            user_role: {
                 type: 'string',
             },
             location: {
@@ -29,6 +29,8 @@ export const auth = betterAuth({
             if (ctx.path !== "/sign-up/email") {
                 return;
             }
+            console.log("Payload:", ctx.body); // Log the payload
+
             const phoneNumber = ctx.body?.phoneNumber
             const existingUser = await prisma.user.findUnique({
                 where: { phoneNumber },
@@ -37,7 +39,7 @@ export const auth = betterAuth({
                 // Throw error if phone number already exists
                 throw new APIError("BAD_REQUEST", {
                     message: "Phone number is already in use",
-                    path: ["phoneNumber"], 
+                    path: ["phoneNumber"],
                 });
             }
 
@@ -55,11 +57,6 @@ export const auth = betterAuth({
         provider: "postgresql"
     }),
 
-    plugins: [
-        admin({
-            defaultRole: false
-        })
-    ],
     session: {
         expiresIn: 60 * 60 * 24 * 7,
         updateAge: 60 * 60 * 24
@@ -97,6 +94,12 @@ export const auth = betterAuth({
     //     }
 
     // },
+    plugins: [
+        admin({
+            defaultRole: false
+        })
+    ],
+
 } satisfies BetterAuthOptions);
 
 export type Session = typeof auth.$Infer.Session

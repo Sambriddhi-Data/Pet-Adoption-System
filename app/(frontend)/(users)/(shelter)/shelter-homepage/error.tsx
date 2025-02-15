@@ -2,7 +2,6 @@
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
-import Link from "next/link";
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 

@@ -52,17 +52,34 @@ export default function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url} className={classnames({
-                      'flex items-center gap-3' : true,
-                      'bg-primary-foreground opacity-50 text-sidebar-accent-foreground focus-visible:ring-2': item.url === currentPath,
-                      'text-white': item.url !== currentPath
-                      })}>
-                      <item.icon size={32} className="w-15 h-15 text-current" />
-                      <span className="text-lg font-medium">{item.title}</span>
-                    </a>
+                    {item.url === "/public-page" ? (
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 text-white"
+                      >
+                        <item.icon size={32} className="w-15 h-15 text-current" />
+                        <span className="text-lg font-medium">{item.title}</span>
+                      </a>
+                    ) : (
+                      <a
+                        href={item.url}
+                        className={classnames({
+                          "flex items-center gap-3": true,
+                          "bg-primary-foreground opacity-50 text-sidebar-accent-foreground focus-visible:ring-2":
+                            item.url === currentPath,
+                          "text-white": item.url !== currentPath,
+                        })}
+                      >
+                        <item.icon size={32} className="w-15 h-15 text-current" />
+                        <span className="text-lg font-medium">{item.title}</span>
+                      </a>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
