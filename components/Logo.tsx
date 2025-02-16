@@ -11,9 +11,8 @@ export const Logo: React.FC<LogoProps> = ({ className = '', color = '' }) => {
           <Image
             src='/images/paw-black.svg'
             alt='paw'
-            width={0}
-            height={0} // Auto height
-            style={{ height: "auto", width:"auto"}} // Ensures proper aspect ratio
+            width={60}
+            height={60} 
           />
 
         ) :

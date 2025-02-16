@@ -18,11 +18,12 @@ export default function HomePage() {
     }
 
     const session = useSession();
-
+    
     return (
         <div className="space-x-4 space-y-4">
             <Navbar />
-            <div className=" space-x-4 space-y-4 p-4">
+            <div className="space-x-4 space-y-4 p-4">
+
                 <Card className="p-2">
                     <CardHeader className="text-center text-3xl text-red-600 relative">
                         Lost Pet Alert
@@ -37,7 +38,7 @@ export default function HomePage() {
                 </Card>
                 <h1 className="text-5xl text-center">Welcome to Fur-Ever Friends</h1>
 
-                <FlipCardComponent/>
+                <FlipCardComponent />
                 <div>
                     {session?.data ?
                         (

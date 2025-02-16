@@ -1,9 +1,10 @@
-import { betterAuth, BetterAuthOptions, undefined } from "better-auth";
+import { betterAuth, BetterAuthOptions } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { createAuthMiddleware, APIError } from "better-auth/api";
 
 import prisma from "./prisma/client";
 import { admin } from "better-auth/plugins"
+import { sendEmail } from "./utils/mail.utils";
 
 export const auth = betterAuth({
 
@@ -66,13 +67,6 @@ export const auth = betterAuth({
         enabled: true,
         autoSignIn: false,
         requireEmailVerification: false,
-        // sendResetPassword: async ({ user, url }) => {
-        //     await sendEmail({
-        //         to: user.email,
-        //         subject: "Reset your password",
-        //         text: `Click the link to reset your password: ${url}`,
-        //     });
-        // }
     },
     socialProviders: {
         google: {
@@ -81,19 +75,24 @@ export const auth = betterAuth({
         },
 
     },
-    // emailVerification: {
-    //     sendOnSignUp: true,
-    //     autoSignInAfterVerification: false,
-    //     sendVerificationEmail: async ({ user, token }) => {
-    //         const verificationUrl = `${process.env.BETTER_AUTH_URL}/api/auth/verify-email?token=${token}&callbackURL=${process.env.EMAIL_VERIFICATION_CALLBACK_URL}`;
-    //         await sendEmail({
-    //             to: user.email,
-    //             subject: 'Verify your email address',
-    //             text: `Click the link to verify your email: ${verificationUrl}`
-    //         })
-    //     }
-
-    // },
+    emailVerification: {
+        sendOnSignUp: true,
+        autoSignInAfterVerification: false,
+        sendVerificationEmail: async ({ user, token }) => {
+            const verificationUrl = `${process.env.BETTER_AUTH_URL}/api/auth/verify-email?token=${token}&callbackURL=${process.env.EMAIL_VERIFICATION_CALLBACK_URL}`;
+    
+            await sendEmail({
+                sender: {
+                    name: "Fur-Ever Friends",
+                    address: "no-reply@demomailtrap.com",
+                },
+                recipients: [{ name: user.name ?? "User", address: user.email }],
+                subject: "Verify your email address",
+                message: `Click the link to verify your email: <a href="${verificationUrl}">${verificationUrl}</a>`,
+            });
+        },
+    },
+    
     plugins: [
         admin({
             defaultRole: false
