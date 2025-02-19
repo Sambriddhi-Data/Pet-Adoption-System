@@ -75,7 +75,7 @@ export const auth = betterAuth({
                 },
                 recipients: [{ name: user.name ?? "User", address: user.email }],
                 subject: "Verify your email address",
-                message: `Click the link to verify your email: <a href="${url}">${url}</a>`,
+                message: `Click the link to verify your email: <a href="${url}">Reset Password</a>`,
             });
         },
     },
@@ -100,7 +100,7 @@ export const auth = betterAuth({
                 },
                 recipients: [{ name: user.name ?? "User", address: user.email }],
                 subject: "Verify your email address",
-                message: `Click the link to verify your email: <a href="${verificationUrl}">${verificationUrl}</a>`,
+                message: `Click the link to verify your email: <a href="${verificationUrl}">Verify Email</a>`,
             });
         },
     },

@@ -26,7 +26,7 @@ const items = [
   },
   {
     title: "Rehoming Requests",
-    url: "/adoption-requests",
+    url: "/rehoming-requests",
     icon: House,
   },
   {

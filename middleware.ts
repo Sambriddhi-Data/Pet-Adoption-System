@@ -9,6 +9,7 @@ const shelterRoutes = [
   "/pets/[petId]",
   "/shelter-profile",
   "/adoption-requests",
+  "/rehoming-requests",
   "/add-pet-details/details",
   "/add-pet-details/images",
 ];

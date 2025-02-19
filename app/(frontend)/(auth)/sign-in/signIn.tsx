@@ -41,7 +41,7 @@ export const SignIn = () => {
         }
       }
 
-      toast({ title: "Sign In Successful..." });
+      toast({ title: "Sign In Successful..." ,variant:"success"});
       switch (role) {
         case "customer":
           router.push("/");
@@ -81,11 +81,6 @@ export const SignIn = () => {
         },
         onSuccess: () => {
           form.reset();
-          toast({
-            title: "Sign In Successful!!",
-            variant: "success"
-          });
-
         },
         onError: (ctx) => {
           toast({ title: ctx.error.message, variant: 'destructive' });
