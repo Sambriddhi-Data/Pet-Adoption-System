@@ -15,14 +15,14 @@ import LoadingButton from "@/components/loading-button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {forgetPassword } from "@/auth-client";
+import { forgetPassword } from "@/auth-client";
 import { useToast } from "@/hooks/use-toast";
 import { forgotPasswordSchema } from "@/app/(frontend)/(auth)/auth-schema";
 
 export default function ForgotPassword() {
 	const { toast } = useToast();
 	const [isPending, setIsPending] = useState(false);
-    type TSignInForm = z.infer<typeof forgotPasswordSchema>
+	type TSignInForm = z.infer<typeof forgotPasswordSchema>
 
 	const form = useForm<TSignInForm>({
 		resolver: zodResolver(forgotPasswordSchema),
@@ -33,7 +33,7 @@ export default function ForgotPassword() {
 
 	const onSubmit = async (values: TSignInForm) => {
 		setIsPending(true);
-        const {email} = values;
+		const { email } = values;
 		const { error } = await forgetPassword({
 			email: values.email,
 			redirectTo: "/reset-password",
@@ -47,9 +47,10 @@ export default function ForgotPassword() {
 			});
 		} else {
 			toast({
-				title: "Success",
-				description:
-					"If an account exists with this email, you will receive a password reset link.",
+				title: "Password Reset Link Sent",
+				description: "If your email is registered, you'll receive a reset link shortly.",
+				variant: "success"
+
 			});
 		}
 		setIsPending(false);

@@ -66,21 +66,33 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
         autoSignIn: false,
-        requireEmailVerification: false,
+        requireEmailVerification: true,
+        sendResetPassword: async ({user, url, token}, request) => {
+            await sendEmail({
+                sender: {
+                    name: "Fur-Ever Friends",
+                    address: "no-reply@demomailtrap.com",
+                },
+                recipients: [{ name: user.name ?? "User", address: user.email }],
+                subject: "Verify your email address",
+                message: `Click the link to verify your email: <a href="${url}">${url}</a>`,
+            });
+        },
     },
+
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
         },
-
     },
+
     emailVerification: {
         sendOnSignUp: true,
         autoSignInAfterVerification: false,
         sendVerificationEmail: async ({ user, token }) => {
             const verificationUrl = `${process.env.BETTER_AUTH_URL}/api/auth/verify-email?token=${token}&callbackURL=${process.env.EMAIL_VERIFICATION_CALLBACK_URL}`;
-    
+
             await sendEmail({
                 sender: {
                     name: "Fur-Ever Friends",
@@ -92,7 +104,7 @@ export const auth = betterAuth({
             });
         },
     },
-    
+
     plugins: [
         admin({
             defaultRole: false

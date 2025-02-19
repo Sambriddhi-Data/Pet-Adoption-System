@@ -9,7 +9,6 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { signUpFormSchema } from "@/app/(frontend)/(auth)/auth-schema";
 import { signUp } from "@/auth-client";
 import { toast } from "@/hooks/use-toast";
@@ -17,7 +16,6 @@ import { useState } from "react";
 import { redirect } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import LoadingButton from "@/components/loading-button";
-import { flushAllTraces } from "next/dist/trace";
 
 
 export default function SignUp() {
@@ -61,7 +59,8 @@ export default function SignUp() {
         form.reset();
         toast({
           title: "Account created",
-          description: "Your account has been successfully created. Please log In."
+          description: "Check your email for a verification link to activate your account..",
+          variant: "success"
         })
         redirect("/sign-in");
       },

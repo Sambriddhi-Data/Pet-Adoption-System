@@ -41,7 +41,6 @@ export const SignIn = () => {
         }
       }
 
-      // Handle successful login routing and toast for all verified users
       toast({ title: "Sign In Successful..." });
       switch (role) {
         case "customer":
@@ -66,7 +65,6 @@ export const SignIn = () => {
       password: "",
     },
   })
-  // console.log("Form",form.getValues());
 
   // a submit handler.
   async function onSubmit(values: TSignInForm) {
@@ -85,6 +83,7 @@ export const SignIn = () => {
           form.reset();
           toast({
             title: "Sign In Successful!!",
+            variant: "success"
           });
 
         },
@@ -148,6 +147,14 @@ export const SignIn = () => {
                 </FormItem>
               )}
             />
+            <div className="mt-2 text-sm">
+              <Link
+                href="/forgot-password"
+                className="text-primary hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
             <LoadingButton pending={pending}>
               Submit
             </LoadingButton>
@@ -161,6 +168,7 @@ export const SignIn = () => {
           height={30}
         />Sign in with Google</GoogleSignInButton>
       </CardContent>
+
       <CardFooter className="flex justify-center">
         <p className="text-sm text-muted-foreground">
           Don&apos;t have an account yet?{' '}

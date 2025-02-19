@@ -13,7 +13,7 @@ import { formSchema } from "@/app/(frontend)/(auth)/auth-schema";
 import { signUp } from "@/auth-client";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react"
 import LoadingButton from "@/components/loading-button";
 
@@ -22,6 +22,7 @@ export default function ShelterSignUp() {
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showCPassword, setShowCPassword] = useState(false);
+  const router = useRouter();
 
   type TShelterSignUpForm = z.infer<typeof formSchema>
 
@@ -43,7 +44,7 @@ export default function ShelterSignUp() {
   async function onSubmit(values: TShelterSignUpForm) {
     const { name, email, password, user_role, location, phoneNumber } = values;
     console.log('Form values:', values);
-    
+
     const { data, error } = await signUp.email({
       email: email,
       password: password,
@@ -59,10 +60,11 @@ export default function ShelterSignUp() {
       onSuccess: () => {
         form.reset()
         toast({
-          title: "Account created",
-          description: "Admin needs to verify your account in order for you to login as a shelter manager. This might take some hours to a few days."
-        })
-        redirect("/shelter-landing-page");
+          title: "Account Created",
+          description: "Check your email for a verification link. Admin approval is required for shelter manager access and may take some time.",
+          variant: "success"
+        });        
+        router.push("/shelter-landing-page");
       },
       onError: (ctx) => {
         toast({ title: ctx.error.message, variant: 'destructive' });

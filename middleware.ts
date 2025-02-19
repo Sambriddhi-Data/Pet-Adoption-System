@@ -2,8 +2,8 @@ import { betterFetch } from "@better-fetch/fetch";
 import { NextResponse, type NextRequest } from "next/server";
 import { Session } from "./auth";
 
-const authRoutes = ["/sign-in", "/sign-up", "/shelter-sign-up"];
-const publicRoutes = ["/", "/email-verified","/adopt-pet", "/about-us", "/rehome-pet", "/public-page", "/customer-profile", "/blog", "/new-user"];
+const authRoutes = ["/sign-in", "/sign-up", "/shelter-sign-up","/email-verified","/forgot-password", "/reset-password"];
+const publicRoutes = ["/", "/adopt-pet", "/about-us", "/rehome-pet", "/public-page", "/customer-profile", "/blog", "/new-user"];
 const shelterRoutes = [
   "/shelter-homepage",
   "/pets/[petId]",

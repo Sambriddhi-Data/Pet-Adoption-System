@@ -26,9 +26,10 @@ function ResetPasswordContent() {
 	const { toast } = useToast();
 	const searchParams = useSearchParams();
 	const error = searchParams.get("error");
+	const token = searchParams.get("token"); // Extract the token from the URL
 	const [isPending, setIsPending] = useState(false);
-    type TResetPasswordForm = z.infer<typeof resetPasswordSchema>
 
+	type TResetPasswordForm = z.infer<typeof resetPasswordSchema>
 	const form = useForm<TResetPasswordForm>({
 		resolver: zodResolver(resetPasswordSchema),
 		defaultValues: {
@@ -39,10 +40,22 @@ function ResetPasswordContent() {
 
 	const onSubmit = async (values: TResetPasswordForm) => {
 		setIsPending(true);
-        const {password} = values;
+
+		if (!token) {
+			toast({
+				title: "Error",
+				description: "Invalid or missing token.",
+				variant: "destructive",
+			});
+			setIsPending(false);
+			return;
+		}
+
 		const { error } = await authClient.resetPassword({
 			newPassword: values.password,
+			token, // Pass the token to the resetPassword function
 		});
+
 		if (error) {
 			toast({
 				title: "Error",
@@ -53,6 +66,7 @@ function ResetPasswordContent() {
 			toast({
 				title: "Success",
 				description: "Password reset successful. Login to continue.",
+				variant:"success"
 			});
 			router.push("/sign-in");
 		}
