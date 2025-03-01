@@ -9,15 +9,19 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel";
 import { LostPetCard } from "@/app/(frontend)/(users)/_components/lost-pet-card";
+import LostPetModal from "@/app/(frontend)/(users)/_components/lost-pet-modal"; 
+import { Pet } from "@/app/(frontend)/(users)/_components/type";
 
 export default function LostPetCarousel() {
     const [pets, setPets] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedPet, setSelectedPet] = useState<Pet | null>(null); 
 
     useEffect(() => {
         const fetchPets = async () => {
             try {
-                const response = await fetch("http://localhost:3000/api/getallPets");
+                const response = await fetch("http://localhost:3000/api/getLostPets");
                 const data = await response.json();
                 setPets(data);
             } catch (error) {
@@ -31,33 +35,47 @@ export default function LostPetCarousel() {
     }, []);
 
     return (
-        <div className="relative w-full max-w-7xl"> {/* Added relative to contain navigation buttons */}
+        <div className="relative w-full max-w-7xl">
             {loading ? (
                 <p>Loading pets...</p>
             ) : pets.length > 0 ? (
-                <div className="relative"> {/* This ensures buttons are positioned correctly */}
+                <div className="relative">
                     <Carousel opts={{ align: "start", loop: true }} className="w-full">
-                        <CarouselContent>
-                            {pets.map((pet: any, index) => (
+                        <CarouselContent className=" flex  justify-center">
+                            {pets.map((pet: any) => (
                                 <CarouselItem key={pet.id} className="md:basis-1/2 lg:basis-1/4">
                                     <div className="p-2">
                                         <LostPetCard
                                             name={pet.name}
-                                            age={pet.age}
-                                            status={pet.status}
-                                            address={pet.address}
+                                            address={pet.location}
+                                            phoneNumber={pet.phoneNumber}
+                                            image={pet.image ? pet.image : "https://res.cloudinary.com/dasa1mcpz/image/upload/v1739022787/FurEverFriendsPetImages/kracd2oevfyabh2scuqk.png"}
+                                            onClick={() => {
+                                                setSelectedPet(pet);
+                                                setIsOpen(true);
+                                            }}
                                         />
                                     </div>
                                 </CarouselItem>
                             ))}
                         </CarouselContent>
-                        {/* Position the navigation buttons inside the card */}
                         <CarouselPrevious className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10" />
                         <CarouselNext className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10" />
                     </Carousel>
                 </div>
             ) : (
                 <p>No available pets at the moment.</p>
+            )}
+
+            {isOpen && selectedPet && (
+                <LostPetModal
+                    name={selectedPet.name}
+                    image={selectedPet.image}
+                    address={selectedPet.location}
+                    phoneNumber={selectedPet.phoneNumber}
+                    description={selectedPet.description}
+                    onClose={() => setIsOpen(false)}
+                />
             )}
         </div>
     );

@@ -12,13 +12,13 @@ const FlipCardComponent = () => {
     }
     const handleRehomeButton = () =>
     {
-        router.push('/adopt-pet');
+        router.push('/rehome-pet');
     }
     return (
         <div className="flex h-72 justify-between text-3xl">
             <div className="group h-full w-1/2 [perspective:1000px]">
                 <Card
-                    className="relative h-full w-full flex flex-col items-center justify-center bg-primary text-white transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]"
+                    className="relative h-full w-full flex flex-col items-center justify-center bg-coral text-white transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]"
                 >
                     {/* Front Face */}
                     <div className="absolute inset-0 h-full w-full flex items-center justify-center rounded-xl [backface-visibility:hidden]">
@@ -50,14 +50,14 @@ const FlipCardComponent = () => {
 
             <div className="group h-full w-1/2 [perspective:1000px]">
                 <Card
-                    className="relative h-full w-full flex flex-col items-center justify-center bg-white text-primary transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]"
+                    className="relative h-full w-full flex flex-col items-center justify-center bg-white text-coral transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]"
                 >
                     {/* Front Face */}
                     <div className="absolute inset-0 h-full w-full flex items-center justify-center rounded-xl [backface-visibility:hidden]">
                         <CardContent className="text-center">Rehome a Pet</CardContent>
                         <CardContent>
                             <Image
-                                src="/images/rehome.svg"
+                                src="/images/rehome2.svg"
                                 alt="cat"
                                 width={80}
                                 height={80}

@@ -14,13 +14,13 @@ export default function AddPet() {
     const renderStep = () => {
         switch (step) {
             case 1:
-                return <BasicDetails/>;
+                return <BasicDetails isEditing = {false} />;
             case 2:
-                return <HealthDetails/>;
+                return <HealthDetails isEditing = {false}/>;
             case 3:
-                return <PersonalityDetails />;
+                return <PersonalityDetails isEditing = {false}/>;
               case 4:
-                return <ReviewSubmit />;
+                return <ReviewSubmit isEditing = {false} />;
             default:
                 return null;
         }
@@ -28,7 +28,7 @@ export default function AddPet() {
 
     return (
         <main>
-            <ProgressBar />
+            <ProgressBar/>
             {/* steps */}
             <div>{renderStep()}</div>
             

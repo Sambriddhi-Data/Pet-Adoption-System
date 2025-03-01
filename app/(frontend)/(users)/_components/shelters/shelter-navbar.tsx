@@ -20,10 +20,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { signOut, useSession } from '@/auth-client';
 import { Button } from '@/components/ui/button';
+import { ChevronDown } from 'lucide-react';
 
 
 export default function ShelterNavbar() {
@@ -35,7 +35,7 @@ export default function ShelterNavbar() {
     redirect("/");
   }
   return (
-    <div className="border-b px-4">
+    <div className="border-b bg-white px-4">
       <div className="flex items-center justify-between mx-auto p-4 h-16">
         <div className='ml-64'>
           <Button onClick={handleOnClick}>Switch to Customer</Button>
@@ -47,14 +47,15 @@ export default function ShelterNavbar() {
               <h1 className='font-fruktur'>{user?.name}</h1>
               <CldImage
                 src="https://res.cloudinary.com/dasa1mcpz/image/upload/v1739022787/FurEverFriendsPetImages/kracd2oevfyabh2scuqk.png" // Use this sample image or upload your own via the Media Explorer
-                width="26" // Transform the image: auto-crop to square aspect_ratio
-                height="26"
+                width="28" // Transform the image: auto-crop to square aspect_ratio
+                height="28"
                 alt="Sample"
                 crop={{
                   type: 'auto',
                   source: true
                 }}
               />
+              <ChevronDown size={18}/>
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent>

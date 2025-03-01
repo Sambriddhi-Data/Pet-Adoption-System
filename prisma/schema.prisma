@@ -64,7 +64,7 @@ model User {
   email          String    @unique
   name           String
   emailVerified  Boolean   @default(false)
-  user_role      Role @default(customer)
+  user_role      Role      @default(customer)
   createdAt      DateTime
   updatedAt      DateTime
   phoneNumber    String?   @unique
@@ -123,23 +123,24 @@ model Account {
 }
 
 model Shelter {
-  id     Int       @id @default(autoincrement())
-  userId String    @unique
-  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  animal Animals[]
+  id          String    @id @default(cuid())
+  userId      String    @unique
+  shelterDesc String?
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  animal      Animals[]
 
   @@map("shelter")
 }
 
 model Animals {
-  id               Int     @id @default(autoincrement())
+  id               String  @id @default(cuid())
   name             String
   species          String
   size             String?
   sex              Sex     @default(unknown)
   status           Status  @default(available)
   description      String  @db.Text
-  age              String
+  age              String?
   dominantBreed    String?
   arrivedAtShelter String?
   shelterId        String
@@ -160,10 +161,12 @@ model Animals {
 }
 
 model LostPets {
-  id          String @id
+  id          String @id @default(cuid())
   name        String
+  phoneNumber String
+  location    String
   description String
-  images      Bytes?
+  image       String
 
   @@map("lostpets")
 }

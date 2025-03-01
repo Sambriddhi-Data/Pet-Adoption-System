@@ -1,8 +1,8 @@
 'use client'
+
 import React, { useState } from 'react'
 import { redirect } from "next/navigation";
-import { CldImage } from 'next-cloudinary';
-import Image from 'next/image'
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +21,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { signOut, useSession } from '@/auth-client';
 import { Logo } from '@/components/Logo';

@@ -1,0 +1,68 @@
+'use client'
+
+import { useSession } from "@/auth-client";
+import { Card } from "@/components/ui/card";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+
+interface ShelterInfo {
+    shelterDesc?: string;
+    user: {
+        name: string;
+        location?: string;
+    };
+}
+
+export function ShelterInfoCard() {
+    const session = useSession(); // Ensure this always runs
+    const [shelterInfo, setShelterInfo] = useState<ShelterInfo | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    const user = session?.data?.user;
+
+    useEffect(() => {
+        if (!user?.id) return; // Ensure we only fetch when user.id is available
+
+        const fetchShelterInfo = async () => {
+            try {
+                const response = await fetch(`/api/getShelterInfo?shelterId=${user.id}`);
+                const data: ShelterInfo = await response.json();
+                setShelterInfo(data);
+            } catch (error) {
+                console.error("Error fetching shelter info:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchShelterInfo();
+    }, [user?.id]);
+
+    if (!user) return null;
+
+    return (
+        <Card className="p-6 w-10/12 text-left">
+            <div className="space-x-4 flex flex-row items-center">
+                <div className="p-2 border-4 rounded-sm">
+                    <Image
+                        src={"/images/paw-black.svg"}
+                        height={200}
+                        width={200}
+                        alt="shelter logo"
+                    />
+                </div>
+                <div>
+                    <div className="text-4xl font-fondamento font-bold">
+                        {shelterInfo?.user?.name || "Unknown Shelter"}
+                    </div>
+                    <div className="mt-4 text-lg">
+                        📍 <strong>Location:</strong> {shelterInfo?.user?.location || "Not provided"}
+                    </div>
+                </div>
+            </div>
+            <div className="mt-4">
+                {shelterInfo?.shelterDesc || "No description available"}
+            </div>
+        </Card>
+    );
+}

@@ -55,7 +55,7 @@ export const petHealthSchema = z.object({
         .optional(),
 
     healthIssues: z
-        .enum(["none", "blind", "deaf", "missing limbs", "medication required", "others"])
+        .enum(["none", "blind", "deaf", "missing_limbs", "medication_required", "others"])
         .optional(),
 
     otherHealthIssues: z
@@ -79,7 +79,7 @@ export const petPersonalitySchema = z.object({
         .optional(),
 
     houseTrained: z
-        .enum(["fully", "almost", "not trained"])
+        .enum(["fully", "almost", "not_trained"])
 
 
 })

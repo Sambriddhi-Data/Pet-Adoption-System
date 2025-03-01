@@ -1,12 +1,11 @@
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import AddPet from "../../../_components/shelters/(form)/add-pet-form";
-import ProgressBar from "../../../_components/shelters/(form)/progress-bar";
 
 export default function AddPetDetails() {
     return (
-        <main className="p-6 space-y-4 flex flex-col pace-y-4">
-            <div>
+        <main className="p-6 space-y-4 flex flex-col">
+            <div className="mx-auto w-full max-w-3xl">
                 <Card className="flex items-center p-4 gap-5">
                     <div>
                         <Link href="/add-pet-details/details">Details</Link>
@@ -16,9 +15,9 @@ export default function AddPetDetails() {
                     </div>
                 </Card>
             </div>
-            <div>
+            <div className="mx-auto w-full max-w-4xl">
                 <AddPet />
             </div>
         </main>
-    )
+    );
 }

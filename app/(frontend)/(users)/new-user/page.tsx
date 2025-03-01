@@ -18,6 +18,12 @@ export default async function NewUser() {
                 variant: "default",
             })}
                 href="/">Click here to go to homepage</Link>
+
+            <h1>Do you have a shelter? Join Fur-Ever Friends Today</h1>
+            <Link className={buttonVariants({
+                variant: "default",
+            })}
+                href="/shelter-sign-up">Click here to go to homepage</Link>
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import AppSidebar from "../_components/shelters/app-sidebar";
 import ShelterNavbar from "../_components/shelters/shelter-navbar";
 import type { Metadata } from "next";
@@ -21,7 +21,6 @@ export default function ShelterLayout({
       <ShelterNavbar />
       <SidebarProvider>
         <AppSidebar/>
-        <SidebarTrigger />
         {children}
       </SidebarProvider>
     </main>

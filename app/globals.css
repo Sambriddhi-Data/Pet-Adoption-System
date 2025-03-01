@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Fira Sans', serif;
-  background-color: rgb(246, 252, 255);
+  background-color: #fafafa;
 }
 .font-fondamento {
   font-family: 'Fondamento', serif;
@@ -30,6 +30,7 @@ body {
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
+    --coral:349, 80%, 50%;
     --primary: 186 55% 30%; /* #15616D in HSL */
     --primary-foreground: 0 0% 98%;
     --primary-hover: 186 55% 40%;
@@ -99,6 +100,17 @@ body {
 @layer base {
   * {
     @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;

@@ -20,6 +20,7 @@ interface PetRegistrationState {
     setHealthInfo: (data: Partial<TAddPetHealthForm>) => void;
     setPersonalityInfo: (data: Partial<TPetPersonalityForm>) => void;
     submitForm: () => void;
+    resetForm: () => void;
 }
 
 const initialState: PetFormData = {
@@ -46,7 +47,7 @@ const initialState: PetFormData = {
     personalityDetails: {
         social: "",
         personalitySummary: "",
-        houseTrained: "not trained"
+        houseTrained: "not_trained"
     }
 };
 
@@ -107,6 +108,7 @@ const usePetRegistrationStore = create<PetRegistrationState>((set, get) => ({
             };
         });
     },
+    resetForm: () => set({ formData: initialState, step: 1 }),
 }));
 
 export default usePetRegistrationStore;

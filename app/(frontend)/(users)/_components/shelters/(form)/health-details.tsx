@@ -19,7 +19,25 @@ const vaccinationStatus = [
     { value: "notVaccinated", label: "Not Vaccinated" },
     { value: "unknown", label: "Unknown" },
 ]
-export default function HealthDetails() {
+const neuteredStatus = [
+    { value: "neutered", label: "Neutered" },
+    { value: "notNeutered", label: "Not Neutered" },
+    { value: "pending", label: "Pending" },
+]
+const healthIssues = [
+    { value: "none", label: "None" },
+    { value: "blind", label: "Blind" },
+    { value: "deaf", label: "Deaf" },
+    { value: "missing_limbs", label: "Missing Limbs" },
+    { value: "medication_required", label: "Medication required" },
+    { value: "others", label: "Others" },
+]
+
+interface FormsProps {
+    isEditing: boolean;
+}
+
+export default function HealthDetails({ isEditing }: FormsProps) {
 
     const session = useSession();
     const { nextStep, prevStep, formData, setHealthInfo } = usePetRegistrationStore();
@@ -58,19 +76,71 @@ export default function HealthDetails() {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <div className="border-b">Health Details</div>
                     <Card className="p-6">
-                        <div className="flex flex-wrap justify-center gap-4 max-w-3xl">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl">
                             <FormField
                                 control={form.control}
                                 name="vaccinationStatus"
                                 render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Vaccination Status:<span style={{ color: 'red' }}> *</span></FormLabel>
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Vaccination Status:</FormLabel>
                                         <FormControl>
                                             <Combobox
                                                 options={vaccinationStatus}
                                                 placeholder="Select Vaccination Status..."
                                                 selectedValue={field.value}
                                                 onSelect={(value) => field.onChange(value)} // Update form state
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="neuteredStatus"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Neutered Status:</FormLabel>
+                                        <FormControl>
+                                            <Combobox
+                                                options={neuteredStatus}
+                                                placeholder="Select Neutered Status..."
+                                                selectedValue={field.value}
+                                                onSelect={(value) => field.onChange(value)} // Update form state
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="healthIssues"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Health Issues:</FormLabel>
+                                        <FormControl>
+                                            <Combobox
+                                                options={healthIssues}
+                                                placeholder="Select Health Issue..."
+                                                selectedValue={field.value}
+                                                onSelect={(value) => field.onChange(value)} // Update form state
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="otherHealthIssues"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Other Health Issues (if any):</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Health issues..."
+                                                {...field}
                                             />
                                         </FormControl>
                                         <FormMessage />

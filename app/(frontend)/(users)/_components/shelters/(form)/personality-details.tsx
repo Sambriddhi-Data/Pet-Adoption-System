@@ -12,13 +12,18 @@ import { toast } from "@/hooks/use-toast";
 import { Combobox } from "@/app/(frontend)/(users)/_components/combo-box";
 import { petPersonalitySchema, TPetPersonalityForm } from "../../../(shelter)/add-pet-form";
 import usePetRegistrationStore from "./store";
+import { Textarea } from "@/components/ui/textarea";
 
 const houseTrained = [
     { value: "fully", label: "Fully" },
     { value: "almost", label: "Almost" },
-    { value: "not trained", label: "Not Trained" },
+    { value: "not_trained", label: "Not Trained" },
 ]
-export default function PersonalityDetails() {
+interface FormsProps {
+    isEditing: boolean;
+} 
+
+export default function PersonalityDetails({isEditing}: FormsProps) {
 
     const session = useSession();
     const {nextStep, prevStep, formData, setPersonalityInfo } = usePetRegistrationStore();
@@ -28,18 +33,14 @@ export default function PersonalityDetails() {
             ...formData.personalityDetails,
         },
     });
-    // console.log("Form", form.getValues());
-    // console.log(form.formState.errors);
 
     const onSubmit = async (values: TPetPersonalityForm) => {
-      
         try {
             // Update store with form data
             setPersonalityInfo({
                 ...values,
             });
-            console.log("Submit, Personality: ",values);
-            // Move to next step
+            // console.log("Submit, Personality: ", values);
             nextStep();
         }
         catch (error: any) {
@@ -57,20 +58,52 @@ export default function PersonalityDetails() {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <div className="border-b">Personality Details</div>
                     <Card className="p-6">
-                        <div className="flex flex-wrap justify-center gap-4 max-w-3xl">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl">
                             <FormField
                                 control={form.control}
                                 name="houseTrained"
                                 render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>House Trained:<span style={{ color: 'red' }}> *</span></FormLabel>
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>House Trained:</FormLabel>
                                         <FormControl>
                                             <Combobox
                                                 options={houseTrained}
                                                 placeholder="House Trained?..."
                                                 selectedValue={field.value}
-                                                onSelect={(value) => field.onChange(value)} // Update form state
+                                                onSelect={(value) => field.onChange(value)} 
                                             />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="social"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Social Media Summary:</FormLabel>
+                                        <FormControl>
+                                        <Textarea
+												placeholder="Enter social media summary..."
+												{...field}
+											/>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="personalitySummary"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Personality of the pet:</FormLabel>
+                                        <FormControl>
+                                        <Textarea
+												placeholder="Likes to play..."
+												{...field}
+											/>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

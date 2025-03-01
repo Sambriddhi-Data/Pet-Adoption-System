@@ -11,10 +11,8 @@ import {
 import { User } from "@prisma/client";
 import { useState, useEffect } from "react";
 import { admin } from "@/auth-client";
-import { Button } from "@/components/ui/button";
 import LoadingButton from "@/components/loading-button";
 import { useToast } from "@/hooks/use-toast";
-import { title } from "process";
 
 export default function UsersTable() {
 	const [users, setUsers] = useState<User[]>([]);
