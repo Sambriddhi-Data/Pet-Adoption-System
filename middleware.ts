@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { Session } from "./auth";
 
 const authRoutes = ["/sign-in", "/sign-up", "/shelter-sign-up","/email-verified","/forgot-password", "/reset-password"];
-const publicRoutes = ["/", "/adopt-pet", "/about-us", "/rehome-pet", "/public-page", "/customer-profile", "/blog", "/new-user"];
+const publicRoutes = ["/", "/adopt-pet", "/about-us", "/rehome-pet", "/public-page", "/customer-profile", "/blog", "/new-user", "/pets/"];
 const shelterRoutes = [
   "/shelter-homepage",
   "/pets/[petId]",

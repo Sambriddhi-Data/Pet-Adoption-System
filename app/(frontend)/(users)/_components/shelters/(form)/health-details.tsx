@@ -12,6 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { Combobox } from "@/app/(frontend)/(users)/_components/combo-box";
 import { petHealthSchema, TAddPetHealthForm } from "../../../(shelter)/add-pet-form";
 import usePetRegistrationStore from "./store";
+import { useEffect } from "react";
 
 const vaccinationStatus = [
     { value: "vaccinated", label: "Vaccinated" },
@@ -46,6 +47,7 @@ export default function HealthDetails({ isEditing }: FormsProps) {
         defaultValues: {
             ...formData.healthDetails,
         },
+        mode: 'onChange',
     });
     // console.log("Form", form.getValues());
     // console.log(form.formState.errors);
@@ -69,6 +71,16 @@ export default function HealthDetails({ isEditing }: FormsProps) {
             });
         }
     }
+    useEffect(() => {
+        const subscription = form.watch((values) => {
+            setHealthInfo({
+                ...values,
+            });
+        });
+
+        return () => subscription.unsubscribe();
+    }, [form, setHealthInfo]);
+
 
     return (
         <main>
@@ -150,13 +162,16 @@ export default function HealthDetails({ isEditing }: FormsProps) {
                         </div>
                     </Card>
 
-                    <div className="flex gap-2">
+                    {!isEditing &&
+                    <div className="flex gap-2 justify-end">
                         <CancelFormButton route="/shelter-homepage" />
                         <Button onClick={prevStep} >Previous</Button>
                         <Button type="submit">
                             Next
                         </Button>
                     </div>
+                    }
+
                 </form>
             </Form>
         </main>

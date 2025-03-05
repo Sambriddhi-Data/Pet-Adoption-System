@@ -141,7 +141,6 @@ export default function LostPetForm() {
                                                 onSuccess={handleUpload}
                                                 className="z-9999"
                                                 options={{
-                                                    // This makes the Cloudinary widget appear above other elements
                                                     styles: {
                                                         palette: {
                                                             window: "#FFFFFF",
@@ -167,7 +166,7 @@ export default function LostPetForm() {
                                                         }
                                                     },
                                                 }}
-                                            />
+                                            >Choose image</CldUploadButton>
                                             {field.value && (
                                                 <img src={field.value} alt="Uploaded Pet" className="mt-2 w-40 h-40 object-cover" />
                                             )}

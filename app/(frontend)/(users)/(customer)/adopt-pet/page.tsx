@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { PetCard } from "../../_components/pet-card";
 import { Card } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -7,7 +7,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from '@/components/ui/button';
 import { Combobox } from '../../_components/combo-box';
-import { petBasicDetailsSchema, TPetBasicDetailsForm } from '../../(shelter)/add-pet-form';
+import { searchPetsSchema, TSearchPetsForm } from '../../(shelter)/search-pet';
+import { BCombobox } from '../../_components/breed-combo-box';
+import { useRouter } from 'next/navigation';
+import PetCardWrap from '../../_components/pet-card-wrap';
 
 const species = [
     { value: "dog", label: "Dog" },
@@ -15,28 +18,67 @@ const species = [
     { value: "rabbit", label: "Rabbit" },
     { value: "parrot", label: "Parrot" },
     { value: "others", label: "Others" },
-]
+];
 
 const sex = [
     { value: "male", label: "Male" },
     { value: "female", label: "Female" },
     { value: "unknown", label: "Unknown" },
-]
+];
 
 const size = [
     { value: "small", label: "Small (0-5 kg)" },
     { value: "medium", label: "Medium (5-15 kg)" },
     { value: "large", label: "Large (15+ kg)" },
-]
+];
+
+const dominantBreed = [
+    { value: "labrador", label: "Labrador Retriever" },
+    { value: "golden_retriever", label: "Golden Retriever" },
+    { value: "german_shepherd", label: "German Shepherd" },
+    { value: "bulldog", label: "Bulldog" },
+    { value: "beagle", label: "Beagle" },
+    { value: "poodle", label: "Poodle" },
+    { value: "rottweiler", label: "Rottweiler" },
+    { value: "siberian_husky", label: "Siberian Husky" },
+    { value: "doberman", label: "Doberman" },
+    { value: "shih_tzu", label: "Shih Tzu" },
+    { value: "chow_chow", label: "Chow Chow" },
+    { value: "border_collie", label: "Border Collie" },
+    { value: "dachshund", label: "Dachshund" },
+    { value: "pomeranian", label: "Pomeranian" },
+    { value: "boxer", label: "Boxer" },
+    { value: "dalmatian", label: "Dalmatian" },
+    { value: "bhotia", label: "Bhotia (Himalayan Sheepdog)" },
+    { value: "tibetan_mastiff", label: "Tibetan Mastiff" },
+    { value: "kathmandu_street_dog", label: "Kathmandu Street Dog" },
+    { value: "mixed", label: "Mixed Breed" },
+    { value: "unknown", label: "Unknown Breed" }
+];
+
+const PETS_PER_PAGE = 12;
 
 export default function AdoptPet() {
     const [pets, setPets] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
 
+    const form = useForm<TSearchPetsForm>({
+        resolver: zodResolver(searchPetsSchema),
+        defaultValues: {
+            species: "",
+            sex: "",
+            dominantBreed: "",
+            size: ""
+        },
+    });
+
+    // Fetch all pets on component mount
     useEffect(() => {
-        async function fetchPets() {
+        const fetchAllPets = async () => {
+            setLoading(true);
             try {
-                const response = await fetch(`/api/getallPets`);
+                const response = await fetch('/api/getallPets');
                 if (!response.ok) throw new Error("Failed to fetch pets");
                 const data = await response.json();
                 setPets(data);
@@ -45,31 +87,54 @@ export default function AdoptPet() {
             } finally {
                 setLoading(false);
             }
-        }
-        fetchPets();
+        };
+        fetchAllPets();
     }, []);
 
-    const form = useForm<TPetBasicDetailsForm>({
-        resolver: zodResolver(petBasicDetailsSchema),
-        defaultValues: {
-            species: "",
-            sex: "unknown",
-            size: ""
-        },
-    });
+    const router = useRouter();
+    const viewPetInfo = () => {
+        router.push('/pets/1');
+    }
+    const onSubmit = async (values: TSearchPetsForm) => {
+        setLoading(true);
+        try {
+            const queryParams = new URLSearchParams();
+            if (values.species) queryParams.append('species', values.species);
+            if (values.sex) queryParams.append('sex', values.sex);
+            if (values.size) queryParams.append('size', values.size);
+            if (values.dominantBreed) queryParams.append('dominantBreed', values.dominantBreed);
 
-    const onSubmit = async (values: TPetBasicDetailsForm) => {
-        console.log(values); 
+            const response = await fetch(`/api/getallPets?${queryParams.toString()}`);
+            if (!response.ok) throw new Error("Failed to fetch pets");
+            const data = await response.json();
+            setPets(data);
+            setCurrentPage(1); // Reset to first page after filtering
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
     };
+
+    const speciesValue = form.watch("species");
+
+    // Pagination logic
+    const indexOfLastPet = currentPage * PETS_PER_PAGE;
+    const indexOfFirstPet = indexOfLastPet - PETS_PER_PAGE;
+    const currentPets = pets.slice(indexOfFirstPet, indexOfLastPet);
+    const totalPages = Math.ceil(pets.length / PETS_PER_PAGE);
+
+    // Disable search button if no filters are applied
+    const isSearchDisabled = !form.watch("species") && !form.watch("sex") && !form.watch("size") && !form.watch("dominantBreed");
 
     return (
         <main className='p-6 flex flex-col items-center justify-center '>
             <h1>Adopt a pet</h1>
-            <div className='p-6 w-8/12'>
+            <div className='p-6'>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <Card className="p-6">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-20 max-w-4xl">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-center max-w-5xl">
                                 <FormField
                                     control={form.control}
                                     name="species"
@@ -88,6 +153,7 @@ export default function AdoptPet() {
                                         </FormItem>
                                     )}
                                 />
+
                                 <FormField
                                     control={form.control}
                                     name="sex"
@@ -106,6 +172,7 @@ export default function AdoptPet() {
                                         </FormItem>
                                     )}
                                 />
+
                                 <FormField
                                     control={form.control}
                                     name="size"
@@ -124,31 +191,51 @@ export default function AdoptPet() {
                                         </FormItem>
                                     )}
                                 />
-                            </div>
-                            <div className="flex gap-2 justify-end">
-                                <Button type="submit">Search</Button>
+                                {speciesValue === "dog" && (
+                                    <FormField
+                                        control={form.control}
+                                        name="dominantBreed"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-col">
+                                                <FormLabel>Breed</FormLabel>
+                                                <FormControl>
+                                                    <BCombobox
+                                                        options={dominantBreed}
+                                                        placeholder="Select breed..."
+                                                        selectedValue={field.value}
+                                                        onSelect={(value) => field.onChange(value)}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                )}
                             </div>
                         </Card>
+                        <div className="flex gap-2 justify-end">
+                            <Button type="submit" disabled={isSearchDisabled}>Search</Button>
+                        </div>
                     </form>
                 </Form>
             </div>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6'>
                 {loading ? (
                     <p>Loading...</p>
-                ) : pets.length > 0 ? (
-                    pets.map((pet) => (
-                        <PetCard
-                            key={pet.id}
-                            name={pet.name}
-                            age={pet.age}
-                            status={pet.status}
-                            address={pet.address}
-                        />
+                ) : currentPets.length > 0 ? (
+                    currentPets.map((pet) => (
+                        <PetCardWrap key={pet.id} pet={pet} />
+
                     ))
                 ) : (
                     <p>No available pets at the moment.</p>
                 )}
             </div>
+            <div className='flex justify-center mt-6 space-x-2'>
+                <Button disabled={currentPage === 1} onClick={() => setCurrentPage((prev) => prev - 1)}>Previous</Button>
+                <span>Page {currentPage} of {totalPages}</span>
+                <Button disabled={currentPage === totalPages} onClick={() => setCurrentPage((prev) => prev + 1)}>Next</Button>
+            </div>
         </main>
-    )
+    );
 }

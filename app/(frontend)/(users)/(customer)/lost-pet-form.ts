@@ -25,6 +25,7 @@ export const lostPetFormSchema = z.object({
 
     image: z
         .string()
+        .min(1, { message: "Please upload atleast one image of the pet" })
 })
 
 export type  TLostPetFormSchema = z.infer<typeof lostPetFormSchema>

@@ -2,17 +2,30 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
 
 export async function GET(req: NextRequest) {
-  try {
-    console.log("Request URL:", req.nextUrl);  // Log the full URL to verify its structure
+    try {
+        const { searchParams } = new URL(req.url);
+        const species = searchParams.get("species");
+        const sex = searchParams.get("sex");
+        const size = searchParams.get("size");
+        const dominantBreed = searchParams.get("dominantBreed");
 
+        const allPets = await prisma.animals.findMany();
 
+        const filteredPets = allPets.filter((pet) => {
+            const matchesSpecies = species ? pet.species === species : true;
+            const matchesSex = sex ? pet.sex === sex : true;
+            const matchesSize = size ? pet.size === size : true;
+            const matchesBreed = dominantBreed ? pet.dominantBreed === dominantBreed : true;
 
-    // Query the database to fetch pets based on the shelterId
-    const allPets = await prisma.animals.findMany();
+            return matchesSpecies && matchesSex && matchesSize && matchesBreed;
+        });
 
-    return NextResponse.json(allPets, { status: 200 });
-  } catch (error) {
-    console.error("Error fetching pets:", error);
-    return NextResponse.json({ error: "Failed to fetch pet details" }, { status: 500 });
-  }
+        return NextResponse.json(filteredPets, { status: 200 });
+    } catch (error) {
+        console.error("Error fetching pets:", error);
+        return NextResponse.json(
+            { error: "Failed to fetch pet details" },
+            { status: 500 }
+        );
+    }
 }

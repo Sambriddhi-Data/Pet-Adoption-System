@@ -45,9 +45,8 @@ export default function ReviewSubmit({ isEditing }: ReviewSubmitProps) {
                 variant: "success",
             });
 
-            // Reset the form and redirect
-            resetForm();
             router.push("/shelter-homepage");
+            resetForm();
         } catch (error) {
             console.error(`Error ${id ? "updating" : "adding"} pet details:`, error);
             toast({
@@ -88,6 +87,7 @@ export default function ReviewSubmit({ isEditing }: ReviewSubmitProps) {
                     <h2 className="text-xl font-semibold mb-2 border-b pb-1">Personality Details</h2>
                     <ul className="space-y-2">
                         <li><strong>House Trained:</strong> {formData.personalityDetails.houseTrained}</li>
+                        <li><strong>Social Media Summary:</strong> {formData.personalityDetails.social}</li>
                         <li><strong>Personality Summary:</strong> {formData.personalityDetails.personalitySummary}</li>
                     </ul>
                 </section>

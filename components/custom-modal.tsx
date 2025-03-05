@@ -1,4 +1,3 @@
-// Create a new component: components/custom-modal.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -37,7 +36,6 @@ export const CustomModal: React.FC<CustomModalProps> = ({
   if (!mounted || !isOpen) return null;
 
   // Using createPortal to render the modal at the document body level
-  // This helps avoid z-index conflicts
   return createPortal(
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[1000]">
       <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto z-[1001]">

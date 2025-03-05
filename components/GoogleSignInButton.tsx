@@ -14,7 +14,7 @@ export const loginWithGoogle = async () => {
   try {
     const data = await signIn.social({
       provider: "google",
-      callbackURL: "/?postAuth=true",
+      callbackURL: `${window.location.origin}/?postAuth=true`,
       newUserCallbackURL:"/new-user"
     });
 

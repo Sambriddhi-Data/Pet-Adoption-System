@@ -13,6 +13,7 @@ import { Combobox } from "@/app/(frontend)/(users)/_components/combo-box";
 import { petPersonalitySchema, TPetPersonalityForm } from "../../../(shelter)/add-pet-form";
 import usePetRegistrationStore from "./store";
 import { Textarea } from "@/components/ui/textarea";
+import { useEffect } from "react";
 
 const houseTrained = [
     { value: "fully", label: "Fully" },
@@ -21,17 +22,18 @@ const houseTrained = [
 ]
 interface FormsProps {
     isEditing: boolean;
-} 
+}
 
-export default function PersonalityDetails({isEditing}: FormsProps) {
+export default function PersonalityDetails({ isEditing }: FormsProps) {
 
     const session = useSession();
-    const {nextStep, prevStep, formData, setPersonalityInfo } = usePetRegistrationStore();
+    const { nextStep, prevStep, formData, setPersonalityInfo } = usePetRegistrationStore();
     const form = useForm<TPetPersonalityForm>({
         resolver: zodResolver(petPersonalitySchema),
         defaultValues: {
             ...formData.personalityDetails,
         },
+        mode: 'onChange',
     });
 
     const onSubmit = async (values: TPetPersonalityForm) => {
@@ -51,6 +53,15 @@ export default function PersonalityDetails({isEditing}: FormsProps) {
             });
         }
     }
+    useEffect(() => {
+        const subscription = form.watch((values) => {
+            setPersonalityInfo({
+                ...values,
+            });
+        });
+
+        return () => subscription.unsubscribe();
+    }, [form, setPersonalityInfo]);
 
     return (
         <main>
@@ -70,7 +81,7 @@ export default function PersonalityDetails({isEditing}: FormsProps) {
                                                 options={houseTrained}
                                                 placeholder="House Trained?..."
                                                 selectedValue={field.value}
-                                                onSelect={(value) => field.onChange(value)} 
+                                                onSelect={(value) => field.onChange(value)}
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -84,10 +95,10 @@ export default function PersonalityDetails({isEditing}: FormsProps) {
                                     <FormItem className="flex flex-col">
                                         <FormLabel>Social Media Summary:</FormLabel>
                                         <FormControl>
-                                        <Textarea
-												placeholder="Enter social media summary..."
-												{...field}
-											/>
+                                            <Textarea
+                                                placeholder="Enter social media summary..."
+                                                {...field}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -100,10 +111,10 @@ export default function PersonalityDetails({isEditing}: FormsProps) {
                                     <FormItem className="flex flex-col">
                                         <FormLabel>Personality of the pet:</FormLabel>
                                         <FormControl>
-                                        <Textarea
-												placeholder="Likes to play..."
-												{...field}
-											/>
+                                            <Textarea
+                                                placeholder="Likes to play..."
+                                                {...field}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -111,14 +122,15 @@ export default function PersonalityDetails({isEditing}: FormsProps) {
                             />
                         </div>
                     </Card>
-
-                    <div className="flex gap-2">
-                        <CancelFormButton route="/shelter-homepage" />
-                        <Button onClick={prevStep} >Previous</Button>
-                        <Button type="submit">
-                            Next
-                        </Button>
-                    </div>
+                    {!isEditing &&
+                        <div className="flex gap-2 justify-end">
+                            <CancelFormButton route="/shelter-homepage" />
+                            <Button onClick={prevStep} >Previous</Button>
+                            <Button type="submit">
+                                Next
+                            </Button>
+                        </div>
+                    }
                 </form>
             </Form>
         </main>

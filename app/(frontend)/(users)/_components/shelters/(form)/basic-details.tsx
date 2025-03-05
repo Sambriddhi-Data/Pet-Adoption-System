@@ -13,6 +13,8 @@ import { Combobox } from "@/app/(frontend)/(users)/_components/combo-box";
 import { petBasicDetailsSchema, TPetBasicDetailsForm } from "../../../(shelter)/add-pet-form";
 import usePetRegistrationStore from "./store";
 import { Textarea } from "@/components/ui/textarea";
+import { BCombobox } from "../../breed-combo-box";
+import { useEffect } from "react";
 
 const species = [
     { value: "dog", label: "Dog" },
@@ -34,12 +36,38 @@ const size = [
     { value: "large", label: "Large (15+ kg)" },
 ];
 
+const dominantBreed = [
+    { value: "labrador", label: "Labrador Retriever" },
+    { value: "golden_retriever", label: "Golden Retriever" },
+    { value: "german_shepherd", label: "German Shepherd" },
+    { value: "bulldog", label: "Bulldog" },
+    { value: "beagle", label: "Beagle" },
+    { value: "poodle", label: "Poodle" },
+    { value: "rottweiler", label: "Rottweiler" },
+    { value: "siberian_husky", label: "Siberian Husky" },
+    { value: "doberman", label: "Doberman" },
+    { value: "shih_tzu", label: "Shih Tzu" },
+    { value: "chow_chow", label: "Chow Chow" },
+    { value: "border_collie", label: "Border Collie" },
+    { value: "dachshund", label: "Dachshund" },
+    { value: "pomeranian", label: "Pomeranian" },
+    { value: "boxer", label: "Boxer" },
+    { value: "dalmatian", label: "Dalmatian" },
+    { value: "bhotia", label: "Bhotia (Himalayan Sheepdog)" },
+    { value: "tibetan_mastiff", label: "Tibetan Mastiff" },
+    { value: "kathmandu_street_dog", label: "Kathmandu Street Dog" },
+    { value: "mixed", label: "Mixed Breed" },
+    { value: "unknown", label: "Unknown Breed" }
+];
+
 interface FormsProps {
     isEditing: boolean;
 }
 
 export default function BasicDetails({ isEditing }: FormsProps) {
+
     const session = useSession();
+
     const { nextStep, formData, setBasicInfo } = usePetRegistrationStore();
 
     // Using pet data for editing
@@ -49,9 +77,23 @@ export default function BasicDetails({ isEditing }: FormsProps) {
         resolver: zodResolver(petBasicDetailsSchema),
         defaultValues: {
             ...formData.basicDetails,
-            shelterId: shelter_id, 
+            shelterId: shelter_id,
         },
+        mode: 'onChange',
     });
+
+    useEffect(() => {
+        const subscription = form.watch((values) => {
+            setBasicInfo({
+                ...values,
+                shelterId: shelter_id,
+            });
+        });
+
+        return () => subscription.unsubscribe();
+    }, [form, setBasicInfo, shelter_id]);
+
+    const speciesValue = form.watch("species");
 
     const onSubmit = async (values: TPetBasicDetailsForm) => {
         if (!session?.data?.user?.id) {
@@ -69,7 +111,7 @@ export default function BasicDetails({ isEditing }: FormsProps) {
             });
             console.log("Submit Basic Details: ", values);
 
-                nextStep();
+            nextStep();
         } catch (error: any) {
             console.error("Validation error:", error);
             toast({
@@ -77,6 +119,7 @@ export default function BasicDetails({ isEditing }: FormsProps) {
                 description: "Please check all required fields.",
             });
         }
+
     };
 
     return (
@@ -153,7 +196,7 @@ export default function BasicDetails({ isEditing }: FormsProps) {
                                 name="size"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                        <FormLabel>Size (when adult)<span style={{ color: 'red' }}> *</span></FormLabel>
+                                        <FormLabel>Size (when adult)</FormLabel>
                                         <FormControl>
                                             <Combobox
                                                 options={size}
@@ -166,6 +209,24 @@ export default function BasicDetails({ isEditing }: FormsProps) {
                                     </FormItem>
                                 )}
                             />
+                            {speciesValue === "dog" && <FormField
+                                control={form.control}
+                                name="dominantBreed"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Breed</FormLabel>
+                                        <FormControl>
+                                            <BCombobox
+                                                options={dominantBreed}
+                                                placeholder="Select breed..."
+                                                selectedValue={field.value}
+                                                onSelect={(value) => field.onChange(value)}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />}
                             <FormField
                                 control={form.control}
                                 name="description"
@@ -185,12 +246,12 @@ export default function BasicDetails({ isEditing }: FormsProps) {
                             />
                         </div>
                     </Card>
+                    {!isEditing &&
                         <div className="flex gap-2 justify-end">
-                            <div>
                             <CancelFormButton route="/shelter-homepage" />
-                            </div>
                             <Button type="submit">Next</Button>
                         </div>
+                    }
                 </form>
             </Form>
         </main>

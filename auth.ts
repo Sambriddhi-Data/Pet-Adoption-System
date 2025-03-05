@@ -7,7 +7,10 @@ import { admin } from "better-auth/plugins"
 import { sendEmail } from "./utils/mail.utils";
 
 export const auth = betterAuth({
-
+    trustedOrigins: [
+        "http://localhost:3000",
+        "http://localhost:3000/?postAuth=true"
+      ],
     user: {
         additionalFields: {
             user_role: {
@@ -106,9 +109,7 @@ export const auth = betterAuth({
     },
 
     plugins: [
-        admin({
-            defaultRole: false
-        })
+        admin()
     ],
 
 } satisfies BetterAuthOptions);
