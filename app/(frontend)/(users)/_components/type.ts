@@ -4,7 +4,7 @@ export interface CancelProps {
 
 export interface LostPetModalProps {
   name?: string;
-  image?: string;
+  image?: string[];
   address?: string;
   phoneNumber?: string;
   description?: string;
@@ -15,7 +15,7 @@ export interface LostPetModalProps {
 export type Pet = {
   id: string;
   name: string;
-  image?: string;
+  image?: string[];
   location: string;
   phoneNumber: string;
   description?: string;

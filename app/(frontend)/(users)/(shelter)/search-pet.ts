@@ -12,16 +12,13 @@ export const searchPetsSchema = z.object({
     sex: z.string()
     .optional(),
 
-
     dominantBreed: z
         .string()
         .optional(),
 
-
     size: z
         .string()
         .optional(),
-
 })
 
 export type TSearchPetsForm = z.infer<typeof searchPetsSchema>;

@@ -166,7 +166,7 @@ model LostPets {
   phoneNumber String
   location    String
   description String
-  image       String
+  image       String[]
 
   @@map("lostpets")
 }

@@ -18,9 +18,9 @@ export default function HomePage() {
     const [modalOpen, setModalOpen] = useState(false);
 
     return (
-        <div className="space-x-4 space-y-4">
+        <div className="space-y-4">
             <Navbar />
-            <div className="space-x-4 space-y-4 p-4">
+            <div className="space-y-4 p-4">
                 <Card className="p-2 border-coral">
                     <CardHeader className="text-center text-3xl text-red-600 relative">
                         Lost Pet Alert

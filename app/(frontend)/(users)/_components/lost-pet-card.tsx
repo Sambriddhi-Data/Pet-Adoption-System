@@ -6,11 +6,14 @@ import { LostPetModalProps } from "./type";
 
 export function LostPetCard({
   name = "Unknown",
-  image = "",
+  image = [], 
   address = "Unknown",
   phoneNumber = "Unknown",
   onClick
 }: LostPetModalProps) {
+  const primaryImage = Array.isArray(image) && image.length > 0 
+    ? image[0] 
+    : "https://res.cloudinary.com/dasa1mcpz/image/upload/v1739022787/FurEverFriendsPetImages/kracd2oevfyabh2scuqk.png";
 
   return (
     <>
@@ -18,7 +21,7 @@ export function LostPetCard({
         <Card className="relative w-64 h-96 bg-white bg-opacity-90 shadow-xl rounded-2xl overflow-hidden transition-transform duration-300 hover:scale-105">
           <div className="relative w-full h-2/3">
             <CldImage
-              src={image || "https://res.cloudinary.com/dasa1mcpz/image/upload/v1739022787/FurEverFriendsPetImages/kracd2oevfyabh2scuqk.png"}
+              src={primaryImage}
               width="350"
               height="350"
               alt={name}
@@ -26,7 +29,6 @@ export function LostPetCard({
               className="object-cover w-full h-full"
             />
           </div>
-
           <CardContent className="p-4 text-center">
             <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
             <CardDescription className="text-sm text-gray-600 mt-2">
@@ -36,7 +38,6 @@ export function LostPetCard({
               Contact: <span className="font-medium">{phoneNumber}</span>
             </CardDescription>
           </CardContent>
-
           <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center text-white font-semibold">
             Click for Details
           </div>

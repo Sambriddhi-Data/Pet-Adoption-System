@@ -9,14 +9,14 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel";
 import { LostPetCard } from "@/app/(frontend)/(users)/_components/lost-pet-card";
-import LostPetModal from "@/app/(frontend)/(users)/_components/lost-pet-modal"; 
+import LostPetModal from "@/app/(frontend)/(users)/_components/lost-pet-modal";
 import { Pet } from "@/app/(frontend)/(users)/_components/type";
 
 export default function LostPetCarousel() {
     const [pets, setPets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedPet, setSelectedPet] = useState<Pet | null>(null); 
+    const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
 
     useEffect(() => {
         const fetchPets = async () => {
@@ -40,16 +40,21 @@ export default function LostPetCarousel() {
                 <p>Loading pets...</p>
             ) : pets.length > 0 ? (
                 <div className="relative">
-                    <Carousel opts={{ align: "start", loop: true }} className="w-full">
-                        <CarouselContent className=" flex  justify-center">
+                    <Carousel opts={{
+                        align: "start",
+                        loop: true,
+                        containScroll: "trimSnaps",
+                    }}
+                        className="w-full">
+                        <CarouselContent className=" flex w-full max-w-7xl justify-center mx-auto">
                             {pets.map((pet: any) => (
-                                <CarouselItem key={pet.id} className="md:basis-1/2 lg:basis-1/4">
-                                    <div className="p-2">
+                                <CarouselItem key={pet.id} className="md:basis-1/2 lg:basis-1/4 flex-shrink-0">
+                                    <div className="p-2 ml-1">
                                         <LostPetCard
                                             name={pet.name}
                                             address={pet.location}
                                             phoneNumber={pet.phoneNumber}
-                                            image={pet.image ? pet.image : "https://res.cloudinary.com/dasa1mcpz/image/upload/v1739022787/FurEverFriendsPetImages/kracd2oevfyabh2scuqk.png"}
+                                            image={pet.image}
                                             onClick={() => {
                                                 setSelectedPet(pet);
                                                 setIsOpen(true);

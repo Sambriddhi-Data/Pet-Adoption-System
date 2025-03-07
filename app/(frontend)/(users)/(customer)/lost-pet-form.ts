@@ -24,8 +24,8 @@ export const lostPetFormSchema = z.object({
         .min(7, { message: "Description name must be atleast 7 characters long" }),
 
     image: z
-        .string()
-        .min(1, { message: "Please upload atleast one image of the pet" })
+        .array(z.string()).min(1, "At least one image is required"), 
+
 })
 
 export type  TLostPetFormSchema = z.infer<typeof lostPetFormSchema>

@@ -27,12 +27,13 @@ export default function LostPetForm() {
             phoneNumber: "",
             location: "",
             description: "",
-            image: "",
+            image: [],
         }
     })
     const handleUpload = (result: any) => {
         if (result.event === "success") {
-            form.setValue("image", result.info.secure_url, { shouldValidate: true });
+            const currentImages = form.getValues("image") || [];
+            form.setValue("image", [...currentImages, result.info.secure_url], { shouldValidate: true });
             toast({
                 title: "Image Uploaded",
                 description: "Your image has been uploaded successfully!",
@@ -65,6 +66,7 @@ export default function LostPetForm() {
             });
         }
         setPending(false);
+
     }
     return (
         <main className="m-5">
@@ -167,8 +169,12 @@ export default function LostPetForm() {
                                                     },
                                                 }}
                                             >Choose image</CldUploadButton>
-                                            {field.value && (
-                                                <img src={field.value} alt="Uploaded Pet" className="mt-2 w-40 h-40 object-cover" />
+                                            {field.value && field.value.length > 0 && (
+                                                <div className="flex flex-wrap gap-2 mt-2">
+                                                    {field.value.map((img, index) => (
+                                                        <img key={index} src={img} alt={`Uploaded Pet ${index + 1}`} className="w-40 h-40 object-cover" />
+                                                    ))}
+                                                </div>
                                             )}
                                             <FormMessage />
                                         </FormItem>

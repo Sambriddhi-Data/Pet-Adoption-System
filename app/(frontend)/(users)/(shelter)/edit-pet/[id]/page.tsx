@@ -6,7 +6,6 @@ import { toast } from "@/hooks/use-toast";
 import BasicDetails from "../../../_components/shelters/(form)/basic-details";
 import HealthDetails from "../../../_components/shelters/(form)/health-details";
 import PersonalityDetails from "../../../_components/shelters/(form)/personality-details";
-import ReviewSubmit from "../../../_components/shelters/(form)/review";
 import usePetRegistrationStore from "../../../_components/shelters/(form)/store";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
@@ -64,7 +63,6 @@ export default function EditPet() {
                         personalitySummary: petData.personalitySummary || "",
                         houseTrained: petData.houseTrained || "not_trained",
                     });
-                    console.log("Pet data", petData);
 
 
                 } catch (error) {
@@ -108,9 +106,10 @@ export default function EditPet() {
 
     if (loading) return <p>Loading pet details...</p>;
     return (
-        <main className="p-6 space-y-4 flex flex-col">
+        <>
+        <main className="p-6 space-y-4">
             <div className="mx-auto w-full max-w-4xl">
-                <h2 className="text-lg font-bold mb-4">Edit Pet Details</h2>
+                <h2 className="text-lg font-bold mt-6 mb-4">Edit Pet Details</h2>
                 
                 <Tabs 
                     value={activeTab} 
@@ -142,5 +141,6 @@ export default function EditPet() {
                 </div>
             </div>
         </main>
+        </>
     );
 }
