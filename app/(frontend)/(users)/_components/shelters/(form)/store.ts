@@ -3,6 +3,7 @@ import {
     TPetBasicDetailsForm,
     TAddPetHealthForm,
     TPetPersonalityForm,
+    TPetImagesForm,
     PetFormData
 } from "../../../(shelter)/add-pet-form";
 
@@ -12,6 +13,7 @@ interface PetRegistrationState {
         basicDetails: TPetBasicDetailsForm;
         healthDetails: TAddPetHealthForm;
         personalityDetails: TPetPersonalityForm;
+        petImages: TPetImagesForm;
     };
     nextStep: () => void;
     prevStep: () => void;
@@ -19,6 +21,7 @@ interface PetRegistrationState {
     setBasicInfo: (data: Partial<TPetBasicDetailsForm>) => void;
     setHealthInfo: (data: Partial<TAddPetHealthForm>) => void;
     setPersonalityInfo: (data: Partial<TPetPersonalityForm>) => void;
+    setPetImages:(data: Partial<TPetImagesForm>) => void;
     submitForm: () => void;
     resetForm: () => void;
 }
@@ -48,7 +51,11 @@ const initialState: PetFormData = {
         social: "",
         personalitySummary: "",
         houseTrained: "not_trained"
+    },
+    petImages: {
+        image: []
     }
+
 };
 
 const usePetRegistrationStore = create<PetRegistrationState>((set, get) => ({
@@ -63,7 +70,7 @@ const usePetRegistrationStore = create<PetRegistrationState>((set, get) => ({
         step: Math.max(state.step - 1, 1)
     })),
 
-    getTotalSteps: () => 4, // Basic, Health, Personality
+    getTotalSteps: () => 5, // Basic, Health, Personality
 
     setBasicInfo: (data) =>
         set((state) => ({
@@ -97,7 +104,16 @@ const usePetRegistrationStore = create<PetRegistrationState>((set, get) => ({
                 },
             },
         })),
-
+    setPetImages: (data) =>
+        set((state) => ({
+            formData: {
+                ...state.formData,
+                petImages: {
+                    ...state.formData.petImages,
+                    ...data,
+                },
+            },
+        })),
     submitForm: () => {
         set((state) => {
             console.log("Form submitted Successfully!");

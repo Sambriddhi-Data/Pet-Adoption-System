@@ -9,7 +9,19 @@ export async function GET(req: NextRequest) {
         const size = searchParams.get("size");
         const dominantBreed = searchParams.get("dominantBreed");
 
-        const allPets = await prisma.animals.findMany();
+        const allPets = await prisma.animals.findMany({
+            include: {
+                shelter: {
+                    include: {
+                        user: {
+                            select: {
+                                location: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
 
         const filteredPets = allPets.filter((pet) => {
             const matchesSpecies = species ? pet.species === species : true;

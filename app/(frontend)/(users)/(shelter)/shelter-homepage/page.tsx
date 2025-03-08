@@ -73,7 +73,7 @@ export default async function ShelterHomepage() {
           Filter
         </Card>
       </div>
-      {/* Pet List Section */}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
         {pets.length > 0 ? (
           pets.map((pet: any) => (

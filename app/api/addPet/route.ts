@@ -6,20 +6,18 @@ export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
 
-        // Validate the entire form data
         const validation = formDataSchema.safeParse(body);
         if (!validation.success) {
             return NextResponse.json(validation.error.errors, { status: 400 });
         }
 
-        // Destructure all validated fields
         const {
             basicDetails: { name, species, description, age, status, sex, dominantBreed, arrivedAtShelter, shelterId, size },
             healthDetails: { vaccinationStatus, neuteredStatus, dateDewormed, healthIssues, otherHealthIssues, notes },
-            personalityDetails: { social, personalitySummary, houseTrained }
+            personalityDetails: { social, personalitySummary, houseTrained },
+            petImages: {image}
         } = body;
 
-        // Insert into the database
         const newPet = await prisma.animals.create({
             data: {
                 name,
@@ -30,7 +28,6 @@ export async function POST(req: NextRequest) {
                 sex,
                 dominantBreed,
                 arrivedAtShelter,
-                shelterId,
                 size,
                 vaccinationStatus,
                 neuteredStatus,
@@ -40,7 +37,11 @@ export async function POST(req: NextRequest) {
                 notes,
                 social,
                 personalitySummary,
-                houseTrained
+                houseTrained,
+                image,
+                shelter: {
+                    connect: { userId: shelterId } 
+                }
             }
         });
 

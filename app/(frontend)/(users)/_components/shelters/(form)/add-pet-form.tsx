@@ -6,6 +6,7 @@ import usePetRegistrationStore from "./store";
 import PersonalityDetails from "./personality-details";
 import HealthDetails from "./health-details";
 import ReviewSubmit from "./review";
+import AddPetImages from "./pet-images";
 
 export default function AddPet() {
 
@@ -20,6 +21,8 @@ export default function AddPet() {
             case 3:
                 return <PersonalityDetails isEditing = {false}/>;
               case 4:
+                return <AddPetImages isEditing = {false} />;
+              case 5:
                 return <ReviewSubmit isEditing = {false} />;
             default:
                 return null;
@@ -31,7 +34,6 @@ export default function AddPet() {
             <ProgressBar/>
             {/* steps */}
             <div>{renderStep()}</div>
-            
         </main>
     );
 }

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import usePetRegistrationStore from "./store";
 import { Button } from "@/components/ui/button";
 import CancelFormButton from "../../cancel-form-button";
-import { useParams } from "next/navigation";
 
 interface ReviewSubmitProps {
     isEditing: boolean;
@@ -14,44 +13,34 @@ interface ReviewSubmitProps {
 export default function ReviewSubmit({ isEditing }: ReviewSubmitProps) {
     const router = useRouter();
     const { prevStep, resetForm, formData } = usePetRegistrationStore();
-    const { id } = useParams(); 
 
-    console.log("Review Submit", id);
     const handleSubmit = async () => {
         try {
             let response;
-            if (isEditing) {
-                response = await fetch(`/api/updatePet?id=${id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(formData),
-                });
-            } else {
-                response = await fetch("/api/addPet", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(formData),
-                });
-            }
+            response = await fetch("/api/addPet", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
 
             if (!response.ok) {
-                throw new Error(`Failed to ${id ? "update" : "add"} pet details.`);
+                throw new Error(`Failed to add pet details.`);
             }
 
             // Show success message
             toast({
                 title: "Success",
-                description: id ? "Pet details updated successfully." : "Pet added successfully.",
+                description: "Pet added successfully.",
                 variant: "success",
             });
 
             router.push("/shelter-homepage");
             resetForm();
         } catch (error) {
-            console.error(`Error ${id ? "updating" : "adding"} pet details:`, error);
+            console.error(`Error adding pet details:`, error);
             toast({
                 title: "Error",
-                description: `Failed to ${id ? "update" : "add"} pet details. Please try again.`,
+                description: `Failed to add pet details. Please try again.`,
             });
         }
     };
@@ -98,9 +87,7 @@ export default function ReviewSubmit({ isEditing }: ReviewSubmitProps) {
                 <CancelFormButton route="/shelter-homepage" />
                 <div>
                     <Button onClick={prevStep} className="mr-2">Previous</Button>
-                    <Button onClick={handleSubmit}>
-                        {id ? "Save Changes" : "Submit"}
-                    </Button>
+                    <Button onClick={handleSubmit}>Submit</Button>
                 </div>
             </div>
         </main>

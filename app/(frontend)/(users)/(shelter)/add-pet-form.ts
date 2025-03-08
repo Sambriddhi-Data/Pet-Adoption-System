@@ -85,11 +85,18 @@ export const petPersonalitySchema = z.object({
 })
 export type TPetPersonalityForm = z.infer<typeof petPersonalitySchema>
 
+export const petImagesForm = z. object ({
+    image: z
+    .array(z.string()).min(1, "At least one image is required"), 
+})
+
+export type TPetImagesForm = z.infer<typeof petImagesForm>;
 
 export const formDataSchema = z.object({
     basicDetails: petBasicDetailsSchema,
     healthDetails: petHealthSchema,
     personalityDetails: petPersonalitySchema,
+    petImages: petImagesForm
 });
 
 export type PetFormData = z.infer<typeof formDataSchema>;

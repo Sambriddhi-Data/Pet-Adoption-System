@@ -155,13 +155,15 @@ model Animals {
   personalitySummary String?
   houseTrained       HouseTrainedStatus
 
+  image              String[]
+
   shelter Shelter? @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
 
   @@map("animals")
 }
 
 model LostPets {
-  id          String @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
   phoneNumber String
   location    String

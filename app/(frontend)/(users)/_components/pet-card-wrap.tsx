@@ -16,7 +16,8 @@ export default function PetCardWrap({ pet }: { pet: any }) {
                 name={pet.name}
                 age={pet.age}
                 status={pet.status}
-                address={pet.address}
+                address={pet.shelter?.user?.location}
+                images={pet.image}
             />
         </div>
     );
