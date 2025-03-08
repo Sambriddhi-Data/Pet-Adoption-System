@@ -16,10 +16,11 @@ export function PetCard({ name = "Unknown", age = "Unknown", status = "Unknown",
   return (
     <div className='mt-10 cursor-pointer'>
       <Card className="relative w-full h-80 text-left bg-white bg-opacity-90 shadow-xl rounded-2xl overflow-hidden transition-transform duration-300 hover:scale-105">
-        <CardContent className="relative w-full h-2/3">
+        <div className="relative w-full h-2/3">
           <CldImage
             src={primaryImage}
-            fill
+            height="200"
+            width="200"
             alt={name}
             crop={{
               type: 'fill',
@@ -27,7 +28,7 @@ export function PetCard({ name = "Unknown", age = "Unknown", status = "Unknown",
             }}
             className="object-cover w-full h-full"
           />
-        </CardContent>
+        </div>
 
         <CardContent className="mt-1 flex flex-col justify-between h-1/3">
           <div className="p-2 flex flex-row items-center justify-between">

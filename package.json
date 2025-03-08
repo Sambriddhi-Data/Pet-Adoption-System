@@ -29,6 +29,7 @@
     "better-auth": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "classnames": "^2.3.2",
+    "cloudinary": "^2.5.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.4",
     "embla-carousel-react": "^8.5.2",

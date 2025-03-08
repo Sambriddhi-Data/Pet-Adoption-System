@@ -19,7 +19,8 @@ export async function PUT(req: NextRequest) {
         const {
             basicDetails: { name, species, description, age, status, sex, dominantBreed, arrivedAtShelter, shelterId, size },
             healthDetails: { vaccinationStatus, neuteredStatus, dateDewormed, healthIssues, otherHealthIssues, notes },
-            personalityDetails: { social, personalitySummary, houseTrained }
+            personalityDetails: { social, personalitySummary, houseTrained },
+            petImages: {image}
         } = updatedData;
 
         const updatedPet = await prisma.animals.update({
@@ -43,7 +44,8 @@ export async function PUT(req: NextRequest) {
                 notes,
                 social,
                 personalitySummary,
-                houseTrained
+                houseTrained,
+                image: image || []
             }
         });
 

@@ -10,6 +10,7 @@ import usePetRegistrationStore from "../../../_components/shelters/(form)/store"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import CancelFormButton from "../../../_components/cancel-form-button";
+import AddPetImages from "../../../_components/shelters/(form)/pet-images";
 
 export default function EditPet() {
     const { id } = useParams();
@@ -20,6 +21,7 @@ export default function EditPet() {
         setBasicInfo, 
         setHealthInfo, 
         setPersonalityInfo, 
+        setPetImages,
         resetForm,
         formData 
     } = usePetRegistrationStore();
@@ -63,6 +65,9 @@ export default function EditPet() {
                         personalitySummary: petData.personalitySummary || "",
                         houseTrained: petData.houseTrained || "not_trained",
                     });
+                    setPetImages({
+                        image: petData.image || ""
+                    })
 
 
                 } catch (error) {
@@ -74,7 +79,7 @@ export default function EditPet() {
             };
             fetchPetDetails();
         }
-    }, [id, setBasicInfo, setHealthInfo, setPersonalityInfo]);
+    }, [id, setBasicInfo, setHealthInfo, setPersonalityInfo, setPetImages]);
 
     // Save changes for the current active tab
     const handleSaveChanges = async () => {
@@ -116,10 +121,11 @@ export default function EditPet() {
                     onValueChange={setActiveTab}
                     defaultValue="basic_details"
                 >
-                    <TabsList className="grid w-full grid-cols-3">
+                    <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="basic_details">Basic Details</TabsTrigger>
                         <TabsTrigger value="health_details">Health Details</TabsTrigger>
                         <TabsTrigger value="personality_details">Personality Details</TabsTrigger>
+                        <TabsTrigger value="images">Images</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="basic_details">
@@ -131,6 +137,10 @@ export default function EditPet() {
                     <TabsContent value="personality_details">
                         <PersonalityDetails isEditing={true} />
                     </TabsContent>
+                    <TabsContent value="images">
+                        <AddPetImages isEditing={true} />
+                    </TabsContent>
+
                 </Tabs>
 
                 <div className="flex gap-2 justify-end mt-4">

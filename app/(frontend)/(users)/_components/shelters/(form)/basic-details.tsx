@@ -55,7 +55,7 @@ const dominantBreed = [
     { value: "dalmatian", label: "Dalmatian" },
     { value: "bhotia", label: "Bhotia (Himalayan Sheepdog)" },
     { value: "tibetan_mastiff", label: "Tibetan Mastiff" },
-    { value: "kathmandu_street_dog", label: "Kathmandu Street Dog" },
+    { value: "local_breed", label: "Local Breed" },
     { value: "mixed", label: "Mixed Breed" },
     { value: "unknown", label: "Unknown Breed" }
 ];
