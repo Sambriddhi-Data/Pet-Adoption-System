@@ -1,13 +1,14 @@
 'use client'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import { redirect, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { buttonVariants } from './ui/button';
 import { signOut, useSession } from '@/auth-client';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 import classNames from 'classnames';
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
   const session = useSession();
@@ -15,11 +16,12 @@ export default function Navbar() {
   const currentPath = usePathname();
   const user = session?.data?.user;
   const [menuItems, setMenuItems] = useState<{ label: string, path: string }[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     if (!user) return;
 
-    let items = [{ label: "Profile", path: "/customer-profile" }];
+    let items = [{ label: "Profile", path: `/customer-profile/${user.id}` }];
 
     if (user.user_role === "shelter_manager") {
       items.unshift({ label: "Shelter Controls", path: "/shelter-homepage" });
@@ -36,6 +38,10 @@ export default function Navbar() {
     { title: "About Us", href: "/about-us" },
     { title: "Blog", href: "/blog" },
   ];
+
+  const handleRedirect = (path: string) => {
+    router.push(path);
+  };
 
   return (
     <div className="border-b px-16 bg-primary">
@@ -67,7 +73,7 @@ export default function Navbar() {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {menuItems.map(item => (
-                  <DropdownMenuItem key={item.path} onClick={() => redirect(item.path)}>
+                  <DropdownMenuItem key={item.path} onClick={() => handleRedirect(item.path)}>
                     {item.label}
                   </DropdownMenuItem>
                 ))}
@@ -94,7 +100,7 @@ export default function Navbar() {
             <AlertDialogAction onClick={async () => {
               const response = await signOut();
               if (response.data?.success) {
-                redirect("/sign-in");
+                router.push("/sign-in");
               }
             }}>
               Sign Out

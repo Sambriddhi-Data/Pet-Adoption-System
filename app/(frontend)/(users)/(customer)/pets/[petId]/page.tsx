@@ -13,7 +13,7 @@ interface PetData {
 
 function PetInfoPage() {
     const { petId } = useParams();
-    const [pet, setPet] = useState<PetData[]>([]);
+    const [pet, setPet] = useState<PetData>();
     useEffect(() => {
         if (petId) {
             const fetchPetDetails = async () => {
@@ -34,9 +34,18 @@ function PetInfoPage() {
     }, [petId]);
     return (
         <div>
-            PetInfoPage
-                <div>{pet.id}</div>
-                <ApplytoAdoptButton/>
+            <h1>Pet Info Page</h1>
+            {pet ? (
+                <div>
+                    <p>ID: {pet.id}</p>
+                    <p>Name: {pet.name}</p>
+                    <p>Breed: {pet.breed}</p>
+                    <p>Age: {pet.age}</p>
+                    <ApplytoAdoptButton />
+                </div>
+            ) : (
+                <p>Loading pet details...</p>
+            )}
         </div>
 
     )

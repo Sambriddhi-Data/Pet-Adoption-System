@@ -1,8 +1,7 @@
 import { useEffect, useCallback } from 'react';
 
-export const useSignedCloudinaryWidget = (onSuccess: (result: any) => void) => {
+export const useSignedCloudinaryWidgetHome = (onSuccess: (result: any) => void) => {
   useEffect(() => {
-    // Load the Cloudinary widget script if not already loaded
     if (!window.cloudinary) {
       const script = document.createElement('script');
       script.src = 'https://upload-widget.cloudinary.com/global/all.js';
@@ -19,17 +18,17 @@ export const useSignedCloudinaryWidget = (onSuccess: (result: any) => void) => {
 
     try {
       // Get your signature from your API
-      const signResponse = await fetch('/api/cloudinary/sign');
+      const signResponse = await fetch('/api/cloudinary/homesign');
       const { signature, timestamp, api_key } = await signResponse.json();
 
       // Create the widget with signed upload parameters
       const widget = window.cloudinary.createUploadWidget(
         {
-          cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+          cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, 
           apiKey: api_key,
           uploadSignature: signature,
           uploadSignatureTimestamp: timestamp,
-          folder: 'pet_images', // Set your folder structure
+          folder: 'home_images', // folder
           maxFiles: 5,
           maxFileSize: 5000000, // 5MB
           clientAllowedFormats: ["jpg", "jpeg", "png"],

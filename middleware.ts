@@ -2,11 +2,10 @@ import { betterFetch } from "@better-fetch/fetch";
 import { NextResponse, type NextRequest } from "next/server";
 import { Session } from "./auth";
 
-const authRoutes = ["/sign-in", "/sign-up", "/shelter-sign-up","/email-verified","/forgot-password", "/reset-password"];
-const publicRoutes = ["/", "/adopt-pet", "/about-us", "/rehome-pet", "/public-page", "/customer-profile", "/blog", "/new-user", "/pets/"];
+const authRoutes = ["/sign-in", "/sign-up", "/shelter-sign-up", "/email-verified", "/forgot-password", "/reset-password"];
+const publicRoutes = ["/", "/adopt-pet", "/about-us", "/rehome-pet", "/public-page", "/blog", "/new-user", "/pets/"];
 const shelterRoutes = [
   "/shelter-homepage",
-  "/pets/[petId]",
   "/shelter-profile",
   "/adoption-requests",
   "/rehoming-requests",
@@ -15,7 +14,6 @@ const shelterRoutes = [
   "/edit-pet/"
 ];
 const landingPageRoute = ["/shelter-landing-page"];
-
 const petIdPattern = /^\/pets\/[\w-]+$/; // Matches /pets/{dynamicId}
 const adminRoutes = ["/admin-homepage"]; // Add admin routes here
 
@@ -23,10 +21,12 @@ export default async function authMiddleware(request: NextRequest) {
   const pathName = request.nextUrl.pathname;
   const searchParams = request.nextUrl.searchParams;
   const isPostAuth = searchParams.get('postAuth') === 'true';
+  const customerProfilePattern = /^\/customer-profile\/[\w-]+$/;
+  const isCustomerProfileRoute = customerProfilePattern.test(pathName);
 
   // Check which type of route is being accessed
   const isAuthRoute = authRoutes.includes(pathName);
-  const isPublicRoute = publicRoutes.includes(pathName) || petIdPattern.test(pathName);
+  const isPublicRoute = publicRoutes.includes(pathName) || petIdPattern.test(pathName) || isCustomerProfileRoute;
   const isShelterRoute = shelterRoutes.some((route) => pathName.startsWith(route));
   const isAdminRoute = adminRoutes.includes(pathName);
   const isLandingPageRoute = landingPageRoute.includes(pathName);

@@ -82,6 +82,8 @@ model User {
 
   role Role @default(customer)
 
+  adoptionProfile AdoptionProfile?
+
   @@map("user")
 }
 
@@ -155,7 +157,7 @@ model Animals {
   personalitySummary String?
   houseTrained       HouseTrainedStatus
 
-  image              String[]
+  image String[]
 
   shelter Shelter? @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
 
@@ -171,6 +173,34 @@ model LostPets {
   image       String[]
 
   @@map("lostpets")
+}
+
+model AdoptionProfile {
+  id String @id @default(uuid())
+
+  image                      String[]
+  home_situation             String?
+  outside_space              String?
+  household_setting          String?
+  household_typical_activity String?
+  min_age                    Int?
+  age                        Boolean  @default(false)
+
+  flatmate           Boolean @default(false)
+  allergy            Boolean @default(false)
+  other_animals      Boolean @default(false)
+  other_animals_info String?
+  neuter_status      String?
+  lifestyle          String?
+  move_holiday       String?
+  experience         String?
+  agreement          Boolean @default(false)
+  other_information  String?
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("adoptionprofile")
 }
 
 model Verification {

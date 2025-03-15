@@ -143,6 +143,11 @@ export default function LostPetForm() {
                                                 onSuccess={handleUpload}
                                                 className="z-9999"
                                                 options={{
+                                                    maxFiles: 5,
+                                                    maxFileSize: 5000000,
+                                                    clientAllowedFormats: ["jpg", "jpeg", "png"],
+                                                    sources: ["local", "camera", "url", "google_drive"],
+                                                    resourceType: "image",
                                                     styles: {
                                                         palette: {
                                                             window: "#FFFFFF",
@@ -169,6 +174,10 @@ export default function LostPetForm() {
                                                     },
                                                 }}
                                             >Choose image</CldUploadButton>
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                    Max size: 5MB.
+                                            </p>
+                                            
                                             {field.value && field.value.length > 0 && (
                                                 <div className="flex flex-wrap gap-2 mt-2">
                                                     {field.value.map((img, index) => (
