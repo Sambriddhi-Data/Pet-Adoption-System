@@ -19,7 +19,8 @@ export async function GET(req: NextRequest) {
         user: {
           select: {
             name: true,
-            location: true, 
+            location: true,
+            phoneNumber: true, 
           },
         },
       },

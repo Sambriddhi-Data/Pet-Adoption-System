@@ -25,7 +25,7 @@ export const auth = betterAuth({
             },
             isVerifiedUser: {
                 type: 'boolean',
-            }
+            },
         }
     },
     hooks: {
@@ -109,7 +109,9 @@ export const auth = betterAuth({
     },
 
     plugins: [
-        admin()
+        admin({
+            defaultRole: "customer",
+        })
     ],
 
 } satisfies BetterAuthOptions);

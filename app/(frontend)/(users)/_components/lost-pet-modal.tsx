@@ -1,3 +1,4 @@
+'use client';
 import React, { useEffect, useRef } from "react";
 import { CldImage } from "next-cloudinary";
 import { Card, CardContent, CardDescription } from "@/components/ui/card";

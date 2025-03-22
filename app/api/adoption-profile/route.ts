@@ -1,11 +1,11 @@
-import { applyToAdoptSchema } from "@/app/(frontend)/(users)/_components/forms/customer-form-schema";
+import { adopterProfileSchema, applyToAdoptSchema } from "@/app/(frontend)/(users)/_components/forms/customer-form-schema";
 import prisma from "@/prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const validation = applyToAdoptSchema.safeParse(body);
+        const validation = adopterProfileSchema.safeParse(body);
 
         if (!validation.success) {
             return NextResponse.json(validation.error.errors, { status: 400 });
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
             userId, name, email, phoneNumber, location, image, home_situation,
             outside_space, household_setting, household_typical_activity, min_age, age,
             flatmate, allergy, other_animals, other_animals_info, neuter_status,
-            lifestyle, move_holiday, experience, agreement, other_information
+            lifestyle, move_holiday, experience, agreement
         } = body;
 
         // Use a transaction to update both user and adoptionProfile
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
                         image, home_situation, outside_space, household_setting,
                         household_typical_activity, min_age, age, flatmate, allergy,
                         other_animals, other_animals_info, neuter_status, lifestyle,
-                        move_holiday, experience, agreement, other_information
+                        move_holiday, experience, agreement
                     }
                 });
             } else {
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
                         image, age, home_situation, outside_space, household_setting,
                         household_typical_activity, min_age, flatmate, allergy,
                         other_animals, other_animals_info, neuter_status, lifestyle,
-                        move_holiday, experience, agreement, other_information,
+                        move_holiday, experience, agreement,
                         user: { connect: { id: userId } }
                     }
                 });
@@ -113,7 +113,6 @@ export async function GET(req: Request) {
                 move_holiday: userWithAdoptionProfile.adoptionProfile?.move_holiday,
                 experience: userWithAdoptionProfile.adoptionProfile?.experience,
                 agreement: userWithAdoptionProfile.adoptionProfile?.agreement,
-                other_information: userWithAdoptionProfile.adoptionProfile?.other_information,
             }
         });
 

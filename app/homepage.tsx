@@ -1,7 +1,6 @@
 'use client';
 
 import Navbar from "@/components/navbar"
-import RegisterButton from "@/components/registerButton";
 import { useSession } from "@/auth-client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
@@ -11,15 +10,22 @@ import Image from "next/image";
 import LostPetForm from "./(frontend)/(users)/_components/forms/lost-pet-form";
 import { useEffect, useState } from "react";
 import { CustomModal } from "@/components/custom-modal";
+import { Session } from "./(frontend)/(auth)/type";
+import { useRouter } from "next/navigation";
 
-export default function HomePage() {
-    const session = useSession();
+type HomePageProps = {
+    initialSession: Session;
+};
+export const HomePage = ({ initialSession }: HomePageProps) => {
+    const [session, setSession] = useState(initialSession);
+    const router = useRouter();
 
     const [modalOpen, setModalOpen] = useState(false);
 
     return (
         <div className="space-y-4">
             <Navbar />
+
             <div className="space-y-4 p-4">
                 <Card className="p-2 border-coral">
                     <CardHeader className="text-center text-3xl text-red-600 relative">
@@ -48,7 +54,6 @@ export default function HomePage() {
                                 width={120}
                                 height={162}
                                 priority
-
                             />
                         </div>
                     </h1>
@@ -56,22 +61,23 @@ export default function HomePage() {
 
                 <FlipCardComponent />
                 <div>
-                    {session?.data ? (
-                        session?.data?.user?.user_role === "shelter_manager" ? (
+                    {session? (
+                        session?.user?.user_role === "shelter_manager" ? (
                             <p></p>
                         ) : (
                             <div>
                                 <p>Are you are a shelter manager? Register as a shelter manager and use Fur-Ever Friends as a platform
                                     to showcase the furry friends in your care!!
                                 </p>
-                                <RegisterButton route="/shelter-sign-up" />
+                                <Button onClick={() => router.push("/shelter-sign-up")}>Shelter Register</Button>
+ 
                             </div>
                         )
                     ) : (
                         <div>
                             <p>New to the website? </p>
-                            <RegisterButton route="/sign-up" />
-                        </div>
+                            <Button onClick={() => router.push("/'sign up'")}>Register</Button>
+                            </div>
                     )}
                 </div>
             </div>

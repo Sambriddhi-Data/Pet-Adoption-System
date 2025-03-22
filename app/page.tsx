@@ -1,9 +1,15 @@
-import HomePage from "./homepage";
+import { auth } from "@/auth";
+import {HomePage} from "./homepage";
+import { headers } from "next/headers";
 
-export default function Home() {
+export default async function Home() {
+   const session = await auth.api.getSession({
+      headers: await headers()
+  });
+  
   return (
     <div>
-      <HomePage/>
+      <HomePage initialSession={session}  />
     </div>
   );
 }

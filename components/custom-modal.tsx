@@ -22,22 +22,22 @@ export const CustomModal: React.FC<CustomModalProps> = ({
 
   useEffect(() => {
     setMounted(true);
-    
-    // Prevent body scrolling when modal is open
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      if (isOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'auto';
+      }
     }
-    
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
-  }, [isOpen]);
+  }, [isOpen, mounted]);
 
-  if (!mounted || !isOpen) return null;
+  if (!mounted) return null;
 
-  // Using createPortal to render the modal at the document body level
   return createPortal(
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[1000]">
+    <div className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[1000] ${!isOpen ? 'hidden' : ''}`}>
       <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto z-[1001]">
         <div className="flex items-center justify-between p-4 border-b">
           <h2 className="text-xl font-semibold">{title}</h2>

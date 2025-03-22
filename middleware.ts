@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { Session } from "./auth";
 
 const authRoutes = ["/sign-in", "/sign-up", "/shelter-sign-up", "/email-verified", "/forgot-password", "/reset-password"];
-const publicRoutes = ["/", "/adopt-pet", "/about-us", "/rehome-pet", "/public-page", "/blog", "/new-user", "/pets/"];
+const publicRoutes = ["/", "/adopt-pet", "/about-us", "/rehome-pet", "/blog", "/new-user", "/pets/"];
 const shelterRoutes = [
   "/shelter-homepage",
   "/shelter-profile",
@@ -13,20 +13,24 @@ const shelterRoutes = [
   "/add-pet-details/images",
   "/edit-pet/"
 ];
+const customerRoutes=['/rehome-pet-request']
 const landingPageRoute = ["/shelter-landing-page"];
-const petIdPattern = /^\/pets\/[\w-]+$/; // Matches /pets/{dynamicId}
-const adminRoutes = ["/admin-homepage"]; // Add admin routes here
+const petIdPattern = /^\/pets\/[\w-]+$/; 
+const adminRoutes = ["/admin-homepage"]; 
 
 export default async function authMiddleware(request: NextRequest) {
   const pathName = request.nextUrl.pathname;
   const searchParams = request.nextUrl.searchParams;
   const isPostAuth = searchParams.get('postAuth') === 'true';
   const customerProfilePattern = /^\/customer-profile\/[\w-]+$/;
+  const shelterPublicPagePattern = /^\/public-page\/[\w-]+$/;
   const isCustomerProfileRoute = customerProfilePattern.test(pathName);
+  const isShelterPublicPageRoute = shelterPublicPagePattern.test(pathName);
 
   // Check which type of route is being accessed
   const isAuthRoute = authRoutes.includes(pathName);
-  const isPublicRoute = publicRoutes.includes(pathName) || petIdPattern.test(pathName) || isCustomerProfileRoute;
+  const isCustomerRoute = customerRoutes.includes(pathName);
+  const isPublicRoute = publicRoutes.includes(pathName) || petIdPattern.test(pathName) || isCustomerProfileRoute || isShelterPublicPageRoute;
   const isShelterRoute = shelterRoutes.some((route) => pathName.startsWith(route));
   const isAdminRoute = adminRoutes.includes(pathName);
   const isLandingPageRoute = landingPageRoute.includes(pathName);
@@ -113,7 +117,7 @@ export default async function authMiddleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/", request.url));
     }
     // Allow access to public routes
-    if (isPublicRoute) {
+    if (isPublicRoute || isCustomerRoute) {
       return NextResponse.next();
     }
   }

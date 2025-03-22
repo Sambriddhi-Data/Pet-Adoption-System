@@ -31,7 +31,7 @@ const healthIssues = [
     { value: "deaf", label: "Deaf" },
     { value: "missing_limbs", label: "Missing Limbs" },
     { value: "medication_required", label: "Medication required" },
-    { value: "others", label: "Others" },
+    { value: "other_issues", label: "Others" },
 ]
 
 interface FormsProps {

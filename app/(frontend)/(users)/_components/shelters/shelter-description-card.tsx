@@ -3,6 +3,7 @@
 import { useSession } from "@/auth-client";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface ShelterInfo {
@@ -14,18 +15,16 @@ interface ShelterInfo {
 }
 
 export function ShelterInfoCard() {
-    const session = useSession(); // Ensure this always runs
+    const{id} = useParams();
     const [shelterInfo, setShelterInfo] = useState<ShelterInfo | null>(null);
     const [loading, setLoading] = useState(true);
 
-    const user = session?.data?.user;
-
     useEffect(() => {
-        if (!user?.id) return; // Ensure we only fetch when user.id is available
+        if (!id) return; 
 
         const fetchShelterInfo = async () => {
             try {
-                const response = await fetch(`/api/getShelterInfo?shelterId=${user.id}`);
+                const response = await fetch(`/api/getShelterInfo?shelterId=${id}`);
                 const data: ShelterInfo = await response.json();
                 setShelterInfo(data);
             } catch (error) {
@@ -36,9 +35,7 @@ export function ShelterInfoCard() {
         };
 
         fetchShelterInfo();
-    }, [user?.id]);
-
-    if (!user) return null;
+    }, [id]);
 
     return (
         <Card className="p-6 w-10/12 text-left">

@@ -10,17 +10,29 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: "Pet ID is required" }, { status: 400 });
         }
 
-        const pet = await prisma.animals.findUnique({
+        const pet = await prisma.animals.findUniqueOrThrow({
             where: { id: petId },
+            include: {
+                shelter: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                location: true,
+                            },
+                        },
+                    },
+                },
+            },
         });
-
-        if (!pet) {
-            return NextResponse.json({ error: "Pet not found" }, { status: 404 });
-        }
 
         return NextResponse.json(pet);
     } catch (error) {
         console.error("Error fetching pet details:", error);
+        if (error === "NotFoundError") {
+            return NextResponse.json({ error: "Pet not found" }, { status: 404 });
+        }
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

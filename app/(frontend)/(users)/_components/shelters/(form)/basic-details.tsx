@@ -30,11 +30,34 @@ const sex = [
     { value: "unknown", label: "Unknown" },
 ];
 
-const size = [
-    { value: "small", label: "Small (0-5 kg)" },
-    { value: "medium", label: "Medium (5-15 kg)" },
-    { value: "large", label: "Large (15+ kg)" },
-];
+const sizeOptions: Record<string, { value: string; label: string }[]> = {
+    dog: [
+        { value: "small", label: "Small (0-5 kg)" },
+        { value: "medium", label: "Medium (5-15 kg)" },
+        { value: "large", label: "Large (15+ kg)" },
+    ],
+    cat: [
+        { value: "small", label: "Small (0-4 kg)" },
+        { value: "medium", label: "Medium (4-6 kg)" },
+        { value: "large", label: "Large (6+ kg)" },
+    ],
+    rabbit: [
+        { value: "mini", label: "Mini (0-1.5 kg)" },
+        { value: "small", label: "Small (1.5-2.5 kg)" },
+        { value: "medium", label: "Medium (2.5-4 kg)" },
+        { value: "large", label: "Large (4+ kg)" },
+    ],
+    parrot: [
+        { value: "small", label: "Small (0-200 g)" },
+        { value: "medium", label: "Medium (200-400 g)" },
+        { value: "large", label: "Large (400+ g)" },
+    ],
+    others: [
+        { value: "small", label: "Small" },
+        { value: "medium", label: "Medium" },
+        { value: "large", label: "Large" },
+    ],
+};
 
 const dominantBreed = [
     { value: "labrador", label: "Labrador Retriever" },
@@ -199,7 +222,7 @@ export default function BasicDetails({ isEditing }: FormsProps) {
                                         <FormLabel>Size (when adult)</FormLabel>
                                         <FormControl>
                                             <Combobox
-                                                options={size}
+                                                options={speciesValue ? sizeOptions[speciesValue] || sizeOptions.others : []}
                                                 placeholder="Select size..."
                                                 selectedValue={field.value}
                                                 onSelect={(value) => field.onChange(value)}

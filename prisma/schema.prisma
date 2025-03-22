@@ -50,7 +50,7 @@ enum HealthIssues {
   deaf
   missing_limbs
   medication_required
-  others
+  other_issues
 }
 
 enum HouseTrainedStatus {
@@ -83,6 +83,7 @@ model User {
   role Role @default(customer)
 
   adoptionProfile AdoptionProfile?
+  rehomePet       RehomePet[]
 
   @@map("user")
 }
@@ -128,6 +129,7 @@ model Shelter {
   id          String    @id @default(cuid())
   userId      String    @unique
   shelterDesc String?
+  logo        String?
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   animal      Animals[]
 
@@ -160,6 +162,7 @@ model Animals {
   image String[]
 
   shelter Shelter? @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
+  adoptionrequests AdoptionRequests[]
 
   @@map("animals")
 }
@@ -176,14 +179,14 @@ model LostPets {
 }
 
 model AdoptionProfile {
-  id String @id @default(uuid())
+  id String @id @default(cuid())
 
   image                      String[]
-  home_situation             String?
-  outside_space              String?
-  household_setting          String?
-  household_typical_activity String?
-  min_age                    Int?
+  home_situation             String
+  outside_space              String
+  household_setting          String
+  household_typical_activity String
+  min_age                    String
   age                        Boolean  @default(false)
 
   flatmate           Boolean @default(false)
@@ -191,16 +194,53 @@ model AdoptionProfile {
   other_animals      Boolean @default(false)
   other_animals_info String?
   neuter_status      String?
-  lifestyle          String?
-  move_holiday       String?
-  experience         String?
+  lifestyle          String
+  move_holiday       String
+  experience         String
   agreement          Boolean @default(false)
-  other_information  String?
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  adoptionrequest AdoptionRequests[]
+
   @@map("adoptionprofile")
+}
+
+model AdoptionRequests {
+  id                String          @id @default(cuid())
+  petId             String
+  animals          Animals          @relation(fields: [petId], references: [id], onDelete: Cascade)
+
+  adoptionProfileId String 
+  adoptionprofile  AdoptionProfile  @relation(fields: [adoptionProfileId], references: [id], onDelete: Cascade)
+
+  message          String
+  createdAt       DateTime @default(now())
+
+  @@map("adoptionrequests")
+}
+
+model RehomePet {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  species      String
+  isBondedPair Boolean  @default(false)
+  rehomeReason String[]
+  keepDuration String
+  location     String
+  isOver18     Boolean  @default(false)
+  email        String
+  firstName    String
+  lastName     String
+  phoneNumber  String
+  image        String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("rehomepet")
 }
 
 model Verification {

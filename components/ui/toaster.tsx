@@ -19,13 +19,15 @@ export function Toaster() {
       {toasts.map(({ id, title, description, action, variant, ...props }) => (
         <Toast key={id} variant={variant} {...props}>
           <div className="grid gap-1">
-            {title && <ToastTitle>{title}</ToastTitle>}
-            {description && (
-              <div className="flex items-center gap-2">
-                {variant === "success" && <Check className="h-4 w-4 text-white" />}
-                {variant === "destructive" && <CircleAlert className="h-4 w-4 text-white" />}
-                <ToastDescription>{description}</ToastDescription>
+            {title && <div className="flex items-center gap-2">
+              {variant === "success" && <Check className="h-4 w-4 text-white" />}
+              {variant === "destructive" && <CircleAlert className="h-4 w-4 text-white" />}
+              <ToastTitle>{title}</ToastTitle>              
               </div>
+            }
+            {description && (
+
+              <ToastDescription>{description}</ToastDescription>
             )}
           </div>
           {action}
