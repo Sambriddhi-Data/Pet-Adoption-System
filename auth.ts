@@ -77,10 +77,11 @@ export const auth = betterAuth({
                     address: "no-reply@demomailtrap.com",
                 },
                 recipients: [{ name: user.name ?? "User", address: user.email }],
-                subject: "Verify your email address",
-                message: `Click the link to verify your email: <a href="${url}">Reset Password</a>`,
+                subject: "Reset Your Password",
+                message: `Click the link to reset your password: <a href="${url}">Reset Password</a> <br/> This link expires in 1 hour of the request. IF the request has expired please request a new one.`,
             });
         },
+        resetPasswordTokenExpiresIn: 3600, // 1 hour
     },
 
     socialProviders: {
@@ -103,7 +104,7 @@ export const auth = betterAuth({
                 },
                 recipients: [{ name: user.name ?? "User", address: user.email }],
                 subject: "Verify your email address",
-                message: `Click the link to verify your email: <a href="${verificationUrl}">Verify Email</a>`,
+                message: `<h1>Welcome to Fur-Ever Friends</h1> You must verify your email to sign in to the website. Click the link to verify your email: <a href="${verificationUrl}">Verify Email</a>`,
             });
         },
     },

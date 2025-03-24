@@ -41,49 +41,54 @@ interface AdopterProfile {
         min_age: string
     }
     userId: string,
-
 }
+interface UserWithPhoneNumber {
+    id: string;
+    phoneNumber: string;
+}
+
 const home_situation = [
-    { value: "own", label: "Own" },
-    { value: "rented", label: "Rented" },
-    { value: "other", label: "Other" },
+    { value: "Own", label: "Own" },
+    { value: "Rented", label: "Rented" },
+    { value: "Other", label: "Other" },
 ]
 const outside_space = [
-    { value: "garden", label: "Garden" },
-    { value: "terrace_roof", label: "Terrace/roof" },
+    { value: "Garden", label: "Garden" },
+    { value: "Terrace/Roof", label: "Terrace/roof" },
     { value: "no", label: "No Outside Space" },
 ]
 const household_setting = [
-    { value: "city", label: "City" },
-    { value: "suburban", label: "Suburban" },
-    { value: "rural", label: "Rural" },
+    { value: "City", label: "City" },
+    { value: "Suburban", label: "Suburban" },
+    { value: "Rural", label: "Rural" },
 ]
 const household_typical_activity = [
-    { value: "busy", label: "Busy/Noisy" },
-    { value: "moderate", label: "Moderate guests visits" },
-    { value: "quiet", label: "Quiet with ocassional guests" },
+    { value: "Busy", label: "Busy/Noisy" },
+    { value: "Moderate", label: "Moderate guests visits" },
+    { value: "Quiet", label: "Quiet with ocassional guests" },
 ]
 const flatmate = [
     { value: "true", label: "Yes" },
     { value: "false", label: "No" },
 ]
 const neuter_status = [
-    { value: "neutered", label: "Neutered" },
-    { value: "not neutered", label: "Not neutered" },
-    { value: "pending", label: "Pending" },
+    { value: "Neutered", label: "Neutered" },
+    { value: "Not neutered", label: "Not neutered" },
+    { value: "Pending", label: "Pending" },
 ]
 
 
 export default function AdopterProfileForm() {
 
     const router = useRouter();
-    const session = useSession();
+    const { data: session } = useSession();
     const { id } = useParams();
-    const user = session?.data?.user;
+    const user = session?.user;
     const [pending, setPending] = useState(false);
     const [loading, setLoading] = useState(true);
     const [adopterProfile, setAdopterProfile] = useState<AdopterProfile>();
     const [isDeleting, setIsDeleting] = useState(false);
+    const [checkPhn, setCheckPhn] = useState<UserWithPhoneNumber | null>();
 
     useEffect(() => {
         const fetchAdopterProfile = async () => {
@@ -102,9 +107,7 @@ export default function AdopterProfileForm() {
                 setLoading(false);
             }
         };
-
         fetchAdopterProfile();
-
     }, [id]);
     console.log(adopterProfile);
 
@@ -112,7 +115,7 @@ export default function AdopterProfileForm() {
         resolver: zodResolver(adopterProfileSchema),
         defaultValues: {
             name: "",
-            email: "",
+            email: user?.email,
             phoneNumber: "",
             location: "",
             image: [],
@@ -121,7 +124,7 @@ export default function AdopterProfileForm() {
             outside_space: "",
             household_setting: "",
             household_typical_activity: "",
-            userId: user?.id ?? "",
+            userId: user?.id || "",
             min_age: "",
             flatmate: false,
             allergy: false,
@@ -134,7 +137,31 @@ export default function AdopterProfileForm() {
             agreement: false,
         }
     });
+    const phoneNumber = form.watch("phoneNumber");
 
+    useEffect(() => {
+        if (!phoneNumber) return; 
+
+        const fetchPhoneNumber = async () => {
+            try {
+                const response = await fetch(`/api/getPhoneNumbers?phn=${phoneNumber}`);
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+                setCheckPhn(data);
+            } catch (error) {
+                console.error("Error fetching user with phone number:", error);
+                toast({
+                    title: "Error",
+                    description: "Failed to check phone number availability.",
+                    variant: "destructive",
+                });
+            }
+        };
+
+        fetchPhoneNumber();
+    }, [phoneNumber]);
 
     useEffect(() => {
         if (adopterProfile && user) {
@@ -269,6 +296,17 @@ export default function AdopterProfileForm() {
         setPending(true);
         console.log("Submitting profile:", values);
 
+        if (checkPhn && checkPhn.id !== id) {
+            toast({
+                title: "Phone number is already in use",
+                description: "Please enter a different phone number.",
+                variant: "destructive",
+            });
+            setPending(false);
+            return; // Prevent form submission
+        }
+
+
         try {
             const response = await fetch('/api/adoption-profile', {
                 method: "POST",
@@ -327,19 +365,7 @@ export default function AdopterProfileForm() {
                                             </FormItem>
                                         )}
                                     />
-                                    <FormField
-                                        control={form.control}
-                                        name="email"
-                                        render={({ field }) => (
-                                            <FormItem className="flex flex-col">
-                                                <FormLabel>Email:<span style={{ color: 'red' }}> *</span></FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="johndoe@gmail.com" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -702,9 +728,9 @@ export default function AdopterProfileForm() {
 
                             </div>
                             <div className="flex justify-center w-1/12">
-                            <LoadingButton pending={pending}>
-                                Submit
-                            </LoadingButton>
+                                <LoadingButton pending={pending}>
+                                    Submit
+                                </LoadingButton>
                             </div>
                         </form>
                     </Form>
