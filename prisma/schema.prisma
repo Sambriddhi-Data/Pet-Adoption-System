@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,16 +7,191 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id              String           @id
+  email           String           @unique
+  name            String
+  emailVerified   Boolean          @default(false)
+  user_role       Role             @default(customer)
+  createdAt       DateTime
+  updatedAt       DateTime
+  phoneNumber     String?          @unique
+  location        String?
+  isVerifiedUser  Boolean          @default(false)
+  image           String?
+  banned          Boolean?
+  banReason       String?
+  banExpires      DateTime?
+  role            Role             @default(customer)
+  accounts        Account[]
+  adoptionProfile AdoptionProfile?
+  rehomePet       RehomePet[]
+  sessions        Session[]
+  shelter         Shelter?
+
+  @@map("user")
+}
+
+model Session {
+  id             String   @id
+  expiresAt      DateTime
+  token          String   @unique
+  createdAt      DateTime
+  updatedAt      DateTime
+  ipAddress      String?
+  userAgent      String?
+  userId         String
+  impersonatedBy String?
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+  scope                 String?
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("account")
+}
+
+model Shelter {
+  id          String    @id @default(cuid())
+  userId      String    @unique
+  shelterDesc String?
+  logo        String?
+  animal      Animals[]
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("shelter")
+}
+
+model Animals {
+  id                 String             @id @default(cuid())
+  name               String
+  species            String
+  age                String?
+  size               String?
+  sex                String             @default("Unknown")
+  status             Status             @default(available)
+  dominantBreed      String?
+  shelterId          String
+  vaccinationStatus  VaccinationStatus?
+  neuteredStatus     NeuteredStatus?
+  dateDewormed       String?
+  healthIssues       HealthIssues?
+  otherHealthIssues  String?
+  notes              String?
+  social             String?
+  personalitySummary String?
+  houseTrained       HouseTrainedStatus
+  image              String[]
+  adoptionrequests   AdoptionRequests[]
+  shelter            Shelter            @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@map("animals")
+}
+
+model LostPets {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  phoneNumber String
+  location    String
+  status      String?
+  image       String[]
+
+  @@map("lostpets")
+}
+
+model AdoptionProfile {
+  id                         String             @id @default(cuid())
+  image                      String[]
+  userId                     String             @unique
+  age                        Boolean            @default(false)
+  home_situation             String
+  household_setting          String
+  household_typical_activity String
+  min_age                    String
+  outside_space              String
+  allergy                    Boolean            @default(false)
+  experience                 String
+  flatmate                   Boolean            @default(false)
+  lifestyle                  String
+  move_holiday               String
+  neuter_status              String?
+  other_animals              Boolean            @default(false)
+  other_animals_info         String?
+  agreement                  Boolean            @default(false)
+  user                       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  adoptionrequest            AdoptionRequests[]
+
+  @@map("adoptionprofile")
+}
+
+model AdoptionRequests {
+  id                String          @id @default(cuid())
+  petId             String
+  adoptionProfileId String
+  message           String
+  createdAt         DateTime        @default(now())
+  adoptionprofile   AdoptionProfile @relation(fields: [adoptionProfileId], references: [id], onDelete: Cascade)
+  animals           Animals         @relation(fields: [petId], references: [id], onDelete: Cascade)
+
+  @@map("adoptionrequests")
+}
+
+model Test {
+  id  String   @id @default(cuid())
+  dob DateTime 
+
+  @@map("test")
+}
+
+model RehomePet {
+  id           String   @id @default(cuid())
+  userId       String
+  rehomeReason String[]
+  keepDuration String
+  isOver18     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  image        String[]
+  species      String
+  isBonded     Boolean  @default(false)
+  petName      String?
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("rehomepet")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
 enum Role {
   admin
   customer
   shelter_manager
-}
-
-enum Sex {
-  male
-  female
-  unknown
 }
 
 enum Status {
@@ -57,199 +226,4 @@ enum HouseTrainedStatus {
   fully
   almost
   not_trained
-}
-
-model User {
-  id             String    @id
-  email          String    @unique
-  name           String
-  emailVerified  Boolean   @default(false)
-  user_role      Role      @default(customer)
-  createdAt      DateTime
-  updatedAt      DateTime
-  phoneNumber    String?   @unique
-  location       String?
-  isVerifiedUser Boolean   @default(false)
-  sessions       Session[]
-  accounts       Account[]
-  shelter        Shelter?
-
-  image String?
-
-  banned     Boolean?
-  banReason  String?
-  banExpires DateTime?
-
-  role Role @default(customer)
-
-  adoptionProfile AdoptionProfile?
-  rehomePet       RehomePet[]
-
-  @@map("user")
-}
-
-model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String
-  createdAt DateTime
-  updatedAt DateTime
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  impersonatedBy String?
-
-  @@unique([token])
-  @@map("session")
-}
-
-model Account {
-  id                    String    @id
-  accountId             String
-  providerId            String
-  userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  password              String?
-  createdAt             DateTime
-  updatedAt             DateTime
-
-  scope String?
-
-  @@map("account")
-}
-
-model Shelter {
-  id          String    @id @default(cuid())
-  userId      String    @unique
-  shelterDesc String?
-  logo        String?
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  animal      Animals[]
-
-  @@map("shelter")
-}
-
-model Animals {
-  id               String  @id @default(cuid())
-  name             String
-  species          String
-  size             String?
-  sex              Sex     @default(unknown)
-  status           Status  @default(available)
-  description      String  @db.Text
-  age              String?
-  dominantBreed    String?
-  arrivedAtShelter String?
-  shelterId        String
-
-  vaccinationStatus  VaccinationStatus?
-  neuteredStatus     NeuteredStatus?
-  dateDewormed       String?
-  healthIssues       HealthIssues?
-  otherHealthIssues  String?
-  notes              String?
-  social             String?
-  personalitySummary String?
-  houseTrained       HouseTrainedStatus
-
-  image String[]
-
-  shelter Shelter? @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
-  adoptionrequests AdoptionRequests[]
-
-  @@map("animals")
-}
-
-model LostPets {
-  id          String   @id @default(cuid())
-  name        String
-  phoneNumber String
-  location    String
-  description String
-  image       String[]
-
-  @@map("lostpets")
-}
-
-model AdoptionProfile {
-  id String @id @default(cuid())
-
-  image                      String[]
-  home_situation             String
-  outside_space              String
-  household_setting          String
-  household_typical_activity String
-  min_age                    String
-  age                        Boolean  @default(false)
-
-  flatmate           Boolean @default(false)
-  allergy            Boolean @default(false)
-  other_animals      Boolean @default(false)
-  other_animals_info String?
-  neuter_status      String?
-  lifestyle          String
-  move_holiday       String
-  experience         String
-  agreement          Boolean @default(false)
-
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  adoptionrequest AdoptionRequests[]
-
-  @@map("adoptionprofile")
-}
-
-model AdoptionRequests {
-  id                String          @id @default(cuid())
-  petId             String
-  animals          Animals          @relation(fields: [petId], references: [id], onDelete: Cascade)
-
-  adoptionProfileId String 
-  adoptionprofile  AdoptionProfile  @relation(fields: [adoptionProfileId], references: [id], onDelete: Cascade)
-
-  message          String
-  createdAt       DateTime @default(now())
-
-  @@map("adoptionrequests")
-}
-
-model RehomePet {
-  id           String   @id @default(cuid())
-  userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  species      String
-  isBondedPair Boolean  @default(false)
-  rehomeReason String[]
-  keepDuration String
-  location     String
-  isOver18     Boolean  @default(false)
-  email        String
-  firstName    String
-  lastName     String
-  phoneNumber  String
-  image        String[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("rehomepet")
-}
-
-model Verification {
-  id         String    @id
-  identifier String
-  value      String
-  expiresAt  DateTime
-  createdAt  DateTime?
-  updatedAt  DateTime?
-
-  @@map("verification")
 }

@@ -13,10 +13,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { CldUploadButton } from "next-cloudinary";
 import { useState } from "react";
 import LoadingButton from "@/components/loading-button";
+import { Combobox } from "../combo-box";
+
+
+const status = [
+    { value: "lost", label: "Lost" },
+    { value: "found", label: "Found" },
+];
 
 export default function LostPetForm() {
 
-    const router = useRouter();
     const [pending, setPending] = useState(false);
 
 
@@ -28,6 +34,7 @@ export default function LostPetForm() {
             location: "",
             description: "",
             image: [],
+            status: ""
         }
     })
     const handleUpload = (result: any) => {
@@ -108,6 +115,26 @@ export default function LostPetForm() {
                                 />
                                 <FormField
                                     control={form.control}
+                                    name="status"
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-col">
+                                            <FormLabel>Did you lose this pet or find this pet?:<span style={{ color: 'red' }}> *</span></FormLabel>
+                                            <FormControl>
+                                                <Combobox
+                                                    options={status}
+                                                    placeholder="Select option..."
+                                                    selectedValue={field.value} 
+                                                    onSelect={(value) => field.onChange(value)} 
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+
+                                <FormField
+                                    control={form.control}
                                     name="phoneNumber"
                                     render={({ field }) => (
                                         <FormItem className="flex flex-col">
@@ -119,14 +146,15 @@ export default function LostPetForm() {
                                         </FormItem>
                                     )}
                                 />
+
                                 <FormField
                                     control={form.control}
                                     name="description"
                                     render={({ field }) => (
                                         <FormItem className="flex flex-col">
-                                            <FormLabel>Lost pet's description:<span style={{ color: 'red' }}> *</span></FormLabel>
+                                            <FormLabel>Lost/Found pet's description:<span style={{ color: 'red' }}> *</span></FormLabel>
                                             <FormControl>
-                                                <Textarea placeholder="Describe your pet(gender, color, size)" {...field} />
+                                                <Textarea placeholder="Describe the pet(gender, color, size)" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -175,9 +203,9 @@ export default function LostPetForm() {
                                                 }}
                                             >Choose image</CldUploadButton>
                                             <p className="text-xs text-gray-500 mt-1">
-                                                    Max size: 5MB.
+                                                Max size: 5MB.
                                             </p>
-                                            
+
                                             {field.value && field.value.length > 0 && (
                                                 <div className="flex flex-wrap gap-2 mt-2">
                                                     {field.value.map((img, index) => (

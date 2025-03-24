@@ -25,6 +25,10 @@ export const lostPetFormSchema = z.object({
 
     image: z
         .array(z.string()).min(1, "At least one image is required"), 
+        
+    status: z
+    .string()
+    .min(1,{message: "Choose a status"})
 
 })
 

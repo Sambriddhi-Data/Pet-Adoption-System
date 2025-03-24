@@ -75,7 +75,7 @@ export default function ApplytoAdoptButton({ open, onOpenChange }: ApplytoAdoptB
             <Tooltip>
                 <TooltipTrigger asChild>
                     <div>
-                        <Button onClick={handleApplyToAdopt} disabled={isdisabled || isLoading}>
+                        <Button className="w-full" onClick={handleApplyToAdopt} disabled={isdisabled || isLoading}>
                             {isLoading ? "Checking..." : "Apply to Adopt"}
                         </Button>
                     </div>

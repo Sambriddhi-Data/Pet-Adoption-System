@@ -17,6 +17,7 @@ interface LostPetModalProps {
   address?: string;
   phoneNumber?: string;
   description?: string;
+  status?: string;
   onClose: () => void;
 }
 
@@ -26,6 +27,7 @@ export default function LostPetModal({
   address = "Unknown",
   phoneNumber = "Unknown",
   description = "Unknown",
+  status = "lost",
   onClose
 }: LostPetModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -88,7 +90,8 @@ export default function LostPetModal({
           <CardContent className="text-center">
             <h2 className="text-xl font-bold text-gray-800">{name}</h2>
             <CardDescription className="text-sm text-gray-600 mt-2">
-              Lost near: <span className="font-medium">{address}</span>
+             {status === "found" ? "Found near" : "Lost near"}
+              : <span className="font-medium">{address}</span>
             </CardDescription>
             <CardDescription className="text-sm text-gray-600 mt-1">
               Contact: <span className="font-medium">{phoneNumber}</span>

@@ -35,26 +35,29 @@ export default function LostPetCarousel() {
     }, []);
 
     return (
-        <div className="relative w-full max-w-7xl">
+        <div className="w-full max-w-7xl mx-auto px-4">
             {loading ? (
                 <p>Loading pets...</p>
             ) : pets.length > 0 ? (
                 <div className="relative">
-                    <Carousel opts={{
-                        align: "start",
-                        loop: true,
-                        containScroll: "trimSnaps",
-                    }}
-                        className="w-full">
-                        <CarouselContent className=" flex w-full max-w-7xl justify-center mx-auto">
+                    <Carousel 
+                        opts={{
+                            align: "center",
+                            loop: true,
+                            slidesToScroll: 1,
+                        }}
+                        className="w-full"
+                    >
+                        <CarouselContent className="-ml-4">
                             {pets.map((pet: any) => (
-                                <CarouselItem key={pet.id} className="md:basis-1/2 lg:basis-1/4 flex-shrink-0">
-                                    <div className="p-2 ml-1">
+                                <CarouselItem key={pet.id} className="pl-4 md:basis-1/2 lg:basis-1/4">
+                                    <div className="p-1">
                                         <LostPetCard
                                             name={pet.name}
                                             address={pet.location}
                                             phoneNumber={pet.phoneNumber}
                                             image={pet.image}
+                                            status={pet.status}
                                             onClick={() => {
                                                 setSelectedPet(pet);
                                                 setIsOpen(true);
@@ -64,8 +67,10 @@ export default function LostPetCarousel() {
                                 </CarouselItem>
                             ))}
                         </CarouselContent>
-                        <CarouselPrevious className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10" />
-                        <CarouselNext className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10" />
+                        <div className="flex justify-center mt-4">
+                            <CarouselPrevious className="relative mr-2" />
+                            <CarouselNext className="relative ml-2" />
+                        </div>
                     </Carousel>
                 </div>
             ) : (
@@ -79,6 +84,7 @@ export default function LostPetCarousel() {
                     address={selectedPet.location}
                     phoneNumber={selectedPet.phoneNumber}
                     description={selectedPet.description}
+                    status={selectedPet.status}
                     onClose={() => setIsOpen(false)}
                 />
             )}

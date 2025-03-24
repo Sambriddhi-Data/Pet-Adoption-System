@@ -9,6 +9,7 @@ export function LostPetCard({
   image = [], 
   address = "Unknown",
   phoneNumber = "Unknown",
+  status = "lost",
   onClick
 }: LostPetModalProps) {
   const primaryImage = Array.isArray(image) && image.length > 0 
@@ -31,9 +32,8 @@ export function LostPetCard({
           </div>
           <CardContent className="p-4 text-center">
             <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
-            <CardDescription className="text-sm text-gray-600 mt-2">
-              Lost near <span className="font-medium">{address}</span>
-            </CardDescription>
+            {status === "found" ? "Found near" : "Lost near"}
+              : <span className="font-medium">{address}</span>
             <CardDescription className="text-sm text-gray-600 mt-1">
               Contact: <span className="font-medium">{phoneNumber}</span>
             </CardDescription>

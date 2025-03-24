@@ -13,7 +13,8 @@ export async function POST(req: NextRequest){
                 phoneNumber: petData.phoneNumber,
                 location: petData.location,
                 description: petData.description,
-                image: petData.image
+                image: petData.image,
+                status: petData.status
             }
         })
         return NextResponse.json(lostPet, { status: 201 });
