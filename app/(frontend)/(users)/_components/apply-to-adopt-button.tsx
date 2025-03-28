@@ -4,7 +4,7 @@ import { useSession } from "@/auth-client";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipTrigger, TooltipProvider, TooltipContent } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface ApplytoAdoptButtonProps {
@@ -12,12 +12,33 @@ interface ApplytoAdoptButtonProps {
     onOpenChange: (open: boolean) => void;
 }
 
-export default function ApplytoAdoptButton({ open, onOpenChange }: ApplytoAdoptButtonProps) {
+const ApplytoAdoptButton= ({ open, onOpenChange }: ApplytoAdoptButtonProps) => {
     const {data: session} = useSession();
     const router = useRouter();
+    const { petId } = useParams();
     const [isLoading, setIsLoading] = useState(false);
+    const [hasExistingApplication, setHasExistingApplication] = useState(false);
 
-    const isdisabled = session?.user?.user_role !== "customer";
+    useEffect(() => {
+        const checkExistingApplication = async () => {
+            if (session?.user?.id && petId) {
+                try {
+                    const response = await fetch(`/api/checkExistingApplication?userId=${session.user.id}&petId=${petId}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        setHasExistingApplication(data.exists);
+                    }
+                } catch (error) {
+                    console.error("Error checking existing application:", error);
+                }
+            }
+        };
+
+        checkExistingApplication();
+    }, [session?.user?.id, petId]);
+
+    const isRoleDisabled = session?.user?.user_role !== "customer";
+    const isdisabled = isRoleDisabled || hasExistingApplication;
 
     let hoverMessage = "";
     if (!session) {
@@ -26,6 +47,8 @@ export default function ApplytoAdoptButton({ open, onOpenChange }: ApplytoAdoptB
         hoverMessage = "Shelter Managers are not allowed to apply for adoption";
     } else if (session?.user?.user_role === "admin") {
         hoverMessage = "Admins are not allowed to apply for adoption";
+    } else if (hasExistingApplication) {
+        hoverMessage = "You've already applied to adopt this pet";
     } else if (session?.user?.user_role === "customer") {
         hoverMessage = "Click to apply for adoption";
     }
@@ -34,15 +57,24 @@ export default function ApplytoAdoptButton({ open, onOpenChange }: ApplytoAdoptB
         if (!session?.user?.id) {
             toast({
                 title: "Error",
-				description: "Please sign in first to apply for adoption",
-				variant: "destructive",
+                description: "Please sign in first to apply for adoption",
+                variant: "destructive",
             })
+            return;
+        }
+
+        if (hasExistingApplication) {
+            toast({
+                title: "Already Applied",
+                description: "You've already applied to adopt this pet",
+                variant: "default",
+            })
+            return;
         }
 
         setIsLoading(true);
 
         try {
-            // Check if the user has an adoption profile
             const response = await fetch(`/api/adoptionProfile?userId=${session?.user.id}`);
             const data = await response.json();
 
@@ -56,7 +88,6 @@ export default function ApplytoAdoptButton({ open, onOpenChange }: ApplytoAdoptB
                 return;
             }
 
-            // If the user has an adoption profile, open the adoption form
             onOpenChange(true);
         } catch (error) {
             console.error("Error checking adoption profile:", error);
@@ -76,7 +107,7 @@ export default function ApplytoAdoptButton({ open, onOpenChange }: ApplytoAdoptB
                 <TooltipTrigger asChild>
                     <div>
                         <Button className="w-full" onClick={handleApplyToAdopt} disabled={isdisabled || isLoading}>
-                            {isLoading ? "Checking..." : "Apply to Adopt"}
+                            {isLoading ? "Checking..." : hasExistingApplication ? "Already Applied" : "Apply to Adopt"}
                         </Button>
                     </div>
                 </TooltipTrigger>
@@ -87,3 +118,4 @@ export default function ApplytoAdoptButton({ open, onOpenChange }: ApplytoAdoptB
         </TooltipProvider>
     );
 }
+export default ApplytoAdoptButton;
