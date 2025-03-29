@@ -24,6 +24,7 @@ export default async function authMiddleware(request: NextRequest) {
   const isPostAuth = searchParams.get('postAuth') === 'true';
   const customerProfilePattern = /^\/customer-profile\/[\w-]+$/;
   const shelterPublicPagePattern = /^\/public-page\/[\w-]+$/;
+  const adoptionRequestsPagePattern = /^\/adoption-requests\/[\w-]+$/;
   const isCustomerProfileRoute = customerProfilePattern.test(pathName);
   const isShelterPublicPageRoute = shelterPublicPagePattern.test(pathName);
 
@@ -31,7 +32,7 @@ export default async function authMiddleware(request: NextRequest) {
   const isAuthRoute = authRoutes.includes(pathName);
   const isCustomerRoute = customerRoutes.includes(pathName);
   const isPublicRoute = publicRoutes.includes(pathName) || petIdPattern.test(pathName) || isCustomerProfileRoute || isShelterPublicPageRoute;
-  const isShelterRoute = shelterRoutes.some((route) => pathName.startsWith(route));
+  const isShelterRoute = shelterRoutes.some((route) => pathName.startsWith(route))|| adoptionRequestsPagePattern.test(pathName);
   const isAdminRoute = adminRoutes.includes(pathName);
   const isLandingPageRoute = landingPageRoute.includes(pathName);
 

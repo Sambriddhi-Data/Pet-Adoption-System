@@ -13,6 +13,7 @@ export default function PetCardWrapper({ pet }: { pet: any }) {
     return (
         <div onClick={handleEditPet}>
             <PetCard
+            id={pet.id}
                 name={pet.name}
                 age={pet.age}
                 status={pet.status}

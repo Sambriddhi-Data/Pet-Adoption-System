@@ -4,14 +4,15 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { useState } from "react";
 import AdopterProfileForm from "../../../_components/forms/adopter-profile-form";
 import { cn } from "@/lib/utils"; // Utility for class merging
+import { MyProfile } from "../../../_components/my-profile";
 
 export default function CustomerProfile() {
   // State to track active section
-  const [activeSection, setActiveSection] = useState<"editProfile" | "myProfile" | "myFavorites">("editProfile");
+  const [activeSection, setActiveSection] = useState<"editProfile" | "myProfile" | "myFavorites">("myProfile");
 
   return (
-    <div className="m-10">
-      <Card>
+    <div className="m-10 flex justify-center">
+      <Card className="w-10/12">
         <CardHeader className="text-2xl">My Adopter Account</CardHeader>
 
         {/* Navigation Tabs */}
@@ -33,7 +34,7 @@ export default function CustomerProfile() {
         {/* Content Section */}
         <div className="p-6">
           {activeSection === "editProfile" && <AdopterProfileForm />}
-          {activeSection === "myProfile" && <p>My Profile Content</p>}
+          {activeSection === "myProfile" && <MyProfile/>}
           {activeSection === "myFavorites" && <p>My Favorites Content</p>}
         </div>
       </Card>

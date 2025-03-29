@@ -7,7 +7,7 @@ import { toast } from '@/hooks/use-toast';
 import type { Metadata } from "next";
 import { Card } from "@/components/ui/card";
 import { redirect } from "next/navigation";
-import PetCardWrapper from "../../_components/shelters/pet-card-wrapper";
+import ShelterHomepagePets from "./sHomepage";
 
 export const metadata: Metadata = {
   title: "Shelter Homepage",
@@ -21,20 +21,12 @@ export default async function ShelterHomepage() {
 
   const user = session?.user;
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    };
-  }
-  if (!user?.id) {
+  if (!session || !user?.id) {
     toast({
       title: "Error",
       description: "Shelter ID not found. Please try again.",
     });
-    return;
+    redirect("/");
   }
 
   const availableCountResponse = await getpetcount("available", user.id);
@@ -42,9 +34,6 @@ export default async function ShelterHomepage() {
 
   const availableCount = availableCountResponse?.count || 0;
   const adoptedCount = adoptedCountResponse?.count || 0;
-
-  const response = await fetch(`http://localhost:3000/api/getPet?shelterId=${user.id}`);
-  const pets = await response.json();
 
   return (
     <div className="p-4 text-center w-full">
@@ -69,20 +58,11 @@ export default async function ShelterHomepage() {
         </div>
       </div>
       <div>
-        <Card className="mt-4 p-2 w-11/12 text-left">
-          Filter
-        </Card>
+        <Card className="mt-4 p-2 w-11/12 text-left">Filter</Card>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-        {pets.length > 0 ? (
-          pets.map((pet: any) => (
-            <PetCardWrapper key={pet.id} pet={pet} />
-          ))
-        ) : (
-          <p className="col-span-full text-gray-500">No available pets at the moment.</p>
-        )}
-      </div>
+      {/* Client Component for Pets */}
+      <ShelterHomepagePets shelterId={user.id} />
     </div>
   );
 }

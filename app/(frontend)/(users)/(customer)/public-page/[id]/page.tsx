@@ -7,7 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession } from "@/auth-client";
 import PetCardWrap from "../../../_components/pet-card-wrap";
-import { Tooltip, TooltipTrigger, TooltipProvider, TooltipContent } from "@/components/ui/tooltip";  // Adjust the path as per your structure
+import { Tooltip, TooltipTrigger, TooltipProvider, TooltipContent } from "@/components/ui/tooltip";  
 
 export default function PublicShelterPage() {
   const { id } = useParams();

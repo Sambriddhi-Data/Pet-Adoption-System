@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import BasicDetails from "../../../_components/shelters/(form)/basic-details";
@@ -11,20 +11,26 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import CancelFormButton from "../../../_components/cancel-form-button";
 import AddPetImages from "../../../_components/shelters/(form)/pet-images";
+import AdoptionRequestsByPet from "../../../_components/shelters/adoption-requests-by-pet";
+import { MoveLeft } from "lucide-react";
 
 export default function EditPet() {
     const { id } = useParams();
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("basic_details");
-    const { 
-        setBasicInfo, 
-        setHealthInfo, 
-        setPersonalityInfo, 
+    const [actTab, setActTab] = useState("details");
+    const [petName, setPetName] = useState("");
+    const {
+        setBasicInfo,
+        setHealthInfo,
+        setPersonalityInfo,
         setPetImages,
         resetForm,
-        formData 
+        formData
     } = usePetRegistrationStore();
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+    const initialFormData = useRef(formData);
 
     useEffect(() => {
         if (id) {
@@ -37,17 +43,17 @@ export default function EditPet() {
                     }
                     const petData = await response.json();
 
+                    setPetName(petData.name);
                     // Populate the store with the fetched data
                     setBasicInfo({
                         name: petData.name,
                         species: petData.species,
-                        description: petData.description,
                         age: petData.age,
                         dominantBreed: petData.dominantBreed || "",
                         sex: petData.sex,
                         size: petData.size,
                         status: petData.status,
-                        arrivedAtShelter: petData.arrivedAtShelter || "",
+                        // arrivedAtShelter: petData.arrivedAtShelter || new Date(),
                         shelterId: petData.shelterId,
                     });
 
@@ -108,49 +114,120 @@ export default function EditPet() {
             });
         }
     }
+    // Track form changes
+    useEffect(() => {
+        const isFormChanged = JSON.stringify(formData) !== JSON.stringify(initialFormData.current);
+        setHasUnsavedChanges(isFormChanged);
+    }, [formData]);
 
+    // Warn before leaving if there are unsaved changes
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [hasUnsavedChanges]);
+
+    // Handle tab change with warning
+    const handleTabChange = (tab: string) => {
+        if (hasUnsavedChanges && actTab === "details") {
+            const confirmLeave = window.confirm(
+                "You have unsaved changes. Are you sure you want to switch tabs without saving?"
+            );
+            if (!confirmLeave) return;
+        }
+        setActTab(tab);
+    };
+    // Handle back navigation
+    const handleBackClick = () => {
+        if (hasUnsavedChanges) {
+            const confirmLeave = window.confirm(
+                "You have unsaved changes. Are you sure you want to leave?"
+            );
+            if (!confirmLeave) return;
+        }
+        router.back();
+    };
     if (loading) return <p>Loading pet details...</p>;
     return (
         <>
-        <main className="p-6 space-y-4">
-            <div className="mx-auto w-full max-w-4xl">
-                <h2 className="text-lg font-bold mt-6 mb-4">Edit Pet Details</h2>
-                
-                <Tabs 
-                    value={activeTab} 
-                    onValueChange={setActiveTab}
-                    defaultValue="basic_details"
-                >
-                    <TabsList className="grid w-full grid-cols-4">
-                        <TabsTrigger value="basic_details">Basic Details</TabsTrigger>
-                        <TabsTrigger value="health_details">Health Details</TabsTrigger>
-                        <TabsTrigger value="personality_details">Personality Details</TabsTrigger>
-                        <TabsTrigger value="images">Images</TabsTrigger>
-                    </TabsList>
-
-                    <TabsContent value="basic_details">
-                        <BasicDetails isEditing={true} />
-                    </TabsContent>
-                    <TabsContent value="health_details">
-                        <HealthDetails isEditing={true} />
-                    </TabsContent>
-                    <TabsContent value="personality_details">
-                        <PersonalityDetails isEditing={true} />
-                    </TabsContent>
-                    <TabsContent value="images">
-                        <AddPetImages isEditing={true} />
-                    </TabsContent>
-
-                </Tabs>
-
-                <div className="flex gap-2 justify-end mt-4">
-                    <div>
-                    <CancelFormButton route="/shelter-homepage"/>
-                    </div>
-                    <Button onClick={handleSaveChanges}>Save All Changes</Button>
+            <main className="p-6 space-y-4">
+                <div className="flex gap-2 items-center">
+                    <Button
+                        variant="ghost"
+                        className="h-10 w-10 rounded-full"
+                        onClick={handleBackClick}>
+                        <MoveLeft />
+                    </Button>
+                    <h1 className="text-2xl font-bold">{petName}</h1>
                 </div>
-            </div>
-        </main>
+                <div className="mx-auto w-full max-w-4xl">
+                    <Tabs
+                        value={actTab}
+                        onValueChange={setActTab}
+                        defaultValue="details"
+                        className="w-full"
+                    >
+                        <TabsList className="grid w-[30rem] grid-cols-2 h-24">
+                            <TabsTrigger value="details" className="h-20 text-lg">Details</TabsTrigger>
+                            <TabsTrigger value="applications" className="h-20 text-lg">Applications</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="details">
+                            <Tabs
+                                value={activeTab}
+                                onValueChange={setActiveTab}
+                                defaultValue="basic_details"
+                            >
+                                <h2 className="text-lg font-bold mt-6 mb-4">Edit Pet Details</h2>
+
+                                <TabsList className="grid w-full grid-cols-4">
+                                    <TabsTrigger value="basic_details">Basic Details</TabsTrigger>
+                                    <TabsTrigger value="health_details">Health Details</TabsTrigger>
+                                    <TabsTrigger value="personality_details">Personality Details</TabsTrigger>
+                                    <TabsTrigger value="images">Images</TabsTrigger>
+                                </TabsList>
+
+                                <TabsContent value="basic_details">
+                                    <BasicDetails isEditing={true} />
+                                </TabsContent>
+                                <TabsContent value="health_details">
+                                    <HealthDetails isEditing={true} />
+                                </TabsContent>
+                                <TabsContent value="personality_details">
+                                    <PersonalityDetails isEditing={true} />
+                                </TabsContent>
+                                <TabsContent value="images">
+                                    <AddPetImages isEditing={true} />
+                                </TabsContent>
+
+                            </Tabs>
+
+                            <div className="flex gap-2 justify-end mt-4">
+                                <div>
+                                    <CancelFormButton route="/shelter-homepage" />
+                                </div>
+                                <Button onClick={handleSaveChanges}>Save All Changes</Button>
+                            </div>
+                        </TabsContent>
+                        <TabsContent value="applications">
+                            <AdoptionRequestsByPet petId={id as string} />
+                        </TabsContent>
+
+                    </Tabs>
+
+
+
+                </div>
+            </main>
         </>
     );
 }

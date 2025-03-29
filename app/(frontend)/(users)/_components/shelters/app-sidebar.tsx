@@ -36,7 +36,7 @@ export default function AppSidebar() {
     },
     {
       title: "Adoption Requests",
-      url: "/adoption-requests",
+      url: `/adoption-requests/${id}`,
       icon: Calendar,
     },
     {

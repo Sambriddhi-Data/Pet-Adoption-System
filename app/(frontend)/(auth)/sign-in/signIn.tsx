@@ -32,7 +32,7 @@ export const SignIn = () => {
         if (!session.data.user.isVerifiedUser) {
           toast({
             title: "Your shelter has not been verified yet!",
-            description: "Please wait for the admin to verify your shelter credentials."
+            description: "Please wait for the admin to verify your shelter credentials. You will receive an email shortly."
           });
           router.push("/shelter-landing-page");
           return;
@@ -67,7 +67,6 @@ export const SignIn = () => {
   // a submit handler.
   async function onSubmit(values: TSignInForm) {
     const { email, password } = values;
-    // console.log("Submit",values)
     const { data, error } = await signIn.email(
       {
         email,

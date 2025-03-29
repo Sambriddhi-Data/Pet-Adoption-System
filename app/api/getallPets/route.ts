@@ -10,6 +10,10 @@ export async function GET(req: NextRequest) {
         const dominantBreed = searchParams.get("dominantBreed");
 
         const allPets = await prisma.animals.findMany({
+            where:{
+                status:"available",
+                
+            },
             include: {
                 shelter: {
                     include: {

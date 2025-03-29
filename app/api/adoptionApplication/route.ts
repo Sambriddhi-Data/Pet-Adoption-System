@@ -1,7 +1,5 @@
 import { applyToAdoptSchema } from '@/app/(frontend)/(users)/_components/forms/customer-form-schema';
-import { auth } from '@/auth';
 import prisma from '@/prisma/client';
-import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {

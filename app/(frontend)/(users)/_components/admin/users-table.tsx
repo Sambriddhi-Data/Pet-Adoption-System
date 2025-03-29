@@ -74,7 +74,7 @@ export default function UsersTable() {
 	// Function to send verification email
 	async function sendVerifiedEmail(userName: string, userEmail: string) {
 		try {
-			const response = await fetch("/api/sendMail", {
+			const response = await fetch("/api/sendVerifiedMail", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ userName, userEmail }),
@@ -121,7 +121,7 @@ export default function UsersTable() {
 			try {
 				setIsLoading(true);
 				const response = await admin.listUsers({
-					query: { limit: 10, sortBy: "createdAt" },
+					query: { limit: 10, sortBy: "createdAt", filterField: "user_role", filterValue: "shelter_manager" },
 				});
 				if (response?.data) {
 					setUsers(response.data.users as User[]);

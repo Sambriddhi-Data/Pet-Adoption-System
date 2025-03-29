@@ -105,18 +105,6 @@ model Animals {
   @@map("animals")
 }
 
-model LostPets {
-  id          String   @id @default(cuid())
-  name        String
-  description String
-  phoneNumber String
-  location    String
-  status      String?
-  image       String[]
-
-  @@map("lostpets")
-}
-
 model AdoptionProfile {
   id                         String             @id @default(cuid())
   image                      String[]
@@ -143,20 +131,21 @@ model AdoptionProfile {
 }
 
 model AdoptionRequests {
-  id                String          @id @default(cuid())
+  id                String                @id @default(cuid())
   petId             String
   adoptionProfileId String
   message           String
-  createdAt         DateTime        @default(now())
-  adoptionprofile   AdoptionProfile @relation(fields: [adoptionProfileId], references: [id], onDelete: Cascade)
-  animals           Animals         @relation(fields: [petId], references: [id], onDelete: Cascade)
+  status            AdoptionRequestStatus @default(unprocessed)
+  createdAt       DateTime        @default(now())
+  adoptionprofile AdoptionProfile @relation(fields: [adoptionProfileId], references: [id], onDelete: Cascade)
+  animals         Animals         @relation(fields: [petId], references: [id], onDelete: Cascade)
 
   @@map("adoptionrequests")
 }
 
 model Test {
   id  String   @id @default(cuid())
-  dob DateTime 
+  dob DateTime
 
   @@map("test")
 }
@@ -175,6 +164,18 @@ model RehomePet {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("rehomepet")
+}
+
+model LostPets {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  phoneNumber String
+  location    String
+  status      String?
+  image       String[]
+
+  @@map("lostpets")
 }
 
 model Verification {
@@ -196,7 +197,7 @@ enum Role {
 
 enum Status {
   available
-  processing
+  pending
   adopted
 }
 
@@ -226,4 +227,10 @@ enum HouseTrainedStatus {
   fully
   almost
   not_trained
+}
+
+enum AdoptionRequestStatus {
+  unprocessed
+  approved
+  rejected
 }
