@@ -115,34 +115,33 @@ export const applyToAdoptSchema = z.object({
         .trim()
         .min(20, "Your personal message must be at least 20 characters long. Please share us your thoughts!"),
     userId:
-    z.string()
+        z.string()
 })
 export type TApplyToAdoptFormSchema = z.infer<typeof applyToAdoptSchema>
 
 export const rehomePetSchema = z.object({
     species: z
         .string(),
-    isBondedPair: z
+    isBonded: z
         .boolean(),
     rehomeReason: z
         .array(z
             .string()).min(1, "Please select at least one reason for rehoming."),
     keepDuration: z
         .enum(["Less than 1 month", "1 month", "2 months", "Until a home is found"]),
-    location: z
-        .string(),
-    isOver18: z
-        .boolean().refine(val => val === true, "You must be over 18 to rehome a pet."),
     email: z
         .string().email("Please enter a valid email address."),
-    firstName: z
-        .string().min(2, "First name must be at least 2 characters long."),
-    lastName: z
-        .string().min(2, "Last name must be at least 2 characters long."),
+    name: z
+        .string().min(2, "You name must be at least 2 characters long."),
+    location: z
+        .string(),
     phoneNumber: z
         .string().regex(/^\+?[0-9]{10,15}$/, "Please enter a valid phone number."),
+    isOver18: z
+        .boolean().refine(val => val === true, "You must be over 18 to rehome a pet."),
+    petName: z
+        .string().min(1, "Pet's name must be at least 1 characters long."),
     image: z
-
         .array(z
             .string())
         .min(2, "At least two images are required")

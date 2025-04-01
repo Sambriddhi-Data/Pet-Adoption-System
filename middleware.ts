@@ -11,7 +11,7 @@ const shelterRoutes = [
   "/rehoming-requests",
   "/add-pet-details/details",
   "/add-pet-details/images",
-  "/edit-pet/"
+  "/pet-details/"
 ];
 const customerRoutes=['/rehome-pet-request']
 const landingPageRoute = ["/shelter-landing-page"];

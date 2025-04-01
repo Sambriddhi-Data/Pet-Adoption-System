@@ -3,14 +3,17 @@ import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
 
 const verifySchema = z.object({
-  userName: z.string(),
-  userEmail: z.string().email(),
+    applicantName: z.string(),
+    applicantEmail: z.string().email(),
+    petName: z.string(),
+    shelterName: z.string(),
 });
 
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
         const data = verifySchema.parse(body);
+        const { applicantName, applicantEmail, petName, shelterName } = data
 
         const sender = {
             name: "Fur Ever Friends",
@@ -18,26 +21,21 @@ export async function POST(req: NextRequest) {
         };
         const recipients = [
             {
-                name: data.userName,
-                address: data.userEmail,
+                name: applicantName,
+                address: applicantEmail,
             },
         ];
 
-        const route = `${process.env.BETTER_AUTH_URL}/sign-in`;
+        const route = `${process.env.BETTER_AUTH_URL}/customer-profile`;
         const result = await sendEmail({
             sender,
             recipients,
-            subject: "Shelter Verified",
+            subject: `Update on your application on ${petName}`,
             message: `
-                <h1>Welcome to Fur-Ever Friends</h1>
-
-                <p>Hi ${data.userName},</p>
-                <p>Congratulations! Your shelter has been successfully verified.</p>
-                <p>We are thrilled to have you on board and look forward to working together to find loving homes for all the wonderful animals in your care.</p>
-                <br/><br/>
-                <p>As a verified shelter, you now have access to our platform where you can showcase your animals for adoption and connect with potential adopters.</p>
-                <p>To get started, please log in to your account using the link below:</p>
-                <p><a href="${route}">Sign In Now</a></p>
+                <p>Hi ${applicantName}</p>
+                <p>Unfortunately on this occasion the application you made to ${shelterName} for ${petName} wasn't successful.</p><br/>
+                <p>We have a lot of other animals looking for a furever home at <a href="${route}">www.fureverfriends.com</a> and we wish you luck in any future applications.</p>
+                <p>Please remember the rescues receive a lot of applications for each animal so the applications with more information tend to stand out.</p><br/>
 
                 <br/> <br/>
                 <p>Best regards,</p>

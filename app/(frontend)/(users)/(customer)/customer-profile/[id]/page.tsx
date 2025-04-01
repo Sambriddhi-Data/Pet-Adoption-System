@@ -5,10 +5,11 @@ import { useState } from "react";
 import AdopterProfileForm from "../../../_components/forms/adopter-profile-form";
 import { cn } from "@/lib/utils"; // Utility for class merging
 import { MyProfile } from "../../../_components/my-profile";
+import MyEnquiries from "../../../_components/forms/my-enquiries";
 
 export default function CustomerProfile() {
   // State to track active section
-  const [activeSection, setActiveSection] = useState<"editProfile" | "myProfile" | "myFavorites">("myProfile");
+  const [activeSection, setActiveSection] = useState<"editProfile" | "myProfile" | "myEnquiries"| "myFavorites">("myProfile");
 
   return (
     <div className="m-10 flex justify-center">
@@ -35,6 +36,7 @@ export default function CustomerProfile() {
         <div className="p-6">
           {activeSection === "editProfile" && <AdopterProfileForm />}
           {activeSection === "myProfile" && <MyProfile/>}
+          {activeSection === "myEnquiries" && <MyEnquiries/>}
           {activeSection === "myFavorites" && <p>My Favorites Content</p>}
         </div>
       </Card>

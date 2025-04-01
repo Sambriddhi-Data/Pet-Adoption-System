@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
         }
 
         const {
-            basicDetails: { name, species, description, age, status, sex, dominantBreed, arrivedAtShelter, shelterId, size },
+            basicDetails: { name, species, age, status, sex, dominantBreed, shelterId, size },
             healthDetails: { vaccinationStatus, neuteredStatus, dateDewormed, healthIssues, otherHealthIssues, notes },
             personalityDetails: { social, personalitySummary, houseTrained },
             petImages: {image}
@@ -22,13 +22,11 @@ export async function POST(req: NextRequest) {
             data: {
                 name,
                 species,
-                description,
                 age,
                 status,
                 sex,
-                dominantBreed,
-                arrivedAtShelter,
                 size,
+                dominantBreed,
                 vaccinationStatus,
                 neuteredStatus,
                 dateDewormed,

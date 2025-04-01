@@ -17,7 +17,7 @@ export async function PUT(req: NextRequest) {
             return NextResponse.json(validation.error.errors, { status: 400 });
         }
         const {
-            basicDetails: { name, species, description, age, status, sex, dominantBreed, arrivedAtShelter, shelterId, size },
+            basicDetails: { name, species, age, status, sex, dominantBreed, shelterId, size },
             healthDetails: { vaccinationStatus, neuteredStatus, dateDewormed, healthIssues, otherHealthIssues, notes },
             personalityDetails: { social, personalitySummary, houseTrained },
             petImages: {image}
@@ -28,12 +28,10 @@ export async function PUT(req: NextRequest) {
             data: {
                 name,
                 species,
-                description,
                 age,
                 status,
                 sex,
                 dominantBreed,
-                arrivedAtShelter,
                 shelterId,
                 size,
                 vaccinationStatus,

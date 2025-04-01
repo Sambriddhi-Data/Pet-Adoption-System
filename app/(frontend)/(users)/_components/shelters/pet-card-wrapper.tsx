@@ -7,7 +7,7 @@ export default function PetCardWrapper({ pet }: { pet: any }) {
     const router = useRouter();
 
     const handleEditPet = () => {
-        router.push(`/edit-pet/${pet.id}`);
+        router.push(`/pet-details/${pet.id}`);
     };
 
     return (

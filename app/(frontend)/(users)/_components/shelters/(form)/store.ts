@@ -30,13 +30,12 @@ const initialState: PetFormData = {
     basicDetails: {
         name: "",
         species: "",
-        description: "",
         age: "",
         dominantBreed: "",
-        sex: "unknown",
+        sex: "Unknown",
         size: "",
         status: "available",
-        arrivedAtShelter: "",
+        // arrivedAtShelter: new Date(),
         shelterId: "",
     },
     healthDetails: {

@@ -1,5 +1,5 @@
 'use client'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -93,10 +93,10 @@ export default function PersonalityDetails({ isEditing }: FormsProps) {
                                 name="social"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                        <FormLabel>Social Media Summary:</FormLabel>
+                                        <FormLabel>Social Media Summary</FormLabel>
                                         <FormControl>
                                             <Textarea
-                                                placeholder="Enter social media summary..."
+                                                placeholder="A short paragraph..."
                                                 {...field}
                                             />
                                         </FormControl>
@@ -109,7 +109,7 @@ export default function PersonalityDetails({ isEditing }: FormsProps) {
                                 name="personalitySummary"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                        <FormLabel>Personality of the pet:</FormLabel>
+                                        <FormLabel>Pet Personality Summary</FormLabel>
                                         <FormControl>
                                             <Textarea
                                                 placeholder="Likes to play..."

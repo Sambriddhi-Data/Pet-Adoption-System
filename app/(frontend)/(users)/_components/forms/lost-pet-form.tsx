@@ -7,7 +7,6 @@ import { lostPetFormSchema, TLostPetFormSchema } from "../../(customer)/lost-pet
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CldUploadButton } from "next-cloudinary";

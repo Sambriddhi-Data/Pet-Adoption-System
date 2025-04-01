@@ -13,17 +13,17 @@ import { useRouter } from 'next/navigation';
 import PetCardWrap from '../../_components/pet-card-wrap';
 
 const species = [
-    { value: "dog", label: "Dog" },
-    { value: "cat", label: "Cat" },
-    { value: "rabbit", label: "Rabbit" },
-    { value: "parrot", label: "Parrot" },
-    { value: "others", label: "Others" },
+    { value: "Dog", label: "Dog" },
+    { value: "Cat", label: "Cat" },
+    { value: "Rabbit", label: "Rabbit" },
+    { value: "Parrot", label: "Parrot" },
+    { value: "Others", label: "Others" },
 ];
 
 const sex = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-    { value: "unknown", label: "Unknown" },
+    { value: "Male", label: "Male" },
+    { value: "Female", label: "Female" },
+    { value: "Unknown", label: "Unknown" },
 ];
 
 const sizeOptions: Record<string, { value: string; label: string }[]> = {
@@ -92,7 +92,7 @@ export default function AdoptPet() {
             species: "",
             sex: "",
             dominantBreed: "",
-            size: ""
+            size: "",
         },
     });
 
@@ -115,9 +115,7 @@ export default function AdoptPet() {
     }, []);
 
     const router = useRouter();
-    const viewPetInfo = () => {
-        router.push('/pets/1');
-    }
+
     const onSubmit = async (values: TSearchPetsForm) => {
         setLoading(true);
         try {
@@ -131,7 +129,7 @@ export default function AdoptPet() {
             if (!response.ok) throw new Error("Failed to fetch pets");
             const data = await response.json();
             setPets(data);
-            setCurrentPage(1); // Reset to first page after filtering
+            setCurrentPage(1); 
         } catch (error) {
             console.error(error);
         } finally {
@@ -214,7 +212,7 @@ export default function AdoptPet() {
                                         </FormItem>
                                     )}
                                 />
-                                {speciesValue === "dog" && (
+                                {speciesValue === "Dog" && (
                                     <FormField
                                         control={form.control}
                                         name="dominantBreed"
@@ -251,7 +249,7 @@ export default function AdoptPet() {
 
                     ))
                 ) : (
-                    <p>No available pets at the moment.</p>
+                    <p>No pets available for adoption that match your preferences. Try other filters!</p>
                 )}
             </div>
             <div className='flex justify-center mt-6 space-x-2'>

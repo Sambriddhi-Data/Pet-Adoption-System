@@ -14,7 +14,15 @@ export async function PUT(req: NextRequest) {
 
         // Verify the application exists
         const application = await prisma.adoptionRequests.findUnique({
-            where: { id: applicationId }
+            where: { id: applicationId },
+            include: {
+                animals: true,
+                adoptionprofile: {
+                    include: {
+                        user: true,
+                    },
+                },
+            }
         });
 
         if (!application) {
@@ -24,9 +32,16 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        // Verify the pet exists
+        // Verify the pet exists and include shelter with its user data
         const pet = await prisma.animals.findUnique({
-            where: { id: petId }
+            where: { id: petId },
+            include: {
+                shelter: {
+                    include: {
+                        user: true  
+                    }
+                }
+            }
         });
 
         if (!pet) {
@@ -43,6 +58,22 @@ export async function PUT(req: NextRequest) {
                 { status: 400 }
             );
         }
+
+        // Get all other applications for this pet that will be rejected
+        const rejectedApplications = await prisma.adoptionRequests.findMany({
+            where: {
+                petId: petId,
+                id: { not: applicationId },
+                status: 'unprocessed' // Only reject unprocessed applications
+            },
+            include: {
+                adoptionprofile: {
+                    include: {
+                        user: true
+                    }
+                }
+            }
+        });
 
         // Execute transaction
         const result = await prisma.$transaction([
@@ -64,7 +95,51 @@ export async function PUT(req: NextRequest) {
             })
         ]);
 
-        return NextResponse.json(result, { status: 200 });
+        // Send email notifications
+        // 1. Send approval email to the successful applicant
+        const approvedApplicantData = {
+            applicantName: application.adoptionprofile.user.name,
+            applicantEmail: application.adoptionprofile.user.email,
+            petName: pet.name,
+            shelterName: pet.shelter.user.name, 
+            shelterPhoneNumber: pet.shelter.user.phoneNumber || "Contact the shelter through the platform"
+        };
+
+        // Send approval email
+        await fetch('http://localhost:3000/api/applicationApprovedEmail', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(approvedApplicantData)
+        });
+
+        // 2. Send rejection emails to all other applicants
+        for (const rejectedApp of rejectedApplications) {
+            const rejectedApplicantData = {
+                applicantName: rejectedApp.adoptionprofile.user.name,
+                applicantEmail: rejectedApp.adoptionprofile.user.email,
+                petName: pet.name,
+                shelterName: pet.shelter.user.name  
+            };
+            
+            // Send rejection email
+            await fetch('http://localhost:3000/api/applicationRejectedEmail', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(rejectedApplicantData)
+            });
+        }
+
+        return NextResponse.json({ 
+            result, 
+            emailsSent: {
+                approved: 1,
+                rejected: rejectedApplications.length
+            }
+        }, { status: 200 });
 
     } catch (error) {
         if (error instanceof z.ZodError) {

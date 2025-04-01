@@ -224,8 +224,6 @@ export default function EditPet() {
 
                     </Tabs>
 
-
-
                 </div>
             </main>
         </>

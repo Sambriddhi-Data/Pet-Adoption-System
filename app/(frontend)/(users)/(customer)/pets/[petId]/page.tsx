@@ -9,13 +9,10 @@ import {
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+
 import { ApplyToAdoptForm } from '../../../_components/forms/apply-to-adopt-form';
 import { Logo } from '@/components/Logo';
 import { useSession } from '@/auth-client';
@@ -38,21 +35,25 @@ interface PetData {
     size: string;
     status: string;
     social: string;
+    description: string;
+    healthIssues: string;
+    vaccinationStatus: string;
+    personalitySummary: string;
     shelter: ShelterData;
     image: string[];
 }
 const species = [
-    { value: "dog", label: "Dog" },
-    { value: "cat", label: "Cat" },
-    { value: "rabbit", label: "Rabbit" },
-    { value: "parrot", label: "Parrot" },
-    { value: "others", label: "Others" },
+    { value: "Dog", label: "Dog" },
+    { value: "Cat", label: "Cat" },
+    { value: "Rabbit", label: "Rabbit" },
+    { value: "Parrot", label: "Parrot" },
+    { value: "Others", label: "Others" },
 ];
 
 const sex = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-    { value: "unknown", label: "Unknown" },
+    { value: "Male", label: "Male" },
+    { value: "Female", label: "Female" },
+    { value: "Unknown", label: "Unknown" },
 ];
 
 const sizeOptions: Record<string, { value: string; label: string }[]> = {
@@ -154,7 +155,7 @@ function PetInfoPage() {
 
 
     return (
-        <div className="max-w-4xl mx-auto p-4 md:p-6">
+        <div className="max-w-5xl mx-auto p-4 md:p-6">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 text-center">
                 {pet?.name || 'Pet Info'}
             </h1>
@@ -187,77 +188,101 @@ function PetInfoPage() {
                             ))}
                         </div>
                     )}
+                    <div className='p-4 md:p-6 flex flex-row justify-between'>
+                        {/* Pet Details Card */}
+                        <div className="bg-white p-4 md:p-6 rounded-lg shadow-md border w-3/5 mr-4">
+                            <h2 className="text-xl md:text-2xl font-semibold text-gray-700 mb-2">
+                                About {pet.name}
+                            </h2>
+                            <p className="text-gray-600 mb-4">
+                                {pet.social}
+                            </p>
 
-                    {/* Pet Details Card */}
-                    <div className="bg-white p-4 md:p-6 rounded-lg shadow-md border">
-                        <h2 className="text-xl md:text-2xl font-semibold text-gray-700 mb-2">
-                            About {pet.name}
-                        </h2>
-                        <p className="text-gray-600 mb-4">
-                            {pet.social}
-                        </p>
+                            <div className="grid grid-cols-2 gap-4 text-gray-700">
+                                <div className="flex items-center gap-2">
+                                    <PawPrint className="w-5 h-5 text-gray-500" />
+                                    <p className="font-medium">Breed:</p>
+                                    <span>{pet.dominantBreed}</span>
+                                </div>
 
-                        <div className="grid grid-cols-2 gap-4 text-gray-700">
-                            <div className="flex items-center gap-2">
-                                <PawPrint className="w-5 h-5 text-gray-500" />
-                                <p className="font-medium">Breed:</p>
-                                <span>{pet.dominantBreed}</span>
+                                <div className="flex items-center gap-2">
+                                    <Calendar className="w-5 h-5 text-gray-500" />
+                                    <p className="font-medium">Age: </p>
+                                    <span>{pet.age ? pet.age : '-'}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <Users className="w-5 h-5 text-gray-500" />
+                                    <p className="font-medium">Gender:</p>
+                                    <span>{pet.sex}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <Ruler className="w-5 h-5 text-gray-500" />
+                                    <p className="font-medium">Size:</p>
+                                    <span>{pet.size ? pet.size : '-'}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <Heart className="w-5 h-5 text-gray-500" />
+                                    <p className="font-medium">Adoption Status:</p>
+                                    <span
+                                        className={`px-2 py-1 rounded-md text-sm font-semibold ${pet.status === 'available'
+                                            ? 'bg-green-200 text-green-800'
+                                            : 'bg-red-200 text-red-800'
+                                            }`}
+                                    >
+                                        {pet.status}
+                                    </span>
+                                </div>
                             </div>
+                        </div>
 
-                            <div className="flex items-center gap-2">
-                                <Calendar className="w-5 h-5 text-gray-500" />
-                                <p className="font-medium">Age:</p>
-                                <span>{pet.age}</span>
-                            </div>
+                        {pet.shelter && (
+                            <div className='w-2/5 space-y-2'>
 
-                            <div className="flex items-center gap-2">
-                                <Users className="w-5 h-5 text-gray-500" />
-                                <p className="font-medium">Gender:</p>
-                                <span>{pet.sex}</span>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <Ruler className="w-5 h-5 text-gray-500" />
-                                <p className="font-medium">Size:</p>
-                                <span>{pet.size}</span>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <Heart className="w-5 h-5 text-gray-500" />
-                                <p className="font-medium">Adoption Status:</p>
-                                <span
-                                    className={`px-2 py-1 rounded-md text-sm font-semibold ${pet.status === 'available'
-                                        ? 'bg-green-200 text-green-800'
-                                        : 'bg-red-200 text-red-800'
-                                        }`}
+                                {/* Shelter Information Card */}
+                                <div
+                                    className="cursor-pointer bg-gray-100 p-4  md:p-10 rounded-lg shadow-md flex items-center justify-between h-1/3 hover:bg-gray-200 transition"
+                                    onClick={() => router.push(`/public-page/${pet.shelter.user.id}`)}
                                 >
-                                    {pet.status}
-                                </span>
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-gray-800">
+                                            <Home className="inline-block w-5 h-5 text-gray-600 mr-2" />
+                                            {pet.shelter.user.name}
+                                        </h3>
+                                        <p className="text-gray-600 text-sm mt-5">
+                                            <MapPin className="inline-block w-5 h-5 text-gray-500" />
+                                            {pet.shelter.user.location}
+                                        </p>
+                                    </div>
+                                    <span className="text-blue-500 text-sm font-medium">View Shelter &rarr;</span>
+                                </div>
+
+                                {/* Apply to Adopt Button */}
+                                <div className="w-full">
+                                    <ApplytoAdoptButton open={isFormOpen} onOpenChange={setIsFormOpen} />
+                                </div>
                             </div>
+                        )}
+                    </div>
+                    <div className='text-gray-800'>
+                        <div className='w-full'>
+                            <h2 className="text-xl md:text-2xl font-semibold text-gray-700 mb-2">
+                                {pet.name}'s Description
+                            </h2>
+                            <p>{pet.social}</p>
+                        </div>
+                        <div className='w-full '>
+                            <h2 className="text-xl md:text-2xl font-semibold text-gray-700 mb-2">
+                                Health Details
+                            </h2>
+
+                            <p className='font-semibold'>Health Issues?</p>
+                            <p>{pet.healthIssues}</p>
                         </div>
                     </div>
 
-                    {/* Shelter Information Card */}
-                    {pet.shelter && (
-                        <div
-                            className="cursor-pointer bg-gray-100 p-4 md:p-6 rounded-lg shadow-md flex items-center justify-between hover:bg-gray-200 transition"
-                            onClick={() => router.push(`/public-page/${pet.shelter.user.id}`)}
-                        >
-                            <div>
-                                <h3 className="text-lg font-semibold text-gray-800">
-                                    <Home className="inline-block w-5 h-5 text-gray-600 mr-2" />
-                                    {pet.shelter.user.name}
-                                </h3>
-                                <p className="text-gray-600 text-sm">{pet.shelter.user.location}</p>
-                            </div>
-                            <span className="text-blue-500 text-sm font-medium">View Shelter &rarr;</span>
-                        </div>
-                    )}
-
-                    <div className="flex justify-center">
-                        <ApplytoAdoptButton open={isFormOpen} onOpenChange={setIsFormOpen} />
-                    </div>
-                    {/* Apply to Adopt Button */}
                     <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
                         <DialogContent className="sm:max-w-[425px]">
                             <DialogHeader>

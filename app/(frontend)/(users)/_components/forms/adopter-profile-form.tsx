@@ -365,6 +365,19 @@ export default function AdopterProfileForm() {
                                             </FormItem>
                                         )}
                                     />
+                                    {/* <FormField
+                                        control={form.control}
+                                        name="email"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-col">
+                                                <FormLabel>Email:<span style={{ color: 'red' }}> *</span></FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="johndoe@gmail.com" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    /> */}
 
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

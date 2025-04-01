@@ -12,14 +12,9 @@ export const petBasicDetailsSchema = z.object({
         .string()
         .min(3, { message: "Species name must be  atleast 3 characters long" }),
 
-    sex: z.enum(['male', 'female', 'unknown']),
+    sex: z.enum(['Male', 'Female', 'Unknown']),
 
     status: z.enum(['available', 'processing', 'adopted']),
-
-    description: z
-        .string()
-        .trim()
-        .min(7, { message: "Description name must be atleast 7 characters long" }),
 
     age: z
         .string()
@@ -31,8 +26,10 @@ export const petBasicDetailsSchema = z.object({
     size: z
         .string(),
 
-    arrivedAtShelter: z
-        .string() || undefined,
+    // arrivedAtShelter: z
+    //     .date({
+    //         required_error: "A date of arrival is required.",
+    //       }),
 
     shelterId: z
         .string(),
@@ -72,6 +69,7 @@ export type TAddPetHealthForm = z.infer<typeof petHealthSchema>;
 export const petPersonalitySchema = z.object({
     social: z
         .string()
+        .max(100, { message: "Social description cannot exceed 100 characters" })
         .optional(),
 
     personalitySummary: z
