@@ -26,6 +26,7 @@ export default function ReviewSubmit({ isEditing }: ReviewSubmitProps) {
             if (!response.ok) {
                 throw new Error(`Failed to add pet details.`);
             }
+            console.log(response);
 
             // Show success message
             toast({
@@ -58,6 +59,7 @@ export default function ReviewSubmit({ isEditing }: ReviewSubmitProps) {
                         <li><strong>Age:</strong> {formData.basicDetails.age}</li>
                         <li><strong>Sex:</strong> {formData.basicDetails.sex}</li>
                         <li><strong>Size:</strong> {formData.basicDetails.size}</li>
+
                     </ul>
                 </section>
 

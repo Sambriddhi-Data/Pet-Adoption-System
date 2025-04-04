@@ -18,7 +18,7 @@ export default function CustomerProfile() {
 
         {/* Navigation Tabs */}
         <div className="flex border-b">
-          {["editProfile", "myProfile", "myFavorites"].map((section) => (
+          {["editProfile", "myEnquiries", "myProfile", "myFavorites"].map((section) => (
             <button
               key={section}
               className={cn(
@@ -27,7 +27,7 @@ export default function CustomerProfile() {
               )}
               onClick={() => setActiveSection(section as any)}
             >
-              {section === "editProfile" ? "Edit Profile" : section === "myProfile" ? "My Profile" : "My Favorites"}
+              {section === "editProfile" ? "Edit Profile" : section === "myProfile" ? "My Profile" :  section === "myEnquiries"? "My Enquiries" :"My Favorites"}
             </button>
           ))}
         </div>

@@ -35,7 +35,7 @@ export default function PublicShelterPage() {
 
   const isDisabled = session?.user?.user_role !== "customer";
   const handleRehomeRedirect = () => {
-    router.push('/rehome-pet-request')
+    router.push(`/rehome-pet-request/${id}`)
   }
 
   return (

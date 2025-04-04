@@ -1,3 +1,4 @@
+import { Shell } from "lucide-react";
 import { z } from "zod";
 
 export const adopterProfileSchema = z.object({
@@ -144,8 +145,10 @@ export const rehomePetSchema = z.object({
     image: z
         .array(z
             .string())
-        .min(2, "At least two images are required")
+        .min(4, "Four images are required")
         .max(4, "Upto four images are only allowed"),
+    userId: z.string(),
+    shelterId: z.string()
 });
 
 export type TRehomePetSchema = z.infer<typeof rehomePetSchema>;

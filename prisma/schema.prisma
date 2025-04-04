@@ -25,7 +25,7 @@ model User {
   role            Role             @default(customer)
   accounts        Account[]
   adoptionProfile AdoptionProfile?
-  rehomePet       RehomePet[]
+  rehomePet       RehomeRequests[]
   sessions        Session[]
   shelter         Shelter?
 
@@ -67,12 +67,13 @@ model Account {
 }
 
 model Shelter {
-  id          String    @id @default(cuid())
-  userId      String    @unique
-  shelterDesc String?
-  logo        String?
-  animal      Animals[]
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String           @id @default(cuid())
+  userId         String           @unique
+  shelterDesc    String?
+  logo           String?
+  animal         Animals[]
+  rehomeRequests RehomeRequests[]
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("shelter")
 }
@@ -136,9 +137,10 @@ model AdoptionRequests {
   adoptionProfileId String
   message           String
   status            AdoptionRequestStatus @default(unprocessed)
-  createdAt       DateTime        @default(now())
-  adoptionprofile AdoptionProfile @relation(fields: [adoptionProfileId], references: [id], onDelete: Cascade)
-  animals         Animals         @relation(fields: [petId], references: [id], onDelete: Cascade)
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime?
+  adoptionprofile   AdoptionProfile       @relation(fields: [adoptionProfileId], references: [id], onDelete: Cascade)
+  animals           Animals               @relation(fields: [petId], references: [id], onDelete: Cascade)
 
   @@map("adoptionrequests")
 }
@@ -150,20 +152,25 @@ model Test {
   @@map("test")
 }
 
-model RehomePet {
+model RehomeRequests {
   id           String   @id @default(cuid())
-  userId       String
+  species      String
+  isBonded     Boolean  @default(false)
   rehomeReason String[]
   keepDuration String
   isOver18     Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  image        String[]
-  species      String
-  isBonded     Boolean  @default(false)
   petName      String?
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  image        String[]
+  shelterId    String
+  status        AdoptionRequestStatus @default(unprocessed)
+  shelter      Shelter  @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
 
-  @@map("rehomepet")
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@map("rehomerequests")
 }
 
 model LostPets {

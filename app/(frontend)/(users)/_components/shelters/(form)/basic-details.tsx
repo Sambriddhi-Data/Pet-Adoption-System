@@ -1,6 +1,6 @@
 'use client';
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
@@ -12,22 +12,22 @@ import { toast } from "@/hooks/use-toast";
 import { Combobox } from "@/app/(frontend)/(users)/_components/combo-box";
 import { petBasicDetailsSchema, TPetBasicDetailsForm } from "../../../(shelter)/add-pet-form";
 import usePetRegistrationStore from "./store";
-import { Textarea } from "@/components/ui/textarea";
 import { BCombobox } from "../../breed-combo-box";
 import { useEffect } from "react";
 
+
 const species = [
-    { value: "dog", label: "Dog" },
-    { value: "cat", label: "Cat" },
-    { value: "rabbit", label: "Rabbit" },
-    { value: "parrot", label: "Parrot" },
-    { value: "others", label: "Others" },
+    { value: "Dog", label: "Dog" },
+    { value: "Cat", label: "Cat" },
+    { value: "Rabbit", label: "Rabbit" },
+    { value: "Parrot", label: "Parrot" },
+    { value: "Others", label: "Others" },
 ];
 
 const sex = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-    { value: "unknown", label: "Unknown" },
+    { value: "Male", label: "Male" },
+    { value: "Female", label: "Female" },
+    { value: "Unknown", label: "Unknown" },
 ];
 
 const sizeOptions: Record<string, { value: string; label: string }[]> = {
@@ -116,7 +116,7 @@ export default function BasicDetails({ isEditing }: FormsProps) {
         return () => subscription.unsubscribe();
     }, [form, setBasicInfo, shelter_id]);
 
-    const speciesValue = form.watch("species");
+    const speciesValue = form.watch("species").toLowerCase();
 
     const onSubmit = async (values: TPetBasicDetailsForm) => {
         if (!session?.data?.user?.id) {
@@ -133,6 +133,11 @@ export default function BasicDetails({ isEditing }: FormsProps) {
                 shelterId: session.data.user.id,
             });
             console.log("Submit Basic Details: ", values);
+            toast({
+                title: "Submitted Values",
+                description: (<code className="text-black">{JSON.stringify(values, null, 2)}</code>)
+            });
+
 
             nextStep();
         } catch (error: any) {
@@ -250,23 +255,47 @@ export default function BasicDetails({ isEditing }: FormsProps) {
                                     </FormItem>
                                 )}
                             />}
-                            <FormField
+                            {/* <FormField
                                 control={form.control}
-                                name="description"
+                                name="arrivedAtShelter"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                        <FormLabel>Description<span style={{ color: 'red' }}>*</span></FormLabel>
-                                        <FormControl>
-                                            <Textarea
-                                                className="resize-none"
-                                                placeholder="ABC is a good boy."
-                                                {...field}
-                                            />
-                                        </FormControl>
+                                        <FormLabel>Arrival Date<span style={{ color: 'red' }}>*</span></FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant={"outline"}
+                                                        className={cn(
+                                                            "w-[200px] pl-3 text-left font-normal",
+                                                            !field.value && "text-muted-foreground"
+                                                        )}
+                                                    >
+                                                        {field.value ? (
+                                                            format(field.value, "PPP")
+                                                        ) : (
+                                                            <span>Pick a date</span>
+                                                        )}
+                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="start">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={field.value}
+                                                    onSelect={field.onChange}
+                                                    disabled={(date) =>
+                                                        date > new Date() || date < new Date("1900-01-01")
+                                                    }
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
                                         <FormMessage />
                                     </FormItem>
                                 )}
-                            />
+                            /> */}
                         </div>
                     </Card>
                     {!isEditing &&
