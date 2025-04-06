@@ -179,7 +179,7 @@ export default function EditPet() {
                         <TabsList className="grid w-[30rem] grid-cols-2 h-24">
                             <TabsTrigger value="details" className="h-20 text-lg">Details</TabsTrigger>
                             <TabsTrigger value="applications" className="h-20 text-lg">Applications</TabsTrigger>
-                        </TabsList>
+                        </TabsList> 
 
                         <TabsContent value="details">
                             <Tabs

@@ -66,7 +66,7 @@ export default function AdoptionRequests() {
             fetchAdoptionRequests(currentPage);
         }
     }, [currentPage, session]);
-    
+
     const [modalOpen, setModalOpen] = useState(false);
 
     const handleOnOpen = (request: AdoptionRequest) => {
@@ -165,7 +165,7 @@ export default function AdoptionRequests() {
 
     return (
         <div className="p-6 flex flex-col">
-            <Card className="w-1/3 p-4 mb-4">
+            <Card className="w-72 p-4 mb-4">
                 <h1>Filter Applications</h1>
                 <StatusFilter />
             </Card>
@@ -201,8 +201,10 @@ export default function AdoptionRequests() {
                                     <span className="text-gray-800">Phone number</span>
                                     <span className="text-gray-600 text-[14px]" >{request.adoptionprofile.user.phoneNumber}</span>
                                 </div>
-                                <Calendar color="green" /> <span className="text-gray-800">{new Date(request.createdAt).toLocaleDateString()}</span>
-                                <div className="bg-gray-100 p-2 rounded-lg mt-2">
+                                <div className="flex space-x-1">
+                                    <Calendar color="green" />
+                                    <span className="text-gray-800">{new Date(request.createdAt).toLocaleDateString()}</span>
+                                </div>                                <div className="bg-gray-100 p-2 rounded-lg mt-2">
                                     {request.message}
                                 </div>
                             </div>

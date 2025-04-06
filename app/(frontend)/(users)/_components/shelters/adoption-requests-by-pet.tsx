@@ -231,7 +231,7 @@ const isPetAdopted = requests.some(request => request.status === "approved" || r
         <div className="flex flex-col w-full max-w-4xl md:w-[80rem] mx-auto px-4">
             <div className="flex flex-col md:flex-row w-[80] items-center justify-between border-b">
                 <Card className="p-2 py-3 mb-4 md:mb-0">{filteredRequests.length >1 ? `${filteredRequests.length} Applications`:`${filteredRequests.length} Application`}</Card>
-                <Card className="w-full md:w-80 p-4 mb-4">
+                <Card className="w-full md:w-72 p-4 mb-4">
                     <h1>Filter Applications</h1>
                     <StatusFilter />
                 </Card>
@@ -434,8 +434,6 @@ const isPetAdopted = requests.some(request => request.status === "approved" || r
                         )}
                     </CustomModal>
                 )}
-
-
             </div>
         </div>
     );

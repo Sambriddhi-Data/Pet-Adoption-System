@@ -53,6 +53,7 @@ export interface AdoptionRequest {
     other_animals: boolean;
     other_animals_info: "";
     agreement: boolean;
+    image: string[];
     user: {
       id: string;
       name: string;
@@ -114,3 +115,32 @@ export interface Requests {
     createdAt: string;
   }[];
 }
+
+export interface RehomeRequest{
+    id: string;
+    species: string;
+    isBonded: boolean;
+    rehomeReason: string[];
+    keepDuration: string;
+    isOver18: boolean;
+    petName: string;
+    image: string[];
+    userId: string;
+    status: string;
+    shelter: {
+      user: {
+        name: string;
+        location: string;
+        phoneNumber: string;
+        email: string;
+      };
+    };
+    user:{
+      id: string;
+      name: string;
+      email: string;
+      phoneNumber: string;
+      location: string;
+    };
+    createdAt: string;
+};
