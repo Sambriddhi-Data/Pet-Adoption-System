@@ -58,7 +58,7 @@ export default function MyEnquiries() {
         <div className="flex flex-col h-screen">
             <div className="flex flex-col w-full max-w-6xl mx-auto px-4 mb-4 space-y-2">
                 {requests.adoptionRequests.length > 0 &&
-                    <h1 className="text-2xl font-bold">Adoption Requests</h1>
+                    <h1 className="text-2xl font-bold"> My Adoption Requests</h1>
                 }
                 {loading ? (
                     <p className="col-span-full text-gray-500">Loading requests...</p>
@@ -102,12 +102,12 @@ export default function MyEnquiries() {
                                 </div>
 
                                 <div className={classNames({
-                                    "rounded-lg text-xs w-fit h-fit py-2 px-6 mt-2": true,
+                                    "rounded-lg text-xs w-fit h-fit py-2 px-6 mt-2 ": true,
                                     "bg-yellow-400 bg-opacity-50": request.status === "unprocessed",
                                     "bg-red-400 bg-opacity-50": request.status === "rejected",
                                     "bg-green-400 bg-opacity-50": request.status === "approved"
                                 })}>
-                                    {request.status}
+                                    {request.status.toUpperCase()}
                                 </div>
                             </div>
                         </Card>
@@ -117,7 +117,7 @@ export default function MyEnquiries() {
                 )}
                 <div className="mt-20"></div>
                 {requests.rehomingRequests.length > 0 &&
-                    <h1 className="text-2xl font-bold">Rehoming Requests</h1>
+                    <h1 className="text-2xl font-bold"> My Rehoming Requests</h1>
                 }
                 {loading ? (
                     <p className="col-span-full text-gray-500">Loading requests...</p>

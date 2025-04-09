@@ -273,7 +273,7 @@ const isPetAdopted = requests.some(request => request.status === "approved" || r
                                         "bg-red-400 bg-opacity-50": request.status === "rejected",
                                         "bg-green-400 bg-opacity-50": request.status === "approved"
                                     })}>
-                                        {request.status}
+                                        {request.status.toUpperCase()}
                                     </div>
                                 </div>
                             </Card>

@@ -294,9 +294,13 @@ export default function AdopterProfileForm() {
 
     async function onsubmit(values: TAdopterProfileSchema) {
         setPending(true);
-        console.log("Submitting profile:", values);
 
         if (checkPhn && checkPhn.id !== id) {
+            form.setError("phoneNumber", {
+                type: "manual",
+                message: "This phone number is already in use. Please enter a different one.",
+            });
+
             toast({
                 title: "Phone number is already in use",
                 description: "Please enter a different phone number.",

@@ -46,7 +46,7 @@ export default function ShelterNavbar() {
             <div className='flex items-center gap-2 text-lg'>
               <h1 className='font-fruktur'>{user?.name}</h1>
               <CldImage
-                src="https://res.cloudinary.com/dasa1mcpz/image/upload/v1739022787/FurEverFriendsPetImages/kracd2oevfyabh2scuqk.png" // Use this sample image or upload your own via the Media Explorer
+                src= {user?.image || "https://res.cloudinary.com/dasa1mcpz/image/upload/v1739022787/FurEverFriendsPetImages/kracd2oevfyabh2scuqk.png"}
                 width="28" // Transform the image: auto-crop to square aspect_ratio
                 height="28"
                 alt="Sample"
@@ -62,7 +62,7 @@ export default function ShelterNavbar() {
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => {
-              redirect("/shelter-profile");
+              redirect(`/shelter-profile/${user?.id}`);
             }}>Profile</DropdownMenuItem>
             <DropdownMenuItem onClick={() => {
               setIsAlertDialogOpen(true)
