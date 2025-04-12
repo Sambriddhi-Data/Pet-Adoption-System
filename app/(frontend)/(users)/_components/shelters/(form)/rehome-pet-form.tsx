@@ -1,5 +1,5 @@
 'use client'
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
@@ -18,7 +18,7 @@ const species = [
     { value: "Dog", label: "Dog" },
     { value: "Cat", label: "Cat" },
     { value: "Rabbit", label: "Rabbit" },
-    { value: "Parrot", label: "Parrot" },
+    { value: "Bird", label: "Bird" },
     { value: "Others", label: "Others" },
 ];
 const duration = [
@@ -31,12 +31,20 @@ const duration = [
 interface RehomeRequestByShelterId {
     shelterId: string;
 }
-export default function RehomePet({ shelterId }:RehomeRequestByShelterId){
+
+interface UserWithPhoneNumber {
+    id: string;
+    phoneNumber: string;
+}
+
+export default function RehomePet({ shelterId }: RehomeRequestByShelterId) {
     const [step, setStep] = useState(1);
-    const {data: session} = useSession();
+    const { data: session } = useSession();
     const user = session?.user;
     const [isDeleting, setIsDeleting] = useState(false);
     const [pending, setPending] = useState(false);
+    const [checkPhn, setCheckPhn] = useState<UserWithPhoneNumber | null>();
+
     const router = useRouter();
     console.log(shelterId);
 
@@ -51,7 +59,7 @@ export default function RehomePet({ shelterId }:RehomeRequestByShelterId){
             email: user?.email,
             name: user?.name || "",
             phoneNumber: user?.phoneNumber || "",
-            petName:"",
+            petName: "",
             location: user?.location || "",
             isOver18: false,
             shelterId: shelterId,
@@ -161,8 +169,48 @@ export default function RehomePet({ shelterId }:RehomeRequestByShelterId){
     console.log("Form", form.getValues())
     console.log(form.formState.errors)
 
+    const phoneNumber = form.watch("phoneNumber");
+
+    useEffect(() => {
+        if (!phoneNumber) return;
+
+        const fetchPhoneNumber = async () => {
+            try {
+                const response = await fetch(`/api/getPhoneNumbers?phn=${phoneNumber}`);
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+                setCheckPhn(data);
+            } catch (error) {
+                console.error("Error fetching user with phone number:", error);
+                toast({
+                    title: "Error",
+                    description: "Failed to check phone number availability.",
+                    variant: "destructive",
+                });
+            }
+        };
+
+        fetchPhoneNumber();
+    }, [phoneNumber]);
+
     const onSubmit = async (data: TRehomePetSchema) => {
         setPending(true);
+        if (checkPhn && checkPhn.id !== user?.id) {
+            form.setError("phoneNumber", {
+                type: "manual",
+                message: "This phone number is already in use.",
+            });
+
+            toast({
+                title: "Phone number is already in use",
+                description: "Please enter a different phone number.",
+                variant: "destructive",
+            });
+            setPending(false);
+            return; // Prevent form submission
+        }
         try {
             const response = await fetch("/api/rehomeApplication", {
                 method: "POST",
@@ -235,7 +283,7 @@ export default function RehomePet({ shelterId }:RehomeRequestByShelterId){
                 <p className="text-center mb-10">You need to fill all the fields to apply for rehoming your pet.</p>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                    <FormField
+                        <FormField
                             control={form.control}
                             name="petName"
                             render={({ field }) => (
@@ -363,7 +411,7 @@ export default function RehomePet({ shelterId }:RehomeRequestByShelterId){
                                                         </button>
                                                     </div>
                                                 ))}
-                                            </div>   
+                                            </div>
                                         </div>
                                     ) : (
                                         <p className="text-gray-500 text-sm mb-4">No images uploaded yet.</p>
@@ -378,7 +426,7 @@ export default function RehomePet({ shelterId }:RehomeRequestByShelterId){
                                                 onClick={openWidget}
                                                 className=" mt-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md px-3 py-2 text-sm inline-block"
                                             >
-                                                Choose Image
+                                                {isDeleting ? "Removing..." : "Choose Image"}
                                             </Button>
                                             <p className="text-xs text-gray-500 mt-1">
                                                 Max size: 5MB.
@@ -391,6 +439,10 @@ export default function RehomePet({ shelterId }:RehomeRequestByShelterId){
                             )}
                         />
 
+                        <p className="text-red-500 italic">
+                            Changing your details here will change your details registered in the system.
+                        </p>
+
                         <FormField
                             control={form.control}
                             name="location"
@@ -399,21 +451,6 @@ export default function RehomePet({ shelterId }:RehomeRequestByShelterId){
                                     <FormLabel>Current address:<span style={{ color: 'red' }}> *</span></FormLabel>
                                     <FormControl>
                                         <Input placeholder="Town / City" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-col">
-
-                                    <FormLabel>Email<span style={{ color: 'red' }}> *</span></FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Enter your email" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -434,6 +471,23 @@ export default function RehomePet({ shelterId }:RehomeRequestByShelterId){
                                 </FormItem>
                             )}
                         />
+
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col">
+
+                                    <FormLabel>Email<span style={{ color: 'red' }}> *</span></FormLabel>
+                                    <FormControl>
+                                        <p className="text-sm text-coral">{user?.email}</p>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+
 
                         <FormField
                             control={form.control}

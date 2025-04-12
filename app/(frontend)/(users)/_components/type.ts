@@ -35,6 +35,14 @@ export interface AdoptionRequest {
     species: string;
     status: string;
     image: string[];
+    shelter: {
+      user: {
+        name: string;
+        email: string;
+        phoneNumber: string;
+        location: string;
+      };
+    };
   };
   adoptionprofile: {
     id: string;
@@ -92,6 +100,32 @@ export interface Requests {
         };
       };
     };
+    adoptionprofile: {
+      id: string;
+      userId: string;
+      home_situation: string;
+      household_setting: string;
+      household_typical_activity: string;
+      min_age: string;
+      outside_space: string;
+      allergy: boolean;
+      experience: string;
+      flatmate: boolean;
+      lifestyle: string;
+      move_holiday: string;
+      neuter_status: "";
+      other_animals: boolean;
+      other_animals_info: "";
+      agreement: boolean;
+      image: string[];
+      user: {
+        id: string;
+        name: string;
+        email: string;
+        phoneNumber: string;
+        location: string;
+      };
+    };
   }[];
   rehomingRequests: {
     id: string;
@@ -112,30 +146,7 @@ export interface Requests {
         email: string;
       };
     };
-    createdAt: string;
-  }[];
-}
-
-export interface RehomeRequest{
-    id: string;
-    species: string;
-    isBonded: boolean;
-    rehomeReason: string[];
-    keepDuration: string;
-    isOver18: boolean;
-    petName: string;
-    image: string[];
-    userId: string;
-    status: string;
-    shelter: {
-      user: {
-        name: string;
-        location: string;
-        phoneNumber: string;
-        email: string;
-      };
-    };
-    user:{
+    user: {
       id: string;
       name: string;
       email: string;
@@ -143,4 +154,34 @@ export interface RehomeRequest{
       location: string;
     };
     createdAt: string;
+  }[];
+}
+
+export interface RehomeRequest {
+  id: string;
+  species: string;
+  isBonded: boolean;
+  rehomeReason: string[];
+  keepDuration: string;
+  isOver18: boolean;
+  petName: string;
+  image: string[];
+  userId: string;
+  status: string;
+  shelter: {
+    user: {
+      name: string;
+      location: string;
+      phoneNumber: string;
+      email: string;
+    };
+  };
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    phoneNumber: string;
+    location: string;
+  };
+  createdAt: string;
 };

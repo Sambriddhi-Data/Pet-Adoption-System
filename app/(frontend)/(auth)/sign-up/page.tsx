@@ -12,16 +12,24 @@ import { Input } from "@/components/ui/input";
 import { signUpFormSchema } from "@/app/(frontend)/(auth)/auth-schema";
 import { signUp } from "@/auth-client";
 import { toast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import LoadingButton from "@/components/loading-button";
+import GoogleSignInButton from "@/components/GoogleSignInButton";
+import Image from "next/image";
 
+interface UserWithPhoneNumber {
+  id: string;
+  phoneNumber: string;
+}
 
 export default function SignUp() {
 
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [checkPhn, setCheckPhn] = useState<UserWithPhoneNumber | null>();
+
   type TSignUpForm = z.infer<typeof signUpFormSchema>
 
   const form = useForm<TSignUpForm>({
@@ -32,16 +40,54 @@ export default function SignUp() {
       email: "",
       password: "",
       confirmpassword: "",
-      user_role:"customer"
+      user_role: "customer"
     },
   })
-  // console.log("Form",form.getValues())
-  // console.log(form.formState.errors)
+
+  const phoneNumber = form.watch("phoneNumber");
+  // check if the phone number already exists in the database.
+  useEffect(() => {
+    if (!phoneNumber) return;
+
+    const fetchPhoneNumber = async () => {
+      try {
+        const response = await fetch(`/api/getPhoneNumbers?phn=${phoneNumber}`);
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        setCheckPhn(data);
+      } catch (error) {
+        console.error("Error fetching user with phone number:", error);
+        toast({
+          title: "Error",
+          description: "Failed to check phone number availability.",
+          variant: "destructive",
+        });
+      }
+    };
+
+    fetchPhoneNumber();
+  }, [phoneNumber]);
+
 
   // a submit handler.
   async function onSubmit(values: TSignUpForm) {
 
-    console.log("Submit",values)
+    if (checkPhn) {
+      form.setError("phoneNumber", {
+        type: "manual",
+        message: "This phone number is already in use. Please enter a different one.",
+      });
+
+      toast({
+        title: "Phone number is already in use",
+        description: "Please enter a different phone number.",
+        variant: "destructive",
+      });
+      setPending(false);
+      return; // Prevent form submission
+    }
 
     const { name, email, password, user_role, phoneNumber } = values;
     const { data, error } = await signUp.email({
@@ -175,10 +221,17 @@ export default function SignUp() {
                 </FormItem>
               )}
             />
-              <LoadingButton pending={pending}>Sign Up</LoadingButton>
+            <LoadingButton pending={pending}>Sign Up</LoadingButton>
           </form>
         </Form>
+        <h3 className="flex items-center justify-center ">----------- OR -----------</h3>
 
+        <GoogleSignInButton><Image
+          src='/images/google_g_icon.svg'
+          alt='paw'
+          width={30}
+          height={30}
+        />Sign in with Google</GoogleSignInButton>
       </CardContent>
       <CardFooter className='flex justify-center'>
         <p className='text-sm text-muted-foreground'>

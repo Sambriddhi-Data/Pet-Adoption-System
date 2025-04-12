@@ -32,6 +32,7 @@ export const CustomModal: React.FC<CustomModalProps> = ({
       } else {
         document.body.style.overflow = 'auto';
       }
+      
     }
   }, [isOpen, mounted]);
 

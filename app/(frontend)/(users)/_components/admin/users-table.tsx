@@ -173,7 +173,7 @@ export default function UsersTable() {
 						<TableCell>{user.user_role}</TableCell>
 						<TableCell>{user.isVerifiedUser ? "Yes" : "No"}</TableCell>
 						<TableCell>{user.phoneNumber}</TableCell>
-						<TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
+						<TableCell>{new Date(user.createdAt).toISOString().slice(0, 10).replace(/-/g, '/')}</TableCell>
 						<TableCell>
 							{user.user_role === "shelter_manager" ? (
 								user.isVerifiedUser === false ? (

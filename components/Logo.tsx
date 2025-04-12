@@ -20,8 +20,8 @@ export const Logo: React.FC<LogoProps> = ({ className = '', color = '' }) => {
             src='/images/paw.svg'
             alt='paw'
             width={0}
-            height={0} // Auto height
-            style={{ height: "auto", width:"auto"}} // Ensures proper aspect ratio
+            height={0} 
+            style={{ height: "auto", width:"auto"}} 
           />
       }
       <div className={`flex flex-col items-center self-stretch my-auto w-[99px] text-${color}`}>

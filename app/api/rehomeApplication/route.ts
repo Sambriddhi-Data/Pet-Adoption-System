@@ -14,6 +14,9 @@ export async function POST(req: Request) {
         const {
             species,
             isBonded,
+            name,
+            phoneNumber,
+            location,
             rehomeReason,
             keepDuration,
             isOver18,
@@ -22,22 +25,32 @@ export async function POST(req: Request) {
             userId,
             image,
         } = body;
-
-        const rehomePet = await prisma.rehomeRequests.create({
-            data: {
-                species,
-                isBonded,
-                rehomeReason,
-                keepDuration,
-                isOver18,
-                petName,
-                shelterId,
-                image,
-                userId, 
-            },
+        const updatedData = await prisma.$transaction(async (prisma) => {
+            const updatedUser = await prisma.user.update({
+                where: { id: userId },
+                data: { name, phoneNumber, location }
+            });
+            const rehomePetApplication = await prisma.rehomeRequests.create({
+                data: {
+                    species,
+                    isBonded,
+                    rehomeReason,
+                    keepDuration,
+                    isOver18,
+                    petName,
+                    shelterId,
+                    image,
+                    userId,
+                },
+            });
+            return { updatedUser, rehomePetApplication };
         });
 
-        return NextResponse.json({ message: "Pet rehome request submitted successfully!", rehomePet }, { status: 201 });
+        return NextResponse.json({
+            message: "Pet rehome request submitted successfully!",
+            user: updatedData.updatedUser,
+            rehomePetApplication: updatedData.rehomePetApplication,
+        }, { status: 200 });
     } catch (error) {
         console.error("Error submitting rehome pet request:", error);
         return NextResponse.json({ message: "An error occurred while submitting the request." }, { status: 500 });

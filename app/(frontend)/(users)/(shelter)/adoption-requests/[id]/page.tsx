@@ -203,7 +203,9 @@ export default function AdoptionRequests() {
                                 </div>
                                 <div className="flex space-x-1">
                                     <Calendar color="green" />
-                                    <span className="text-gray-800">{new Date(request.createdAt).toLocaleDateString()}</span>
+                                    <span className="text-gray-800">
+                                        {new Date(request.createdAt).toISOString().slice(0, 10).replace(/-/g, '/')}
+                                    </span>
                                 </div>                                <div className="bg-gray-100 p-2 rounded-lg mt-2">
                                     {request.message}
                                 </div>

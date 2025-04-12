@@ -416,7 +416,7 @@ export default function AddPetImages({ isEditing }: FormsProps) {
                                                     onClick={openWidget}
                                                     className=" mt-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md px-3 py-2 text-sm inline-block"
                                                 >
-                                                    Choose Image
+                                                    {isDeleting ? "Removing..." : "Choose Image"}
                                                 </Button>
                                                 <p className="text-xs text-gray-500 mt-1">
                                                     Max size: 5MB.

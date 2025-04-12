@@ -6,15 +6,16 @@ const verifySchema = z.object({
     applicantName: z.string(),
     applicantEmail: z.string().email(),
     petName: z.string(),
+    requestId: z.string(),
+    userId: z.string(),
     shelterName: z.string(),
-    shelterPhoneNumber: z.string(),
 });
 
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
         const data = verifySchema.parse(body);
-        const { applicantName, applicantEmail, petName, shelterName, shelterPhoneNumber} = data
+        const { applicantName, applicantEmail, petName, requestId, userId, shelterName } = data
 
         const sender = {
             name: "Fur Ever Friends",
@@ -27,23 +28,18 @@ export async function POST(req: NextRequest) {
             },
         ];
 
-        const route = `${process.env.BETTER_AUTH_URL}/customer-profile`;
+        const route_status = `${process.env.BETTER_AUTH_URL}/customer-profile/${userId}?active=myEnquiries&requestId=${requestId}`;
+        const route =`${process.env.BeTTER_AUTH_URL}/adopt-pet`;
         const result = await sendEmail({
             sender,
             recipients,
             subject: `Update on your application on ${petName}`,
             message: `
-                <p>Hi ${applicantName}</p>
+                <p>Hi ${applicantName},</p>
+                <p>Unfortunately on this occasion the application you made to ${shelterName} for ${petName} wasn't successful.</p><br/>
+                <p>We have a lot of other animals looking for a furever home at <a href="${route}">www.fureverfriends.com</a> and we wish you luck in any future applications.</p>
+                <p>Please remember the rescues receive a lot of applications for each animal so the applications with more information tend to stand out. Confirm your application status at <a href="${route_status}"></p><br/>
 
-                <p>Congratulations!! The application you made to ${shelterName} for ${petName} was successful.</p><br/>
-                <p>We are thrilled to inform you that your application has been approved! You can now proceed with the next steps in the adoption process.</p>
-                <p>Reach out to ${shelterName} at <span style={{ color: 'blue' }>${shelterPhoneNumber} </span>regarding further steps in the adoption process.</p>
-
-                <p>To view your application status and get more details about the shelter, please log in to your account using the link below:</p>
-                <p><a href="${route}">View Application</a></p>
-                <br/><br/>
-                <p>We appreciate your commitment to providing a loving home for our furry friends. If you have any questions or need further assistance, feel free to reach out to us.</p>
-                <p>Thank you for being a part of the Fur-Ever Friends community!</p>
                 <br/> <br/>
                 <p>Best regards,</p>
                 <p>The Fur-Ever Friends Team</p>

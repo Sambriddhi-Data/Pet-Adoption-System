@@ -15,13 +15,13 @@ const shelterRoutes = [
 const customerRoutes= /^\/rehome-pet-request\/[\w-]+$/
 const landingPageRoute = ["/shelter-landing-page"];
 const petIdPattern = /^\/pets\/[\w-]+$/; 
-const adminRoutes = ["/admin-homepage"]; 
+const adminRoutes = ["/admin-homepage", "/add-blog"]; 
 
 export default async function authMiddleware(request: NextRequest) {
   const pathName = request.nextUrl.pathname;
   const searchParams = request.nextUrl.searchParams;
   const isPostAuth = searchParams.get('postAuth') === 'true';
-  const customerProfilePattern = /^\/customer-profile\/[\w-]+$/;
+  const customerProfilePattern = /^\/customer-profile\/[\w-]+(\?.*)?$/;
   const shelterProfilePattern = /^\/shelter-profile\/[\w-]+$/;
   const shelterPublicPagePattern = /^\/public-page\/[\w-]+$/;
   const adoptionRequestsPagePattern = /^\/adoption-requests\/[\w-]+$/;

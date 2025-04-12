@@ -17,8 +17,8 @@ const FlipCardComponent = () => {
         router.push('/rehome-pet');
     }
     return (
-        <div className="flex h-72 justify-between text-3xl">
-            <div className="group h-full w-1/2 [perspective:1000px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 h-72 justify-between text-3xl">
+            <div className="group h-full [perspective:1000px]">
                 <Card
                     className="relative h-full w-full flex flex-col items-center justify-center bg-coral text-white transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]"
                 >
@@ -50,7 +50,7 @@ const FlipCardComponent = () => {
                 </Card>
             </div>
 
-            <div className="group h-full w-1/2 [perspective:1000px]">
+            <div className="group h-full [perspective:1000px]">
                 <Card
                     className="relative h-full w-full flex flex-col items-center justify-center bg-white text-coral transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]"
                 >

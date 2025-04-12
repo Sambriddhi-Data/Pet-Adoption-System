@@ -12,16 +12,23 @@ import { Input } from "@/components/ui/input";
 import { formSchema } from "@/app/(frontend)/(auth)/auth-schema";
 import { signUp } from "@/auth-client";
 import { toast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react"
 import LoadingButton from "@/components/loading-button";
+
+interface UserWithPhoneNumber {
+  id: string;
+  phoneNumber: string;
+}
 
 export default function ShelterSignUp() {
 
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showCPassword, setShowCPassword] = useState(false);
+  const [checkPhn, setCheckPhn] = useState<UserWithPhoneNumber | null>();
+
   const router = useRouter();
 
   type TShelterSignUpForm = z.infer<typeof formSchema>
@@ -40,8 +47,51 @@ export default function ShelterSignUp() {
     },
   })
 
+  const phoneNumber = form.watch("phoneNumber");
+  
+  // check if the phone number already exists in the database.
+  useEffect(() => {
+    if (!phoneNumber) return;
+
+    const fetchPhoneNumber = async () => {
+      try {
+        const response = await fetch(`/api/getPhoneNumbers?phn=${phoneNumber}`);
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        setCheckPhn(data);
+      } catch (error) {
+        console.error("Error fetching user with phone number:", error);
+        toast({
+          title: "Error",
+          description: "Failed to check phone number availability.",
+          variant: "destructive",
+        });
+      }
+    };
+
+    fetchPhoneNumber();
+  }, [phoneNumber]);
+
   // a submit handler.
   async function onSubmit(values: TShelterSignUpForm) {
+
+    if (checkPhn) {
+      form.setError("phoneNumber", {
+        type: "manual",
+        message: "This phone number is already in use. Please enter a different one.",
+      });
+
+      toast({
+        title: "Phone number is already in use",
+        description: "Please enter a different phone number.",
+        variant: "destructive",
+      });
+      setPending(false);
+      return; // Prevent form submission
+    }
+
     const { name, email, password, user_role, location, phoneNumber } = values;
     console.log('Form values:', values);
 
@@ -63,7 +113,7 @@ export default function ShelterSignUp() {
           title: "Account Created",
           description: "Check your email for a verification link. Admin approval is required for shelter manager access and may take some time.",
           variant: "success"
-        });        
+        });
         router.push("/shelter-landing-page");
       },
       onError: (ctx) => {

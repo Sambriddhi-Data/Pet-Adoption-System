@@ -39,6 +39,10 @@ export default function AdminNavbar() {
             <Logo color='black' />
           </Link>
         </div>
+        <div className="hidden md:flex items-center gap-2 md:gap-3 lg:gap-6">
+          <Link href='/add-blog'>
+          <div>Add Blogs</div>
+          </Link>
         <DropdownMenu>
           <DropdownMenuTrigger>
             {/* Admin Name + Logo */}
@@ -50,13 +54,14 @@ export default function AdminNavbar() {
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => {
-              redirect("/shelter-profile");
+              redirect("/");
             }}>Profile</DropdownMenuItem>
             <DropdownMenuItem onClick={() => {
               setIsAlertDialogOpen(true)
             }}>Sign Out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
 
         <AlertDialog open={isAlertDialogOpen} onOpenChange={(open) => { setIsAlertDialogOpen(open) }}>
           <AlertDialogContent>

@@ -184,53 +184,53 @@ export default function AdoptionRequestsByPet({ petId }: AdoptionRequestsByPetPr
     };
 
     const handleConfirm = async () => {
-    if (!applicant) return;
+        if (!applicant) return;
 
-    try {
-        const response = await fetch('/api/confirmAdoption', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                applicationId: applicant.id,
-                petId: petId
-            }),
-        });
+        try {
+            const response = await fetch('/api/confirmAdoption', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    applicationId: applicant.id,
+                    petId: petId
+                }),
+            });
 
-        if (!response.ok) {
-            throw new Error('Failed to confirm adoption');
+            if (!response.ok) {
+                throw new Error('Failed to confirm adoption');
+            }
+
+            toast({
+                title: "Success",
+                description: "Application confirmed successfully!",
+                variant: "success"
+            });
+
+            // Refresh the requests list
+            await fetchAdoptionRequests();
+
+            // Close all modals
+            setChoose(false);
+            setChooseApplicantOverlay(false);
+            setApplicant(null);
+        } catch (error) {
+            console.error("Error confirming adoption:", error);
+            toast({
+                title: "Error",
+                description: "Failed to confirm adoption",
+                variant: "destructive"
+            });
         }
-
-        toast({
-            title: "Success",
-            description: "Application confirmed successfully!",
-            variant: "success"
-        });
-
-        // Refresh the requests list
-        await fetchAdoptionRequests();
-        
-        // Close all modals
-        setChoose(false);
-        setChooseApplicantOverlay(false);
-        setApplicant(null);
-    } catch (error) {
-        console.error("Error confirming adoption:", error);
-        toast({
-            title: "Error",
-            description: "Failed to confirm adoption",
-            variant: "destructive"
-        });
-    }
-};
-//check if the pet is already adopted
-const isPetAdopted = requests.some(request => request.status === "approved" || request.status === "rejected");
+    };
+    //check if the pet is already adopted
+    const isPetAdopted = requests.some(request => request.status === "approved" || request.status === "rejected");
 
     return (
         <div className="flex flex-col w-full max-w-4xl md:w-[80rem] mx-auto px-4">
             <div className="flex flex-col md:flex-row w-[80] items-center justify-between border-b">
-                <Card className="p-2 py-3 mb-4 md:mb-0">{filteredRequests.length >1 ? `${filteredRequests.length} Applications`:`${filteredRequests.length} Application`}</Card>
+                <Card className="p-2 py-3 mb-4 md:mb-0">{filteredRequests.length > 1 ? `${filteredRequests.length} Applications` : `${filteredRequests.length} Application`}</Card>
                 <Card className="w-full md:w-72 p-4 mb-4">
                     <h1>Filter Applications</h1>
                     <StatusFilter />
@@ -264,8 +264,9 @@ const isPetAdopted = requests.some(request => request.status === "approved" || r
                                     </div>
                                     <div className="flex items-center space-x-1">
                                         <Calendar color="green" />
-                                        <span className="text-gray-800">{new Date(request.createdAt).toLocaleDateString()}</span>
-                                    </div>
+                                        <span className="text-gray-800">
+                                            {new Date(request.createdAt).toISOString().slice(0, 10).replace(/-/g, '/')}
+                                        </span>                                    </div>
 
                                     <div className={classNames({
                                         "rounded-lg text-xs w-fit h-fit py-2 px-6 mt-2": true,
@@ -338,8 +339,9 @@ const isPetAdopted = requests.some(request => request.status === "approved" || r
                                                 </div>
                                                 <div className="flex items-center space-x-1">
                                                     <Calendar color="green" />
-                                                    <span className="text-gray-800">{new Date(request.createdAt).toLocaleDateString()}</span>
-                                                </div>
+                                                    <span className="text-gray-800">
+                                                        {new Date(request.createdAt).toISOString().slice(0, 10).replace(/-/g, '/')}
+                                                    </span>                                                </div>
                                                 <Button onClick={() => handleSelect(request)}>Select</Button>
                                             </div>
                                             <div className={classNames({
@@ -364,22 +366,24 @@ const isPetAdopted = requests.some(request => request.status === "approved" || r
                                     </p>
                                     <div className="flex flex-col md:flex-row justify-between p-2 border-b space-x-4">
 
-                                    <div className="flex flex-col items-left mt-2 md:mt-0">
-                                        <span className="text-gray-800">Full Name</span>
-                                        <span className="text-gray-600 text-[14px]">{applicant.adoptionprofile.user.name}</span>
-                                    </div>
-                                    <div className="flex flex-col items-left mt-2 md:mt-0">
-                                        <span className="text-gray-800">Address</span>
-                                        <span className="text-gray-600 text-[14px]">{applicant.adoptionprofile.user.location}</span>
-                                    </div>
-                                    <div className="flex flex-col items-left mt-2 md:mt-0">
-                                        <span className="text-gray-800">Phone number</span>
-                                        <span className="text-gray-600 text-[14px]">{applicant.adoptionprofile.user.phoneNumber}</span>
-                                    </div>
-                                    <div className="flex items-center space-x-1">
-                                        <Calendar color="green" />
-                                        <span className="text-gray-800">{new Date(applicant.createdAt).toLocaleDateString()}</span>
-                                    </div>
+                                        <div className="flex flex-col items-left mt-2 md:mt-0">
+                                            <span className="text-gray-800">Full Name</span>
+                                            <span className="text-gray-600 text-[14px]">{applicant.adoptionprofile.user.name}</span>
+                                        </div>
+                                        <div className="flex flex-col items-left mt-2 md:mt-0">
+                                            <span className="text-gray-800">Address</span>
+                                            <span className="text-gray-600 text-[14px]">{applicant.adoptionprofile.user.location}</span>
+                                        </div>
+                                        <div className="flex flex-col items-left mt-2 md:mt-0">
+                                            <span className="text-gray-800">Phone number</span>
+                                            <span className="text-gray-600 text-[14px]">{applicant.adoptionprofile.user.phoneNumber}</span>
+                                        </div>
+                                        <div className="flex items-center space-x-1">
+                                            <Calendar color="green" />
+                                            <span className="text-gray-800">
+                                                {new Date(applicant.createdAt).toISOString().slice(0, 10).replace(/-/g, '/')}
+                                            </span>
+                                        </div>
                                     </div>
                                     <section className="w-full border-3 mb-2 bg-gray-100 rounded-md px-6 space-y-3 border-b ">
                                         <h1 className=" font-semibold mb-4">Home Details</h1>
@@ -427,7 +431,7 @@ const isPetAdopted = requests.some(request => request.status === "approved" || r
 
                                     <div className="flex justify-between mt-4">
                                         <Button variant="outline" onClick={() => setChooseApplicantOverlay(false)}>Go Back</Button>
-                                        <Button onClick={handleConfirm}>Confirm</Button>
+                                        <Button onClick={handleConfirm}>{loading?'Confirming':'Confirm'}</Button>
                                     </div>
                                 </div>
                             )

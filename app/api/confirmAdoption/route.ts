@@ -38,7 +38,7 @@ export async function PUT(req: NextRequest) {
             include: {
                 shelter: {
                     include: {
-                        user: true  
+                        user: true
                     }
                 }
             }
@@ -101,12 +101,15 @@ export async function PUT(req: NextRequest) {
             applicantName: application.adoptionprofile.user.name,
             applicantEmail: application.adoptionprofile.user.email,
             petName: pet.name,
-            shelterName: pet.shelter.user.name, 
+            requestId: application.id,
+            userId: application.adoptionprofile.user.id,
+            shelterName: pet.shelter.user.name,
             shelterPhoneNumber: pet.shelter.user.phoneNumber || "Contact the shelter through the platform"
         };
+        console.log('approvedApplicantData', approvedApplicantData);
 
         // Send approval email
-        await fetch('http://localhost:3000/api/applicationApprovedEmail', {
+        await fetch('http://localhost:3000/api/adoptionApprovedEmail', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -119,12 +122,14 @@ export async function PUT(req: NextRequest) {
             const rejectedApplicantData = {
                 applicantName: rejectedApp.adoptionprofile.user.name,
                 applicantEmail: rejectedApp.adoptionprofile.user.email,
+                requestId: rejectedApp.id,
+                userId: rejectedApp.adoptionprofile.user.id,
                 petName: pet.name,
-                shelterName: pet.shelter.user.name  
+                shelterName: pet.shelter.user.name
             };
-            
+
             // Send rejection email
-            await fetch('http://localhost:3000/api/applicationRejectedEmail', {
+            await fetch('http://localhost:3000/api/adoptionRejectedEmail', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -133,8 +138,8 @@ export async function PUT(req: NextRequest) {
             });
         }
 
-        return NextResponse.json({ 
-            result, 
+        return NextResponse.json({
+            result,
             emailsSent: {
                 approved: 1,
                 rejected: rejectedApplications.length

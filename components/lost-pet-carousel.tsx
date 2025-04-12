@@ -48,7 +48,7 @@ export default function LostPetCarousel() {
                         }}
                         className="w-full"
                     >
-                        <CarouselContent className="-ml-4">
+                        <CarouselContent className="">
                             {pets.map((pet: any) => (
                                 <CarouselItem key={pet.id} className="pl-4 md:basis-1/2 lg:basis-1/4">
                                     <div className="p-1">

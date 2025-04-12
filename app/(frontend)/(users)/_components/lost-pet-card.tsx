@@ -28,6 +28,8 @@ export function LostPetCard({
               alt={name}
               crop={{ type: "fill", source: true }}
               className="object-cover w-full h-full"
+              priority
+              loading="eager"
             />
           </div>
           <CardContent className="p-4 text-center">

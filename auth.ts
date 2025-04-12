@@ -78,7 +78,11 @@ export const auth = betterAuth({
                 },
                 recipients: [{ name: user.name ?? "User", address: user.email }],
                 subject: "Reset Your Password",
-                message: `Click the link to reset your password: <a href="${url}">Reset Password</a> <br/> This link expires in 1 hour of the request. IF the request has expired please request a new one.`,
+                message: `Click the link to reset your password: <a href="${url}">Reset Password</a> <br/> This link expires in 1 hour of the request. If the request has expired please request a new one. <br/> <br/>
+                <p>Best regards,</p>
+                <p>The Fur-Ever Friends Team</p>
+                <p<strong>>Note: This is an automated message, please do not reply.</strong></p>
+            `,
             });
         },
         resetPasswordTokenExpiresIn: 3600, // 1 hour
@@ -104,7 +108,11 @@ export const auth = betterAuth({
                 },
                 recipients: [{ name: user.name ?? "User", address: user.email }],
                 subject: "Verify your email address",
-                message: `<h1>Welcome to Fur-Ever Friends</h1> You must verify your email to sign in to the website. Click the link to verify your email: <a href="${verificationUrl}">Verify Email</a>`,
+                message: `<h1>Welcome to Fur-Ever Friends</h1> You must verify your email to sign in to the website. Click the link to verify your email: <a href="${verificationUrl}">Verify Email</a><br/><br/> <br/> <br/>
+                <p>Best regards,</p>
+                <p>The Fur-Ever Friends Team</p>
+                <p<strong>>Note: This is an automated message, please do not reply.</strong></p>
+            `,
             });
         },
     },

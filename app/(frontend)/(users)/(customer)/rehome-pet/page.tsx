@@ -1,4 +1,6 @@
+import { CldImage } from "next-cloudinary";
 import Link from "next/link";
+import CldImageWrapper from "../../_components/CldImageWrapper";
 
 interface Shelter {
   id: string;
@@ -6,6 +8,7 @@ interface Shelter {
     id: string
     name: string;
     location: string;
+    image: string;
   };
 }
 
@@ -22,19 +25,25 @@ export default async function ShelterListPage() {
     <div className="p-6 text-center w-full">
       <h1 className="text-2xl font-bold mb-4">Shelters</h1>
       <p className="mb-4 text-gray-500 ">This website is only a platform to aid your rehoming process. Please choose one of the shelters to request rehoming of your pet.</p>
-      
-      <div className="flex flex-col items-center justify-center space-y-4">
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-center justify-center space-x-2 space-y-4">
         {shelters.map((shelter: Shelter) => (
-          <Link 
-            key={shelter.id} 
-            href={`/public-page/${shelter.user.id}`} 
+          <Link
+            key={shelter.id}
+            href={`/public-page/${shelter.user.id}`}
             className="block p-4 border rounded-lg w-80 hover:bg-gray-100"
           >
-            <h2 className="text-lg font-semibold">{shelter.user.name}</h2>
-            <p className="text-gray-600">{shelter.user.location}</p>
+            <div className="flex items-center gap-8">
+            {shelter.user.image &&
+              <CldImageWrapper src={shelter.user.image} alt={shelter.user.name} />}
+            <div>
+              <h2 className="text-lg font-semibold">{shelter.user.name}</h2>
+              <p className="text-gray-600">{shelter.user.location}</p>
+            </div>
+            </div>
           </Link>
         ))}
       </div>
-    </div>
+    </div >
   );
 }

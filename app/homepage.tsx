@@ -28,16 +28,16 @@ export const HomePage = ({ initialSession }: HomePageProps) => {
 
             <div className="space-y-4 p-4">
                 <Card className="p-2 border-coral">
-                    <CardHeader className="text-center text-3xl text-red-600 relative">
-                        Lost Pet Alert
+                    <CardHeader className="text-center text-3xl h-24 text-red-600 relative">
+                        Lost Pet Alert 🚨
                         <Button
-                            className="absolute top-6 right-4 text-sm"
+                            className="absolute right-4 text-sm top-16 lg:top-6"
                             onClick={() => setModalOpen(true)}
                         >
                             Request Lost Pet Alert
                         </Button>
                     </CardHeader>
-                    <CardDescription className="text-center">Have you seen these furry friends somewhere? If yes, please contact the
+                    <CardDescription className="text-center mt-4">Have you seen these furry friends somewhere? If yes, please contact the
                         pet owner and help them find their way home.
                     </CardDescription>
                     <div className="px-6">
@@ -45,39 +45,40 @@ export const HomePage = ({ initialSession }: HomePageProps) => {
                     </div>
                 </Card>
 
-                <div className="mt-24">
-                    <h1 className="text-8xl text-center">Welcome to Fur-Ever Friends
-                        <div className="inline-block transform -rotate-45">
-                            <Image
-                                src='/images/paw-colar.svg'
-                                alt='paw'
-                                width={120}
-                                height={162}
-                                priority
-                            />
-                        </div>
+                <div className="mt-24 flex items-center justify-center">
+                    <h1 className="text-4xl text-center md:text-5xl lg:text-6xl">Welcome to Fur-Ever Friends
                     </h1>
+                    <div className="inline-block transform -rotate-45">
+                        <Image
+                            src='/images/paw-colar.svg'
+                            alt='paw'
+                            width={80}
+                            height={108}
+                            className="md:w-[100px] md:h-[135px] lg:w-[120px] lg:h-[162px]"
+                            priority
+                        />
+                    </div>
                 </div>
 
                 <FlipCardComponent />
                 <div>
-                    {session? (
+                    {session ? (
                         session?.user?.user_role === "shelter_manager" ? (
                             <p></p>
                         ) : (
                             <div>
-                                <p>Are you are a shelter manager? Register as a shelter manager and use Fur-Ever Friends as a platform
+                                <p>Are you are a shelter manager? Register as a shelter manager with your shelter's account and use Fur-Ever Friends as a platform
                                     to showcase the furry friends in your care!!
                                 </p>
                                 <Button onClick={() => router.push("/shelter-sign-up")}>Shelter Register</Button>
- 
+
                             </div>
                         )
                     ) : (
                         <div>
                             <p>New to the website? </p>
                             <Button onClick={() => router.push("/'sign up'")}>Register</Button>
-                            </div>
+                        </div>
                     )}
                 </div>
             </div>

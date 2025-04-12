@@ -12,7 +12,7 @@ export async function POST(req: Request) {
         }
 
         const {
-            userId, name, email, phoneNumber, location, image, home_situation,
+            userId, name, phoneNumber, location, image, home_situation,
             outside_space, household_setting, household_typical_activity, min_age, age,
             flatmate, allergy, other_animals, other_animals_info, neuter_status,
             lifestyle, move_holiday, experience, agreement
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
             // Update user details
             const updatedUser = await prisma.user.update({
                 where: { id: userId },
-                data: { name, email, phoneNumber, location }
+                data: { name, phoneNumber, location }
             });
 
             // Check if adoptionProfile exists

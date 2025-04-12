@@ -35,6 +35,7 @@ export default function Navbar() {
   }, [user]);
 
   const links = [
+    { title: 'Home', href: '/' },
     { title: 'Adopt a pet', href: '/adopt-pet' },
     { title: 'Rehome a pet', href: '/rehome-pet' },
     { title: 'About Us', href: '/about-us' },
@@ -47,7 +48,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="border-b px-6 md:px-16 bg-primary">
+    <div className="border-b px-6 lg:px-16 bg-primary">
       <div className="flex items-center justify-between mx-auto h-16">
         {/* Logo */}
         <Link href="/">
@@ -60,7 +61,7 @@ export default function Navbar() {
         </button>
 
         {/* Navigation Links - Desktop */}
-        <div className="hidden md:flex items-center text-white gap-5">
+        <div className="hidden md:flex items-center text-white gap-2 md:gap-3 lg:gap-6">
           <ul className="flex space-x-6">
             {links.map(link => (
               <Link key={link.href} href={link.href} className={classNames('text-white hover:underline', { 'underline': link.href === currentPath })}>
@@ -68,7 +69,7 @@ export default function Navbar() {
               </Link>
             ))}
           </ul>
-          
+
           {/* User Account Menu */}
           {user ? (
             <DropdownMenu>

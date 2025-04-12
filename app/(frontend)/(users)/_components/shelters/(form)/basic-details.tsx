@@ -20,7 +20,7 @@ const species = [
     { value: "Dog", label: "Dog" },
     { value: "Cat", label: "Cat" },
     { value: "Rabbit", label: "Rabbit" },
-    { value: "Parrot", label: "Parrot" },
+    { value: "Bird", label: "Bird" },
     { value: "Others", label: "Others" },
 ];
 
@@ -47,7 +47,7 @@ const sizeOptions: Record<string, { value: string; label: string }[]> = {
         { value: "medium", label: "Medium (2.5-4 kg)" },
         { value: "large", label: "Large (4+ kg)" },
     ],
-    parrot: [
+    bird: [
         { value: "small", label: "Small (0-200 g)" },
         { value: "medium", label: "Medium (200-400 g)" },
         { value: "large", label: "Large (400+ g)" },

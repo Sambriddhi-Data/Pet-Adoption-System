@@ -1,4 +1,4 @@
-'use client'; 
+'use client';
 
 import { useState, useEffect } from "react";
 import { useSession } from "@/auth-client";
@@ -203,7 +203,9 @@ export default function RehomingRequests() {
                                 </div>
                                 <div className="flex gap-2 p-2">
                                     <Calendar color="green" />
-                                    <span className="text-gray-800">{new Date(request.createdAt).toLocaleDateString()}</span>
+                                    <span className="text-gray-800">
+                                        {new Date(request.createdAt).toISOString().slice(0, 10).replace(/-/g, '/')}
+                                    </span>
                                 </div>
                                 <div className={classNames({
                                     "rounded-lg text-xs w-fit h-fit py-2 px-6 mt-2": true,
@@ -238,7 +240,7 @@ export default function RehomingRequests() {
                         onClose={() => handleOnClose()}
                         title="Rehoming Request"
                     >
-                        <RehomeRequestOverlay request={selectedRequest} onClose={handleOnClose}       refreshRequests={() => fetchRehomeRequests(currentPage)}
+                        <RehomeRequestOverlay request={selectedRequest} onClose={handleOnClose} refreshRequests={() => fetchRehomeRequests(currentPage)}
                         />
                     </CustomModal>
                 )}

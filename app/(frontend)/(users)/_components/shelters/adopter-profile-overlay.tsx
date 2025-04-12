@@ -44,7 +44,8 @@ const AdopterProfileOverlay: React.FC<AdopterProfileOverlayProps> = ({ request }
             </div>
             <div className="flex gap-2 p-2">
                 <Calendar color="green" />
-                <span className="text-gray-800">{new Date(request.createdAt).toLocaleDateString()}</span>
+                <span className="text-gray-800">{new Date(request.createdAt).toISOString().slice(0, 10).replace(/-/g, '/')}
+                </span>
             </div>
 
             <h2 className="text-xl font-bold mb-4">{request.adoptionprofile.user.name}'s Profile</h2>

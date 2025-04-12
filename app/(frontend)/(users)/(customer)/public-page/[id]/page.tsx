@@ -22,6 +22,8 @@ export default function PublicShelterPage() {
     hoverMessage = "Shelter Managers are not allowed to apply for rehoming a pet";
   } else if (session?.user?.user_role === "admin") {
     hoverMessage = "Admins are not allowed to apply for rehoming a pet";
+  } else if (session?.user?.user_role === "customer") {
+    hoverMessage = "Click to apply for rehoming a pet";
   }
 
   useEffect(() => {

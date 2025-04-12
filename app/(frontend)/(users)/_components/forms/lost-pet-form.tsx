@@ -75,7 +75,7 @@ export default function LostPetForm() {
 
     }
     return (
-        <main className="m-5">
+        <main className="p-5 bg-white">
             <div className="max-w-3xl mx-auto">
                 <CardHeader className="flex items-center justify-center">
                     <CardDescription>Fill in the following form to request the site to add a lost pet alert for your pet.
@@ -168,7 +168,7 @@ export default function LostPetForm() {
                                             <CldUploadButton
                                                 uploadPreset="ffe_upload"
                                                 onSuccess={handleUpload}
-                                                className="z-9999"
+                                                className="z-9999 w-40 border rounded-md p-2 bg-gray-100 hover:bg-gray-200"
                                                 options={{
                                                     maxFiles: 5,
                                                     maxFileSize: 5000000,

@@ -13,7 +13,7 @@ interface RehomeRequestOverlayProps {
     refreshRequests: () => void;
 }
 
-const RehomeRequestOverlay: React.FC<RehomeRequestOverlayProps> = ({ request, onClose, refreshRequests}) => {
+const RehomeRequestOverlay: React.FC<RehomeRequestOverlayProps> = ({ request, onClose, refreshRequests }) => {
     const [status, setStatus] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const fetchRequestStatus = async () => {
@@ -38,7 +38,7 @@ const RehomeRequestOverlay: React.FC<RehomeRequestOverlayProps> = ({ request, on
     const handleAccept = async () => {
         if (!request.id) return;
         try {
-            const response = await fetch(`api/acceptRehomeRequest?requestId=${request.id}`, {
+            const response = await fetch(`api/approveRehomeRequest?requestId=${request.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -135,7 +135,8 @@ const RehomeRequestOverlay: React.FC<RehomeRequestOverlayProps> = ({ request, on
 
             <div className="flex gap-1 p-2">
                 <Calendar size={22} color="green" />
-                <span className="text-gray-800">{new Date(request.createdAt).toLocaleDateString()}</span>
+                <span className="text-gray-800">{new Date(request.createdAt).toISOString().slice(0, 10).replace(/-/g, '/')}
+                </span>
             </div>
 
             <h2 className="text-xl font-bold mb-2">{request.user.name}'s Rehome Request</h2>

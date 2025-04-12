@@ -11,7 +11,8 @@ export async function GET(req: NextRequest) {
             id: true,
             name: true,
             location: true,
-            phoneNumber:true 
+            phoneNumber:true, 
+            image: true,
           },
         },
       },

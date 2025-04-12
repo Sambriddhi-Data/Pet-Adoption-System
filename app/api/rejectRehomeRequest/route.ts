@@ -11,7 +11,14 @@ export async function PUT(req: NextRequest) {
         // Verify the rehome request exists
         const rehomeRequest = await prisma.rehomeRequests.findUnique({
             where: { id: id },
-            
+            include: {
+                shelter: {
+                    include: {
+                        user: true
+                    }
+                },
+                user: true,
+            }
         });
 
         if (!rehomeRequest) {
@@ -25,6 +32,27 @@ export async function PUT(req: NextRequest) {
         const updatedRequest = await prisma.rehomeRequests.update({
             where: { id: id },
             data: { status: "rejected" },
+        });
+
+        // 1. Send approval email to the successful applicant
+        const rejectededApplicantData = {
+            applicantName: rehomeRequest.user.name,
+            applicantEmail: rehomeRequest.user.email,
+            petName: rehomeRequest.petName,
+            requestId: rehomeRequest.id,
+            userId: rehomeRequest.user.id,
+            shelterName: rehomeRequest.shelter.user.name,
+            shelterPhoneNumber: rehomeRequest.shelter.user.phoneNumber || "Contact the shelter through the platform"
+        };
+        console.log('rejectededApplicantData', rejectededApplicantData);
+
+        // Send approval email
+        await fetch('http://localhost:3000/api/rehomeRejectedEmail', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(rejectededApplicantData)
         });
 
         return NextResponse.json(

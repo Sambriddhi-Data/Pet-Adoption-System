@@ -84,7 +84,7 @@ const ApplytoAdoptButton= ({ open, onOpenChange }: ApplytoAdoptButtonProps) => {
                     description: "First fill your Adopter Profile first",
                     variant: "destructive",
                 })
-                router.push(`/customer-profile/${session?.user.id}`);
+                router.push(`/customer-profile/${session?.user.id}?active=editProfile`);
                 return;
             }
 
