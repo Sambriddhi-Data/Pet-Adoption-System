@@ -37,7 +37,7 @@ export function PetCard({ id = "", name = "Unknown", age = "Unknown", status = "
   };
 
   useEffect(() => {
-    if (session?.data?.user?.id) {
+    if (session?.data?.user?.user_role==="shelter_manager") {
       fetchAdoptionRequests();
     }
   }, [id, session]);

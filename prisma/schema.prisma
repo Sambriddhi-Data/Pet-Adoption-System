@@ -78,6 +78,34 @@ model Shelter {
   @@map("shelter")
 }
 
+// model Donation {
+//   purchase_order_id String  @id
+//   payment_id        String? //@unique
+//   product_id        String //shelter Id
+//   product_name      String // shelter name
+//   customer_name     String //user name
+//   customer_phone    String //user phone
+//   customer_email    String //user email
+
+//   amount    String
+//   createdAt DateTime  @default(now())
+//   status    String? //payment status
+//   updatedAt DateTime?
+
+//   @@map("donation")
+// }
+
+
+model Blog {
+  id        String   @id @default(cuid())
+  title     String
+  html      String
+  image     String?
+  createdAt DateTime @default(now())
+
+  @@map("blog")
+}
+
 model Animals {
   id                 String             @id @default(cuid())
   name               String
@@ -153,17 +181,17 @@ model Test {
 }
 
 model RehomeRequests {
-  id           String   @id @default(cuid())
+  id           String                @id @default(cuid())
   species      String
-  isBonded     Boolean  @default(false)
+  isBonded     Boolean               @default(false)
   rehomeReason String[]
   keepDuration String
-  isOver18     Boolean  @default(false)
+  isOver18     Boolean               @default(false)
   petName      String?
   image        String[]
   shelterId    String
-  status        AdoptionRequestStatus @default(unprocessed)
-  shelter      Shelter  @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
+  status       AdoptionRequestStatus @default(unprocessed)
+  shelter      Shelter               @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

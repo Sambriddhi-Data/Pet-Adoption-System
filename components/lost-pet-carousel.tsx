@@ -11,6 +11,7 @@ import {
 import { LostPetCard } from "@/app/(frontend)/(users)/_components/lost-pet-card";
 import LostPetModal from "@/app/(frontend)/(users)/_components/lost-pet-modal";
 import { Pet } from "@/app/(frontend)/(users)/_components/type";
+import LostPetCarouselSkeleton from "./lost-pet-carousel-skeleton";
 
 export default function LostPetCarousel() {
     const [pets, setPets] = useState([]);
@@ -37,10 +38,10 @@ export default function LostPetCarousel() {
     return (
         <div className="w-full max-w-7xl mx-auto px-4">
             {loading ? (
-                <p>Loading pets...</p>
+                <LostPetCarouselSkeleton />
             ) : pets.length > 0 ? (
                 <div className="relative">
-                    <Carousel 
+                    <Carousel
                         opts={{
                             align: "center",
                             loop: true,

@@ -37,8 +37,6 @@ export const shelterInformationSchema = z.object({
         .string()
         .optional()
         .or(z.literal(""))
-
-
 })
 
 export type TShelterInformation = z.infer<typeof shelterInformationSchema>

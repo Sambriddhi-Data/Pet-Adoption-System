@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 
 import {
   DropdownMenu,
@@ -25,12 +25,21 @@ import {
 import { signOut, useSession } from '@/auth-client';
 import { Logo } from '@/components/Logo';
 import Link from 'next/link';
+import classNames from 'classnames';
 
 
 export default function AdminNavbar() {
   const session = useSession();
   const user = session?.data?.user;
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState<boolean>();
+  const currentPath = usePathname();
+
+  const links = [
+    { title: 'Customer Home', href: '/' },
+    { title: 'Admin Home', href: '/admin-homepage' },
+    { title: 'Add Blog', href: '/add-blog' },
+  ];
+
   return (
     <div className="border-b px-16">
       <div className="flex items-center justify-between mx-auto p-4 h-16">
@@ -39,28 +48,32 @@ export default function AdminNavbar() {
             <Logo color='black' />
           </Link>
         </div>
-        <div className="hidden md:flex items-center gap-2 md:gap-3 lg:gap-6">
-          <Link href='/add-blog'>
-          <div>Add Blogs</div>
-          </Link>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            {/* Admin Name + Logo */}
-            <div className='flex items-center gap-2 text-lg'>
-              <h1 className='font-fruktur'>{user?.name}</h1>
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => {
-              redirect("/");
-            }}>Profile</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => {
-              setIsAlertDialogOpen(true)
-            }}>Sign Out</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="hidden md:flex items-center text-primary gap-2 md:gap-3 lg:gap-6">
+          <ul className="flex space-x-6">
+            {links.map(link => (
+              <Link key={link.href} href={link.href} className={classNames('text-primary hover:underline', { 'underline': link.href === currentPath })}>
+                {link.title}
+              </Link>
+            ))}
+          </ul>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              {/* Admin Name + Logo */}
+              <div className='flex items-center text-black gap-2 text-lg'>
+                <h1 className='font-fruktur'>{user?.name}</h1>
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => {
+                redirect("/");
+              }}>Profile</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => {
+                setIsAlertDialogOpen(true)
+              }}>Sign Out</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <AlertDialog open={isAlertDialogOpen} onOpenChange={(open) => { setIsAlertDialogOpen(open) }}>

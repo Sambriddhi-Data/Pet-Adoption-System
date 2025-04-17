@@ -271,7 +271,7 @@ function PetInfoPage() {
                             <h2 className="text-xl md:text-2xl font-semibold text-gray-700 mb-2">
                                 {pet.name}'s Description
                             </h2>
-                            <p>{pet.social}</p>
+                            <p>{pet.description}</p>
                         </div>
                         <div className='w-full '>
                             <h2 className="text-xl md:text-2xl font-semibold text-gray-700 mb-2">
