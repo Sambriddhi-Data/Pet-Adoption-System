@@ -1,13 +1,15 @@
+export const runtime = 'experimental-edge';
 import { betterFetch } from "@better-fetch/fetch";
 import { NextResponse, type NextRequest } from "next/server";
 import { Session } from "./auth";
 
 const authRoutes = ["/sign-in", "/sign-up", "/shelter-sign-up", "/email-verified", "/forgot-password", "/reset-password"];
-const publicRoutes = ["/", "/adopt-pet", "/donate", "/about-us", "/rehome-pet", "/blog", "/new-user", "/pets/"];
+const publicRoutes = ["/", "/adopt-pet", "/donate", "/donate-to-shelters", "/donation-failure","/donation-success","/payment-failure","/about-us", "/rehome-pet", "/blog", "/new-user", "/pets/"];
 const shelterRoutes = [
   "/shelter-homepage",
   "/adoption-requests",
   "/rehoming-requests",
+  "/analytics",
   "/add-pet-details/details",
   "/add-pet-details/images",
   "/pet-details/"
@@ -46,41 +48,49 @@ export default async function authMiddleware(request: NextRequest) {
       baseURL: request.nextUrl.origin,
       headers: {
         cookie: request.headers.get("cookie") || "",
+        
       },
+      
     },
   );
 
-  // If user is not logged in
-  if (!session) {
-    // Allow access to public routes and auth routes
-    if (isPublicRoute || isAuthRoute) {
-      return NextResponse.next();
-    }
-    // Redirect to sign in for protected routes
-    return NextResponse.redirect(new URL("/sign-in", request.url));
-  }
+// If user is logged in
+const userRole = session?.user?.user_role;
 
-  // If user is logged in
-  const userRole = session.user?.user_role;
-
-  // Handle post-authentication redirects
-  if (isPostAuth) {
-    switch (userRole) {
-      case "customer":
-        return NextResponse.redirect(new URL("/", request.url));
-      case "shelter_manager":
-        return NextResponse.redirect(
-          new URL(
-            session.user?.isVerifiedUser ? "/shelter-homepage" : "/shelter-landing-page",
-            request.url
-          )
-        );
-      case "admin":
-        return NextResponse.redirect(new URL("/admin-homepage", request.url));
-      default:
-        return NextResponse.redirect(new URL("/new-user", request.url));
-    }
+// Handle post-authentication redirects
+if (isPostAuth && session) {
+  switch (userRole) {
+    case "customer":
+      return NextResponse.redirect(new URL("/", request.url));
+    case "shelter_manager":
+      return NextResponse.redirect(
+        new URL(
+          session?.user?.isVerifiedUser ? "/shelter-homepage" : "/shelter-landing-page",
+          request.url
+        )
+      );
+    case "admin":
+      return NextResponse.redirect(new URL("/admin-homepage", request.url));
+    default:
+      return NextResponse.redirect(new URL("/new-user", request.url));
   }
+}
+
+if (isPublicRoute || isAuthRoute) {
+  const response = NextResponse.next();
+  response.headers.set('Cache-Control', 'private, max-age=30');
+  return response;
+}
+
+// If user is not logged in
+if (!session) {
+  // Allow access to public routes and auth routes
+  if (isPublicRoute || isAuthRoute) {
+    return NextResponse.next();
+  }
+  // Redirect to sign in for protected routes
+  return NextResponse.redirect(new URL("/sign-in", request.url));
+}
 
   // Handle shelter manager access
   if (userRole === "shelter_manager") {
@@ -88,7 +98,9 @@ export default async function authMiddleware(request: NextRequest) {
     if (!session.user?.isVerifiedUser) {
       // Allow access to the landing page and public routes
       if (isLandingPageRoute || isPublicRoute) {
-        return NextResponse.next();
+        const response = NextResponse.next();
+        response.headers.set('Cache-Control', 'private, max-age=30');
+        return response;
       }
       // Redirect unverified shelter managers to the landing page
       return NextResponse.redirect(new URL("/shelter-landing-page", request.url));
@@ -96,7 +108,9 @@ export default async function authMiddleware(request: NextRequest) {
 
     // If verified, allow access to shelter routes
     if (isShelterRoute) {
-      return NextResponse.next();
+      const response = NextResponse.next();
+      response.headers.set('Cache-Control', 'private, max-age=30');
+      return response;
     }
 
     // Prevent access to auth routes
@@ -122,7 +136,9 @@ export default async function authMiddleware(request: NextRequest) {
     }
     // Allow access to public routes
     if (isPublicRoute || isCustomerRoute) {
-      return NextResponse.next();
+      const response = NextResponse.next();
+      response.headers.set('Cache-Control', 'private, max-age=30');
+      return response;
     }
   }
 
@@ -131,13 +147,17 @@ export default async function authMiddleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/admin-homepage", request.url));
     }
     if (isAdminRoute || isPublicRoute) {
-      return NextResponse.next();
+      const response = NextResponse.next();
+      response.headers.set('Cache-Control', 'private, max-age=30');
+      return response;
     }
   }
 
   // Default: allow access to public routes
   if (isPublicRoute) {
-    return NextResponse.next();
+    const response = NextResponse.next();
+    response.headers.set('Cache-Control', 'private, max-age=30');
+    return response;
   }
 
   // Default fallback: redirect to home

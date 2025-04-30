@@ -44,3 +44,6 @@ files
 /app/api/submit-dob/
 hooks/use-media-query.ts
 app/(frontend)/(users)/_components/shelters/responsive-sidebar-wrapper.tsx
+/app/api/_initiate-payment/route.ts
+app/(frontend)/(users)/_editor/_style/quill-custom.css
+app/(frontend)/(users)/_editor/Editor.tsx
