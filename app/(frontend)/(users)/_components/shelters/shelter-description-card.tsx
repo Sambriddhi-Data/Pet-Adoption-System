@@ -1,6 +1,6 @@
 'use client'
 
-import { useSession } from "@/auth-client";
+import LoadingButton from "@/components/loading-button";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -18,12 +18,15 @@ interface ShelterInfo {
 }
 
 export function ShelterInfoCard() {
-    const{id} = useParams();
+    const { id } = useParams();
     const [shelterInfo, setShelterInfo] = useState<ShelterInfo | null>(null);
     const [loading, setLoading] = useState(true);
+    const [pending, setPending] = useState(false);
+    const shelter = shelterInfo?.user
 
     useEffect(() => {
-        if (!id) return; 
+        if (!id) return;
+        setLoading(true);
 
         const fetchShelterInfo = async () => {
             try {
@@ -42,25 +45,30 @@ export function ShelterInfoCard() {
 
     return (
         <Card className="p-6 w-10/12 text-left">
-            <div className="space-x-4 flex flex-row items-center">
-                <div className="p-2 border-4 rounded-sm">
-                    <Image
-                        src={ shelterInfo?.user?.image|| "/images/paw-black.svg"}
-                        height={200}
-                        width={200}
-                        alt="shelter logo"
-                    />
+            <div className="flex flex-row items-center justify-between">
+                <div className="space-x-4 flex flex-row items-center">
+                    <div className="p-2 border-4 rounded-sm">
+                        <Image
+                            src={shelterInfo?.user?.image || "/images/paw-black.svg"}
+                            height={200}
+                            width={200}
+                            alt="shelter logo"
+                        />
+                    </div>
+                    <div>
+                        <div className="text-4xl font-fondamento font-bold">
+                            {shelter?.name || "Unknown Shelter"}
+                        </div>
+                        <div className="mt-4 text-md flex flex-col space-y-2">
+                            <span>📍 <strong>Location:</strong> {shelter?.location || "Not provided"}</span>
+                            <span>📞 <strong>Contact:</strong> {shelter?.phoneNumber || "Not provided"}</span>
+
+                            <span>📍 <strong>Email:</strong> {shelter?.email || "Not provided"}</span>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <div className="text-4xl font-fondamento font-bold">
-                        {shelterInfo?.user?.name || "Unknown Shelter"}
-                    </div>
-                    <div className="mt-4 text-md flex flex-col space-y-2">
-                        <span>📍 <strong>Location:</strong> {shelterInfo?.user?.location || "Not provided"}</span>
-                        <span>📞 <strong>Contact:</strong> {shelterInfo?.user?.phoneNumber || "Not provided"}</span>
-                        
-                        <span>📍 <strong>Email:</strong> {shelterInfo?.user?.email || "Not provided"}</span>
-                    </div>
+                <div className="w-24 mr-16">
+                    <LoadingButton pending={pending}>Donate</LoadingButton>
                 </div>
             </div>
             <div className="mt-4">

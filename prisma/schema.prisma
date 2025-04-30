@@ -71,30 +71,31 @@ model Shelter {
   userId         String           @unique
   shelterDesc    String?
   logo           String?
+  khaltiSecret   String?
   animal         Animals[]
+  donation       Donation[]
   rehomeRequests RehomeRequests[]
   user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("shelter")
 }
 
-// model Donation {
-//   purchase_order_id String  @id
-//   payment_id        String? //@unique
-//   product_id        String //shelter Id
-//   product_name      String // shelter name
-//   customer_name     String //user name
-//   customer_phone    String //user phone
-//   customer_email    String //user email
+model Donation {
+  id             String  @id @default(cuid())
+  pidx           String? @unique  //from khalti
+  transactionId  String //from Khalti 
+  shelterId      String
+  amount         Int
+  payment_status String
+  paymentDetails String
+  donatorName   String?
+  shelter        Shelter @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
 
-//   amount    String
-//   createdAt DateTime  @default(now())
-//   status    String? //payment status
-//   updatedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
 
-//   @@map("donation")
-// }
-
+  @@map("donation")
+}
 
 model Blog {
   id        String   @id @default(cuid())
@@ -232,7 +233,7 @@ enum Role {
 
 enum Status {
   available
-  pending
+  processing
   adopted
 }
 

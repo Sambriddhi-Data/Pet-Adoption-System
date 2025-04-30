@@ -5,9 +5,7 @@ import { useSession } from "@/auth-client";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Select } from "@radix-ui/react-select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CldImage } from "next-cloudinary";
 import { Calendar, Check, ChevronsUpDown } from "lucide-react";
 import { AdoptionRequest } from "../../../_components/type";
@@ -26,6 +24,9 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
+import classNames from "classnames";
+import { API_ROUTES } from "@/lib/apiRoutes";
+import { set } from "lodash";
 
 const statuses = [
     { value: "unprocessed", label: "Unprocessed" },
@@ -39,17 +40,27 @@ export default function AdoptionRequests() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
     const [filteredRequests, setFilteredRequests] = useState<AdoptionRequest[]>([]);
+    const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
     const session = useSession();
+    const userId = session?.data?.user?.id;
+    const [modalOpen, setModalOpen] = useState(false);
 
     const fetchAdoptionRequests = async (page: number) => {
+        if (!userId) {
+            toast({
+                title: "Error",
+                description: "User ID is not available",
+                variant: "destructive",
+            })
+            return;
+        }
         try {
-            const response = await fetch(
-                `/api/adoptionRequests/?page=${page}&limit=3&userId=${session?.data?.user.id}`
-            );
+            const response = await fetch( API_ROUTES.adoptionRequests(page, userId, selectedStatuses));
             const data = await response.json();
             setRequests(data.data);
             setFilteredRequests(data.data);
             setTotalPages(data.pagination.totalPages);
+            console.log("Total pages: ", data.pagination.totalPages);
         } catch (error) {
             console.error("Error fetching adoption requests:", error);
             toast({
@@ -59,28 +70,24 @@ export default function AdoptionRequests() {
             })
         }
     };
-
-
+    
     useEffect(() => {
-        if (session?.data?.user?.id) {
+        if (userId) {
             fetchAdoptionRequests(currentPage);
         }
-    }, [currentPage, session]);
-
-    const [modalOpen, setModalOpen] = useState(false);
-
+    }, [currentPage, session, selectedStatuses]);
+    
+    
     const handleOnOpen = (request: AdoptionRequest) => {
         setSelectedRequest(request),
-            setModalOpen(true);
+        setModalOpen(true);
     }
-
+    
     const handleOnClose = () => {
         setModalOpen(false);
         setSelectedRequest(null);
     };
-
-    const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
-
+    
     const handleStatusChange = (status: string) => {
         setSelectedStatuses(prev => {
             if (prev.includes(status)) {
@@ -92,29 +99,22 @@ export default function AdoptionRequests() {
             }
         });
     };
-
+    
     const filterRequests = () => {
-        if (selectedStatuses.length === 0) {
-            // If no statuses selected, show all requests
-            setFilteredRequests(requests);
-        } else {
-            // Filter requests based on selected statuses
-            const filtered = requests.filter(request =>
-                selectedStatuses.includes(request.status)
-            );
-            setFilteredRequests(filtered);
-        }
-        // Reset to first page whenever filters change
-        setCurrentPage(1);
+       setFilteredRequests(requests);
     };
-
+    
+    useEffect(() => {
+        setCurrentPage(1); // Reset page when filters change
+    }, [selectedStatuses]);
+    
     useEffect(() => {
         filterRequests();
-    }, [selectedStatuses, requests]);
-
+    }, [requests]);
+    
     const StatusFilter = () => {
         const [open, setOpen] = useState(false)
-
+        
         return (
             <div className="mt-2 space-y-2">
                 <Popover open={open} onOpenChange={setOpen}>
@@ -163,6 +163,18 @@ export default function AdoptionRequests() {
         )
     }
 
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage((prev) => prev + 1);
+            // console.log("Current: ",currentPage);
+        }
+    };
+    
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage((prev) => prev - 1);
+        }
+    };
     return (
         <div className="p-6 flex flex-col">
             <Card className="w-72 p-4 mb-4">
@@ -200,14 +212,27 @@ export default function AdoptionRequests() {
                                 <div className="flex flex-col items-left">
                                     <span className="text-gray-800">Phone number</span>
                                     <span className="text-gray-600 text-[14px]" >{request.adoptionprofile.user.phoneNumber}</span>
+
                                 </div>
                                 <div className="flex space-x-1">
                                     <Calendar color="green" />
                                     <span className="text-gray-800">
                                         {new Date(request.createdAt).toISOString().slice(0, 10).replace(/-/g, '/')}
                                     </span>
-                                </div>                                <div className="bg-gray-100 p-2 rounded-lg mt-2">
-                                    {request.message}
+                                </div>
+                                <div>
+                                    <div className={classNames({
+                                        "rounded-lg text-xs w-fit h-fit py-2 px-6 mt-2 ": true,
+                                        "bg-yellow-400 bg-opacity-50": request.status === "unprocessed",
+                                        "bg-red-400 bg-opacity-50": request.status === "rejected",
+                                        "bg-green-400 bg-opacity-50": request.status === "approved"
+                                    })}>
+                                        {request.status.toUpperCase()}
+                                    </div>
+                                    <div className="bg-gray-100 p-2 rounded-lg mt-2 break-words max-w-[250px]">
+                                        {request.message}
+
+                                    </div>
                                 </div>
                             </div>
                         </Card>
@@ -217,13 +242,13 @@ export default function AdoptionRequests() {
                 <div className="flex flex-col items-center justify-center">
                     <div className='flex justify-center mt-6 space-x-2'>
                         <Button
-                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                            onClick={handlePreviousPage}
                             disabled={currentPage === 1}
                         >Previous</Button>
-                        <span>Page {currentPage} of {totalPages + 1}</span>
+                        <span>Page {currentPage} of {totalPages}</span>
                         <Button
-                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                            disabled={currentPage === (totalPages + 1)}
+                            onClick={handleNextPage}
+                            disabled={currentPage === (totalPages)}
                         >  Next  </Button>
                     </div>
                 </div>

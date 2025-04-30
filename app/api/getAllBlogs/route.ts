@@ -4,7 +4,13 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function GET(req: NextRequest) {
   try {
 
-    const blog = await prisma.blog.findMany()
+    const blog = await prisma.blog.findMany(
+      {
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }
+    )
     if (!blog) {
         return NextResponse.json(
           { error: 'Blog not found' },

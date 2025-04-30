@@ -1,6 +1,7 @@
 import { CldImage } from "next-cloudinary";
 import Link from "next/link";
 import CldImageWrapper from "../../_components/CldImageWrapper";
+import Image from "next/image";
 
 interface Shelter {
   id: string;
@@ -34,12 +35,18 @@ export default async function ShelterListPage() {
             className="block p-4 border rounded-lg w-80 hover:bg-gray-100"
           >
             <div className="flex items-center gap-8">
-            {shelter.user.image &&
-              <CldImageWrapper src={shelter.user.image} alt={shelter.user.name} />}
-            <div>
-              <h2 className="text-lg font-semibold">{shelter.user.name}</h2>
-              <p className="text-gray-600">{shelter.user.location}</p>
-            </div>
+              {shelter.user.image ? (
+                <CldImageWrapper src={shelter.user.image} alt={shelter.user.name} />) :
+                <Image
+                  src='/images/paw-black.svg'
+                  alt='paw'
+                  width={60}
+                  height={60}
+                />}
+              <div>
+                <h2 className="text-lg font-semibold">{shelter.user.name}</h2>
+                <p className="text-gray-600">{shelter.user.location}</p>
+              </div>
             </div>
           </Link>
         ))}

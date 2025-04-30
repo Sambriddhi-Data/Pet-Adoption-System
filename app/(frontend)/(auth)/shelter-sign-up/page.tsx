@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react"
 import LoadingButton from "@/components/loading-button";
+import { API_ROUTES } from "@/lib/apiRoutes";
 
 interface UserWithPhoneNumber {
   id: string;
@@ -55,7 +56,7 @@ export default function ShelterSignUp() {
 
     const fetchPhoneNumber = async () => {
       try {
-        const response = await fetch(`/api/getPhoneNumbers?phn=${phoneNumber}`);
+        const response = await fetch(API_ROUTES.getPhoneNumbers(phoneNumber));
         if (!response.ok) {
           throw new Error(`Error: ${response.status} ${response.statusText}`);
         }

@@ -39,12 +39,18 @@ export default function RehomingRequests() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
     const [filteredRequests, setFilteredRequests] = useState<RehomeRequest[]>([]);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
     const session = useSession();
 
     const fetchRehomeRequests = async (page: number) => {
         try {
+            const statusParams = selectedStatuses.length > 0
+                ? selectedStatuses.map(status => `&status=${status}`).join('')
+                : '';
+
             const response = await fetch(
-                `/api/rehomeRequestByShelterId/?page=${page}&limit=5&shelterId=${session?.data?.user.id}`
+                `/api/rehomeRequestByShelterId/?page=${page}&limit=5&shelterId=${session?.data?.user.id}${statusParams}`
             );
             const data = await response.json();
             setRequests(data.data);
@@ -65,9 +71,8 @@ export default function RehomingRequests() {
         if (session?.data?.user?.id) {
             fetchRehomeRequests(currentPage);
         }
-    }, [currentPage, session]);
+    }, [currentPage, session, selectedStatuses]);
 
-    const [modalOpen, setModalOpen] = useState(false);
 
     const handleOnOpen = (request: RehomeRequest) => {
         setSelectedRequest(request),
@@ -78,8 +83,6 @@ export default function RehomingRequests() {
         setModalOpen(false);
         setSelectedRequest(null);
     };
-
-    const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
     const handleStatusChange = (status: string) => {
         setSelectedStatuses(prev => {
@@ -94,17 +97,8 @@ export default function RehomingRequests() {
     };
 
     const filterRequests = () => {
-        if (selectedStatuses.length === 0) {
-            // If no statuses selected, show all requests
-            setFilteredRequests(requests);
-        } else {
-            // Filter requests based on selected statuses
-            const filtered = requests.filter(request =>
-                selectedStatuses.includes(request.status)
-            );
-            setFilteredRequests(filtered);
-        }
         // Reset to first page whenever filters change
+        setFilteredRequests(requests);
         setCurrentPage(1);
     };
 

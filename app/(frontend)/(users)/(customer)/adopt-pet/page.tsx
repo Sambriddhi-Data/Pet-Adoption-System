@@ -11,6 +11,7 @@ import { searchPetsSchema, TSearchPetsForm } from '../../(shelter)/search-pet';
 import { BCombobox } from '../../_components/breed-combo-box';
 import { useRouter } from 'next/navigation';
 import PetCardWrap from '../../_components/pet-card-wrap';
+import PetLoading from '@/components/pet-card-skeleton';
 
 const species = [
     { value: "Dog", label: "Dog" },
@@ -242,7 +243,7 @@ export default function AdoptPet() {
             </div>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6'>
                 {loading ? (
-                    <p>Loading...</p>
+                    <PetLoading/>
                 ) : currentPets.length > 0 ? (
                     currentPets.map((pet) => (
                         <PetCardWrap key={pet.id} pet={pet} />

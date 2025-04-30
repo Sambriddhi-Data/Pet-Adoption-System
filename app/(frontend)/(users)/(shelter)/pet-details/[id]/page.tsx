@@ -105,7 +105,6 @@ export default function EditPet() {
                 description: "Pet details updated successfully",
                 variant: "success"
             });
-            router.push("/shelter-homepage");
             resetForm();
         } catch (error) {
             toast({
@@ -150,7 +149,7 @@ export default function EditPet() {
     const handleBackClick = () => {
         if (hasUnsavedChanges) {
             const confirmLeave = window.confirm(
-                "You have unsaved changes. Are you sure you want to leave?"
+                "You may have unsaved changes. Are you sure you want to leave?"
             );
             if (!confirmLeave) return;
         }

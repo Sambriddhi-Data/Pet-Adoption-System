@@ -18,6 +18,7 @@ import { Eye, EyeOff } from "lucide-react";
 import LoadingButton from "@/components/loading-button";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 import Image from "next/image";
+import { API_ROUTES } from "@/lib/apiRoutes";
 
 interface UserWithPhoneNumber {
   id: string;
@@ -51,7 +52,7 @@ export default function SignUp() {
 
     const fetchPhoneNumber = async () => {
       try {
-        const response = await fetch(`/api/getPhoneNumbers?phn=${phoneNumber}`);
+        const response = await fetch(API_ROUTES.getPhoneNumbers(phoneNumber));
         if (!response.ok) {
           throw new Error(`Error: ${response.status} ${response.statusText}`);
         }

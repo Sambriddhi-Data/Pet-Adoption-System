@@ -28,7 +28,10 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(shelter, { status: 200 });
+    return NextResponse.json({
+      ...shelter,
+      khaltiSecret: shelter?.khaltiSecret || null
+    }, { status: 200 });
   } catch (error) {
     console.error("Error fetching pets:", error);
     return NextResponse.json({ error: "Failed to fetch pet details" }, { status: 500 });

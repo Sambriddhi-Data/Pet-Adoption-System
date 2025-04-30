@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, PawPrint, BookOpenText, House, Settings } from "lucide-react";
+import { Calendar, PawPrint, BookOpenText, House, ArrowUpNarrowWide,  } from "lucide-react";
 import React from "react";
 import {
   Sidebar,
@@ -45,9 +45,9 @@ export default function AppSidebar() {
       icon: House,
     },
     {
-      title: "Settings",
-      url: "#",
-      icon: Settings,
+      title: "Analytics",
+      url: "/analytics",
+      icon: ArrowUpNarrowWide,
     },
   ];
 

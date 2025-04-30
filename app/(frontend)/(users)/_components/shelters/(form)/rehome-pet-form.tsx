@@ -13,6 +13,7 @@ import { useSession } from "@/auth-client";
 import { toast } from "@/hooks/use-toast";
 import { useSignedCloudinaryWidgetRehome } from "./custom-widget";
 import { useRouter } from "next/navigation";
+import { API_ROUTES } from "@/lib/apiRoutes";
 
 const species = [
     { value: "Dog", label: "Dog" },
@@ -176,7 +177,7 @@ export default function RehomePet({ shelterId }: RehomeRequestByShelterId) {
 
         const fetchPhoneNumber = async () => {
             try {
-                const response = await fetch(`/api/getPhoneNumbers?phn=${phoneNumber}`);
+        const response = await fetch(API_ROUTES.getPhoneNumbers(phoneNumber));
                 if (!response.ok) {
                     throw new Error(`Error: ${response.status} ${response.statusText}`);
                 }
@@ -426,7 +427,7 @@ export default function RehomePet({ shelterId }: RehomeRequestByShelterId) {
                                                 onClick={openWidget}
                                                 className=" mt-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md px-3 py-2 text-sm inline-block"
                                             >
-                                                {isDeleting ? "Removing..." : "Choose Image"}
+                                                {isDeleting ? "Removing..." : "Choose Images"}
                                             </Button>
                                             <p className="text-xs text-gray-500 mt-1">
                                                 Max size: 5MB.

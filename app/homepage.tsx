@@ -1,7 +1,6 @@
 'use client';
 
 import Navbar from "@/components/navbar"
-import { useSession } from "@/auth-client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import LostPetCarousel from "@/components/lost-pet-carousel";
@@ -12,6 +11,7 @@ import { useEffect, useState } from "react";
 import { CustomModal } from "@/components/custom-modal";
 import { Session } from "./(frontend)/(auth)/type";
 import { useRouter } from "next/navigation";
+import { getAdoptedPetCount } from "@/actions/getAdoptedPetCount";
 
 type HomePageProps = {
     initialSession: Session;
@@ -19,6 +19,11 @@ type HomePageProps = {
 export const HomePage = ({ initialSession }: HomePageProps) => {
     const [session, setSession] = useState(initialSession);
     const router = useRouter();
+
+    // const totalpetcount = async () => {const total =  await getAdoptedPetCount('adopted'); 
+        
+    // }
+    // const adoptedpetcount = total?.count || 0;
 
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -81,7 +86,18 @@ export const HomePage = ({ initialSession }: HomePageProps) => {
                         </div>
                     )}
                 </div>
+                <div>
+                    <div>
+                        <Card className="">
+                            <CardHeader>Pets</CardHeader>
+                            <CardContent>Count</CardContent>
+                        </Card>
+                        <p className="text-sm">{ }</p>
+                    </div>
+                </div>
             </div>
+
+            <Card className=""></Card>
 
             <CustomModal
                 isOpen={modalOpen}

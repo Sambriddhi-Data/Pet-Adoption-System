@@ -69,7 +69,7 @@ export type TAddPetHealthForm = z.infer<typeof petHealthSchema>;
 export const petPersonalitySchema = z.object({
     social: z
         .string()
-        .max(100, { message: "Social description cannot exceed 100 characters" })
+        .max(200, { message: "Social description cannot exceed 100 characters" })
         .optional(),
 
     personalitySummary: z

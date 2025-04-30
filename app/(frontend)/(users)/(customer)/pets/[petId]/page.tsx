@@ -35,8 +35,9 @@ interface PetData {
     size: string;
     status: string;
     social: string;
-    description: string;
     healthIssues: string;
+    otherHealthIssues:string;
+    neuteredStatus: string;
     vaccinationStatus: string;
     personalitySummary: string;
     shelter: ShelterData;
@@ -55,6 +56,26 @@ const sex = [
     { value: "Female", label: "Female" },
     { value: "Unknown", label: "Unknown" },
 ];
+
+const vaccinationStatus = [
+    { value: "vaccinated", label: "Vaccinated" },
+    { value: "needsSecondVaccination", label: "Needs Second Vaccination" },
+    { value: "notVaccinated", label: "Not Vaccinated" },
+    { value: "unknown", label: "Unknown" },
+]
+const neuteredStatus = [
+    { value: "neutered", label: "Neutered" },
+    { value: "notNeutered", label: "Not Neutered" },
+    { value: "pending", label: "Pending" },
+]
+const healthIssues = [
+    { value: "none", label: "None" },
+    { value: "blind", label: "Blind" },
+    { value: "deaf", label: "Deaf" },
+    { value: "missing_limbs", label: "Missing Limbs" },
+    { value: "medication_required", label: "Medication required" },
+    { value: "other_issues", label: "Others" },
+]
 
 const sizeOptions: Record<string, { value: string; label: string }[]> = {
     dog: [
@@ -271,15 +292,15 @@ function PetInfoPage() {
                             <h2 className="text-xl md:text-2xl font-semibold text-gray-700 mb-2">
                                 {pet.name}'s Description
                             </h2>
-                            <p>{pet.description}</p>
+                            <p>{ pet.personalitySummary ? pet.personalitySummary : "No description available"}</p>
                         </div>
                         <div className='w-full '>
-                            <h2 className="text-xl md:text-2xl font-semibold text-gray-700 mb-2">
+                            <h2 className="text-xl mt-5 md:text-2xl font-semibold text-gray-700 mb-2">
                                 Health Details
                             </h2>
 
                             <p className='font-semibold'>Health Issues?</p>
-                            <p>{pet.healthIssues}</p>
+                            <p>{pet.healthIssues === "other_issues" ? pet.otherHealthIssues : getLabel(pet.healthIssues, healthIssues)}</p>
                         </div>
                     </div>
 

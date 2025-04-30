@@ -13,10 +13,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { useSignedCloudinaryWidgetLogo } from "../../../_components/shelters/(form)/custom-widget";
-
+import { API_ROUTES } from "@/lib/apiRoutes";
 
 interface ShelterInfo {
   shelterDesc?: string;
+  khaltiSecret?: string | null;
   user: {
     name: string;
     location?: string;
@@ -38,6 +39,7 @@ export default function ShelterProfile() {
   const [pending, setPending] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [checkPhn, setCheckPhn] = useState<UserWithPhoneNumber | null>();
+  const [maskedKhaltiSecret, setMaskedKhaltiSecret] = useState<string | null>(null);
 
   const fetchShelterInfo = async () => {
     if (!id) return;
@@ -45,14 +47,20 @@ export default function ShelterProfile() {
       const response = await fetch(`/api/getShelterInfo?shelterId=${id}`);
       const data: ShelterInfo = await response.json();
       setShelterInfo(data);
-      console.log(data)
+
+      // Fetch the masked khalti secret
+      if (data.khaltiSecret) {
+        const secretResponse = await fetch(`/api/getMaskedKhaltiSecret?shelterId=${id}`);
+        const secretData = await secretResponse.json();
+        setMaskedKhaltiSecret(secretData.maskedSecret);
+      }
     } catch (error) {
       console.error("Error fetching shelter info:", error);
     } finally {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchShelterInfo();
   }, [id]);
@@ -67,6 +75,7 @@ export default function ShelterProfile() {
       email: shelterInfo?.user.email || "",
       image: shelterInfo?.user.image || "",
       shelterDesc: shelterInfo?.shelterDesc || "",
+      khaltiSecret: ""
     },
   })
 
@@ -80,6 +89,7 @@ export default function ShelterProfile() {
         email: shelterInfo.user.email || "",
         image: shelterInfo.user.image || "",
         shelterDesc: shelterInfo.shelterDesc || "",
+        khaltiSecret: ""
       });
     }
   }, [shelterInfo, form]);
@@ -91,7 +101,7 @@ export default function ShelterProfile() {
 
     const fetchPhoneNumber = async () => {
       try {
-        const response = await fetch(`/api/getPhoneNumbers?phn=${phoneNumber}`);
+        const response = await fetch(API_ROUTES.getPhoneNumbers(phoneNumber));
         if (!response.ok) {
           throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
@@ -229,32 +239,32 @@ export default function ShelterProfile() {
     }
     try {
       const response = await fetch('/api/updateShelterInformation', {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
       })
       console.log("API Response:", response);
 
       if (!response.ok) {
-          throw new Error(`Failed to update shelter information.`);
+        throw new Error(`Failed to update shelter information.`);
       }
       await fetchShelterInfo();
       toast({
-          title: "Shelter Information Updated!",
-          description: "",
-          variant: "success"
+        title: "Shelter Information Updated!",
+        description: "",
+        variant: "success"
       });
 
-  } catch (error: any) {
+    } catch (error: any) {
       console.error("API error:", error.response?.data || error.message);
       toast({
-          title: "Error",
-          description: error.response?.data?.message || "An error occurred. Please try again.",
-          variant: "destructive"
+        title: "Error",
+        description: error.response?.data?.message || "An error occurred. Please try again.",
+        variant: "destructive"
       });
-  } finally {
+    } finally {
       setPending(false);
-  }
+    }
 
     console.log("Submitted ", values);
     setPending(false);
@@ -283,7 +293,7 @@ export default function ShelterProfile() {
             name="email"
             render={({ field }) => (
               <FormItem className="flex items-center justify-left gap-10 border-b">
-                <FormLabel className="text-md w-20">Email:</FormLabel>
+                <FormLabel className="text-md w-20">Email</FormLabel>
                 <FormControl>
                   <p className="py-1 text-base disabled:opacity-50 md:text-sm border-none shadow-none my-4">{shelterInfo?.user.email}</p>
                   {/* <Input className="border-none shadow-none my-4" placeholder="Email" {...field} /> */}
@@ -298,7 +308,7 @@ export default function ShelterProfile() {
             name="location"
             render={({ field }) => (
               <FormItem className="flex items-center justify-left gap-10 border-b">
-                <FormLabel className="text-md w-20">Address:</FormLabel>
+                <FormLabel className="text-md w-20">Address</FormLabel>
                 <FormControl>
                   <Input className="border-none shadow-none my-4" placeholder="Town / City" {...field} />
                 </FormControl>
@@ -324,10 +334,42 @@ export default function ShelterProfile() {
             name="shelterDesc"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Shelter Description:<span style={{ color: 'red' }}> *</span></FormLabel>
+                <FormLabel>Shelter Description:</FormLabel>
                 <FormControl>
                   <Textarea className="w-[50rem]" placeholder="describe the shelter" {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="khaltiSecret"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Khalti secret:</FormLabel>
+                <div className="space-y-2">
+                  {maskedKhaltiSecret && (
+                    <div className="flex items-center">
+                      <span className="text-sm font-mono bg-gray-100 px-3 py-1 rounded">
+                        Current key: {maskedKhaltiSecret}
+                      </span>
+                    </div>
+                  )}
+                  <FormControl>
+                    <Input 
+                      type="password" 
+                      className="w-[50rem]" 
+                      placeholder={maskedKhaltiSecret ? "Enter new key to update" : "No key set - enter a key"} 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <p className="text-xs text-gray-500">
+                    {maskedKhaltiSecret 
+                      ? "Leave blank to keep current key, or enter a new key to update" 
+                      : "Enter your Khalti secret key"}
+                  </p>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
@@ -338,7 +380,7 @@ export default function ShelterProfile() {
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>
-                  Logo<span style={{ color: 'red' }}> *</span>
+                  Logo
                 </FormLabel>
 
                 {field.value ? (
@@ -392,7 +434,7 @@ export default function ShelterProfile() {
 
           <div className="flex justify-center w-64">
             <LoadingButton pending={pending}>
-              Submit
+              Update
             </LoadingButton>
           </div>
         </form>

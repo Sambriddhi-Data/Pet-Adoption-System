@@ -4,7 +4,7 @@ export const shelterInformationSchema = z.object({
     userId: z
         .string()
         .trim(),
-                
+
     name: z
         .string()
         .trim()
@@ -19,7 +19,7 @@ export const shelterInformationSchema = z.object({
     phoneNumber: z
         .string()
         .trim()
-        .regex( /^9\d{9}$/, { message: "Please enter a valid phone number" }),
+        .regex(/^9\d{9}$/, { message: "Please enter a valid phone number" }),
 
     email: z
         .string()
@@ -32,11 +32,17 @@ export const shelterInformationSchema = z.object({
         .trim()
         .min(100, { message: 'Description must be at least 100 characters long' })
         .max(500, { message: 'Description cannot exceed 500 characters' }),
-    
+
     image: z
         .string()
         .optional()
-        .or(z.literal(""))
+        .or(z.literal("")),
+
+    khaltiSecret: z
+        .string()
+        .length(32, { message: "Khalti secret key must be 32 characters long" })
+        .optional()
+        .or(z.literal("")),
 })
 
 export type TShelterInformation = z.infer<typeof shelterInformationSchema>

@@ -16,6 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useSession } from "@/auth-client";
 import { Combobox } from "../combo-box";
 import { Textarea } from "@/components/ui/textarea";
+import { API_ROUTES } from "@/lib/apiRoutes";
 
 interface AdopterProfile {
     name: string,
@@ -144,7 +145,7 @@ export default function AdopterProfileForm() {
 
         const fetchPhoneNumber = async () => {
             try {
-                const response = await fetch(`/api/getPhoneNumbers?phn=${phoneNumber}`);
+        const response = await fetch(API_ROUTES.getPhoneNumbers(phoneNumber));
                 if (!response.ok) {
                     throw new Error(`Error: ${response.status} ${response.statusText}`);
                 }

@@ -5,6 +5,7 @@ import { Calendar } from "lucide-react";
 import { CldImage } from "next-cloudinary";
 import { toast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
+import { API_ROUTES } from "@/lib/apiRoutes";
 
 
 interface RehomeRequestOverlayProps {
@@ -33,12 +34,12 @@ const RehomeRequestOverlay: React.FC<RehomeRequestOverlayProps> = ({ request, on
     }
     useEffect(() => {
         fetchRequestStatus();
-    }, [status]);
+    }, [request?.id]);
 
     const handleAccept = async () => {
         if (!request.id) return;
         try {
-            const response = await fetch(`api/approveRehomeRequest?requestId=${request.id}`, {
+            const response = await fetch(API_ROUTES.approveRehomeRequest(request.id), {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

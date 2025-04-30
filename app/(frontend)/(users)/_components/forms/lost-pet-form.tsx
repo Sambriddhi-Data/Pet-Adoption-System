@@ -75,7 +75,7 @@ export default function LostPetForm() {
 
     }
     return (
-        <main className="p-5 bg-white">
+        <main className="px-5 bg-white">
             <div className="max-w-3xl mx-auto">
                 <CardHeader className="flex items-center justify-center">
                     <CardDescription>Fill in the following form to request the site to add a lost pet alert for your pet.
@@ -200,7 +200,7 @@ export default function LostPetForm() {
                                                         }
                                                     },
                                                 }}
-                                            >Choose image</CldUploadButton>
+                                            >Choose images</CldUploadButton>
                                             <p className="text-xs text-gray-500 mt-1">
                                                 Max size: 5MB.
                                             </p>
