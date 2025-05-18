@@ -16,24 +16,39 @@ import {
 } from "@/components/ui/form";
 import LoadingButton from "@/components/loading-button";
 import { toast } from "@/hooks/use-toast";
+import { useSession } from "@/auth-client";
 
 
 export default function DonatePage() {
   const [shelters, setShelters] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [initialLoading, setInitialLoading] = useState(true)
+  const { data: session } = useSession();
+  let id = '';
+
+  if (session) {
+    id = session.user.id;
+  }
 
   const form = useForm<TDonationInformationSchema>({
     resolver: zodResolver(donationInformationSchema),
     defaultValues: {
-      name: '',
+      name: session?.user.name || '',
       email: '',
       phone: '',
       amount: 10,
       shelterId: '',
       paymentMethod: 'Khalti',
+      donatorId: id || '',
     },
   })
+
+  // Add this effect to update form values when session data loads
+  useEffect(() => {
+    if (session?.user?.name) {
+      form.setValue('name', session.user.name);
+    }
+  }, [session, form]);
 
 
   useEffect(() => {
@@ -62,10 +77,11 @@ export default function DonatePage() {
       email: values.email,
       phoneNumber: values.phone,
       amount: values.amount,
-      shelterId: values.shelterId, 
+      shelterId: values.shelterId,
+      donatorId: id,
       paymentMethod: 'Khalti',
     }
-    
+
     const res = await fetch('/api/payment/initiate', {
       method: 'POST',
       body: JSON.stringify({

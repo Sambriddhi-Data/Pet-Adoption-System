@@ -91,7 +91,7 @@ export async function PUT(req: NextRequest) {
             }),
             prisma.animals.update({
                 where: { id: petId },
-                data: { status: 'adopted' }
+                data: { status: 'reserved' }
             })
         ]);
 

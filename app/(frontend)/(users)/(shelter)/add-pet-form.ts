@@ -14,7 +14,7 @@ export const petBasicDetailsSchema = z.object({
 
     sex: z.enum(['Male', 'Female', 'Unknown']),
 
-    status: z.enum(['available', 'processing', 'adopted']),
+    status: z.enum(['available', 'reserved', 'rainbow', 'adopted']),
 
     age: z
         .string()

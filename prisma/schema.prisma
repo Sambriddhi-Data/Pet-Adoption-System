@@ -23,6 +23,9 @@ model User {
   banReason       String?
   banExpires      DateTime?
   role            Role             @default(customer)
+  isDeleted       Boolean          @default(false)
+  deletedAt       DateTime?
+  donation        Donation[]
   accounts        Account[]
   adoptionProfile AdoptionProfile?
   rehomePet       RehomeRequests[]
@@ -61,7 +64,8 @@ model Account {
   createdAt             DateTime
   updatedAt             DateTime
   scope                 String?
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("account")
 }
@@ -82,13 +86,15 @@ model Shelter {
 
 model Donation {
   id             String  @id @default(cuid())
-  pidx           String? @unique  //from khalti
+  pidx           String? @unique //from khalti
   transactionId  String //from Khalti 
   shelterId      String
   amount         Int
   payment_status String
+  donatorId      String?
   paymentDetails String
-  donatorName   String?
+  donatorName    String?
+  user           User?    @relation(fields: [donatorId], references: [id], onDelete: Cascade)
   shelter        Shelter @relation(fields: [shelterId], references: [userId], onDelete: Cascade)
 
   createdAt DateTime  @default(now())
@@ -210,6 +216,7 @@ model LostPets {
   location    String
   status      String?
   image       String[]
+  createdAt DateTime @default(now())
 
   @@map("lostpets")
 }
@@ -233,8 +240,9 @@ enum Role {
 
 enum Status {
   available
-  processing
+  reserved
   adopted
+  rainbow
 }
 
 enum VaccinationStatus {

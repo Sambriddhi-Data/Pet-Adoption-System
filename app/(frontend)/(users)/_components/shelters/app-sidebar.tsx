@@ -40,7 +40,7 @@ export default function AppSidebar() {
       icon: Calendar,
     },
     {
-      title: "Rehoming Requests",
+      title: "Rehome Requests",
       url: "/rehoming-requests",
       icon: House,
     },

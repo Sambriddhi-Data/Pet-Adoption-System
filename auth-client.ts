@@ -9,4 +9,4 @@ export const authClient = createAuthClient({
     adminClient()
   ],
 });
-export const { admin, signIn, signUp, signOut, useSession, forgetPassword, resetPassword } = authClient;
+export const { admin, signIn, signUp, signOut, useSession, forgetPassword, resetPassword, revokeSession } = authClient;

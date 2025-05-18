@@ -199,12 +199,12 @@ export default function AdoptionRequestsByPet({ petId }: AdoptionRequestsByPetPr
             });
 
             if (!response.ok) {
-                throw new Error('Failed to confirm adoption');
+                throw new Error('Failed to confirm adoption application');
             }
 
             toast({
                 title: "Success",
-                description: "Application confirmed successfully!",
+                description: "Application choosen successfully!",
                 variant: "success"
             });
 

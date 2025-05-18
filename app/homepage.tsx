@@ -2,7 +2,7 @@
 
 import Navbar from "@/components/navbar"
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "@/components/ui/card";
 import LostPetCarousel from "@/components/lost-pet-carousel";
 import FlipCardComponent from "./(frontend)/(users)/_components/flippableCards";
 import Image from "next/image";
@@ -11,19 +11,38 @@ import { useEffect, useState } from "react";
 import { CustomModal } from "@/components/custom-modal";
 import { Session } from "./(frontend)/(auth)/type";
 import { useRouter } from "next/navigation";
-import { getAdoptedPetCount } from "@/actions/getAdoptedPetCount";
+import { getPetCountByStatus } from "@/actions/getPetCountByStatus";
 
 type HomePageProps = {
     initialSession: Session;
+    adoptedPetC: number;
+    claimedPetC: number;
 };
-export const HomePage = ({ initialSession }: HomePageProps) => {
+export const HomePage = ({ initialSession, adoptedPetC, claimedPetC }: HomePageProps) => {
     const [session, setSession] = useState(initialSession);
+    const [adoptedPetCount, setAdoptedPetCount] = useState(adoptedPetC);
+    const [claimedPetCount, setClaimedPetCount] = useState(claimedPetC);
+    const [shelters, setShelters] = useState<any[]>([])
     const router = useRouter();
+    useEffect(() => {
+        const fetchShelters = async () => {
+            try {
+                const res = await fetch('/api/getShelters')
+                const data = await res.json()
+                setShelters(data)
+            } catch (err) {
+                console.error("Failed to fetch shelters:", err)
+            }
+        }
 
-    // const totalpetcount = async () => {const total =  await getAdoptedPetCount('adopted'); 
-        
-    // }
-    // const adoptedpetcount = total?.count || 0;
+        fetchShelters()
+    }, [])
+    const shelterCount = shelters.length;
+    //total adopted pet count
+    console.log(adoptedPetCount);
+
+    //total claimed pet count (from lost and found)
+
 
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -86,18 +105,33 @@ export const HomePage = ({ initialSession }: HomePageProps) => {
                         </div>
                     )}
                 </div>
-                <div>
-                    <div>
-                        <Card className="">
-                            <CardHeader>Pets</CardHeader>
-                            <CardContent>Count</CardContent>
-                        </Card>
-                        <p className="text-sm">{ }</p>
-                    </div>
+                <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 ">
+                    <Card className="flex flex-col items-center transition-transform duration-300 hover:scale-105">
+                        <CardHeader>Total Adopted Pets</CardHeader>
+                        <CardContent>{adoptedPetCount}</CardContent>
+                        <CardFooter className="text-sm text-gray-500">Fur-Ever Friends has helped {adoptedPetCount} pets to find their fur-ever home.</CardFooter>
+                    </Card>
+
+                    <Card className="flex flex-col items-center transition-transform duration-300 hover:scale-105">
+                        <CardHeader>Pets</CardHeader>
+                        <CardContent>Count</CardContent>
+                        <CardFooter className="text-sm text-gray-500">Fur-Ever Friends is a virtual home to { } pets</CardFooter>
+                    </Card>
+
+                    <Card className="flex flex-col items-center transition-transform duration-300 hover:scale-105">
+                        <CardHeader>Shelter</CardHeader>
+                        <CardContent>{shelterCount}</CardContent>
+                        <CardFooter className="text-sm text-gray-500">Fur-Ever Friends is a family of {shelterCount} shelters</CardFooter>
+
+                    </Card>
+                    <Card className="flex flex-col items-center transition-transform duration-300 hover:scale-105">
+                        <CardHeader>Lost and Found Pets</CardHeader>
+                        <CardContent>{shelterCount}</CardContent>
+                        <CardFooter className="text-sm text-gray-500">Fur-Ever Friends has helped reunite {claimedPetCount} pets and pawrents</CardFooter>
+
+                    </Card>
                 </div>
             </div>
-
-            <Card className=""></Card>
 
             <CustomModal
                 isOpen={modalOpen}

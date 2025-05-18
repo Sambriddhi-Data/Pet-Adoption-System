@@ -57,6 +57,11 @@ export default async function authMiddleware(request: NextRequest) {
 // If user is logged in
 const userRole = session?.user?.user_role;
 
+if (session?.user && session?.user.isDeleted) {
+  // User has been deleted, don't return a session
+  return NextResponse.redirect(new URL("/", request.url));
+}
+
 // Handle post-authentication redirects
 if (isPostAuth && session) {
   switch (userRole) {

@@ -27,6 +27,11 @@ export const  donationInformationSchema= z.object({
     amount: z
     .coerce.number().min(5, "Amount must be at least 5"),
 
+    donatorId: z
+        .string()
+        .trim()
+        .optional(),
+
     shelterId: z
         .string(),
         

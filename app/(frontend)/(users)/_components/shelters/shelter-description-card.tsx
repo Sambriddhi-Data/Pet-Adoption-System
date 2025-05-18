@@ -3,7 +3,7 @@
 import LoadingButton from "@/components/loading-button";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface ShelterInfo {
@@ -22,6 +22,7 @@ export function ShelterInfoCard() {
     const [shelterInfo, setShelterInfo] = useState<ShelterInfo | null>(null);
     const [loading, setLoading] = useState(true);
     const [pending, setPending] = useState(false);
+    const router = useRouter();
     const shelter = shelterInfo?.user
 
     useEffect(() => {
@@ -68,7 +69,7 @@ export function ShelterInfoCard() {
                     </div>
                 </div>
                 <div className="w-24 mr-16">
-                    <LoadingButton pending={pending}>Donate</LoadingButton>
+                    <LoadingButton pending={pending} onClick={()=>router.push('/donate')}>Donate</LoadingButton>
                 </div>
             </div>
             <div className="mt-4">

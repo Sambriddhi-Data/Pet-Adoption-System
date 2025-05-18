@@ -1,11 +1,12 @@
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
+import z from "zod";
 
-export async function getpetcount(status:"available"|"adopted", userId: string) {
+export async function getClaimedPetCount(status:"claimed") {
   try {
-    const count = await prisma.animals.count({
+    const count = await prisma.lostPets.count({
       where:{
       status, 
-      shelterId: userId,
       }
     });
 

@@ -1,6 +1,6 @@
 'use client';
 
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import Image from 'next/image';
-import { signIn, useSession } from "@/auth-client";
+import { revokeSession, signIn, signOut, useSession } from "@/auth-client";
 
 export const SignIn = () => {
 
@@ -39,7 +39,7 @@ export const SignIn = () => {
         }
       }
 
-      toast({ title: "Sign In Successful..." ,variant:"success"});
+      toast({ title: "Sign In Successful...", variant: "success" });
       switch (role) {
         case "customer":
           router.push("/");
@@ -67,6 +67,7 @@ export const SignIn = () => {
   // a submit handler.
   async function onSubmit(values: TSignInForm) {
     const { email, password } = values;
+
     const { data, error } = await signIn.email(
       {
         email,

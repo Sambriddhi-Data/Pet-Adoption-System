@@ -14,6 +14,7 @@ export async function PUT(req: NextRequest) {
         const updatedData = await req.json();
         const validation = formDataSchema.safeParse(updatedData);
         if (!validation.success) {
+            console.error("Validation failed:", validation.error.format());
             return NextResponse.json(validation.error.errors, { status: 400 });
         }
         const {

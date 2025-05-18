@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
                 <p>Please remember the rescues receive a lot of applications for each animal so the applications with more information tend to stand out. Confirm your application status at <a href="${route_status}">View Request</a></p><br/>
                 <p>Thank you for being a part of the Fur-Ever Friends community!</p>
                 
-                <br/> <br/>
+                <br/>
                 <p>Best regards,</p>
                 <p>The Fur-Ever Friends Team</p>
                 <p<strong>>Note: This is an automated message, please do not reply.</strong></p>

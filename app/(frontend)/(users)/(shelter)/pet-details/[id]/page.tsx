@@ -49,7 +49,7 @@ export default function EditPet() {
                         name: petData.name,
                         species: petData.species,
                         age: petData.age,
-                        dominantBreed: petData.dominantBreed || "",
+                        dominantBreed: petData.dominantBreed || "unknown",
                         sex: petData.sex,
                         size: petData.size,
                         status: petData.status,
@@ -97,8 +97,40 @@ export default function EditPet() {
             });
 
             if (!response.ok) {
-                throw new Error("Failed to update pet details");
+                // Try to get detailed error information
+                const errorData = await response.json().catch(() => null);
+                
+                // Log full technical error for debugging
+                console.error("Update failed:", errorData);
+                
+                // Create user-friendly error message
+                let userMessage = "Unable to update pet information.";
+                
+                if (errorData) {
+                    if (Array.isArray(errorData)) {
+                        // Create simplified list of field errors
+                        userMessage = "Please check the following fields:";
+                        const errorFields = new Set();
+                        
+                        errorData.forEach(err => {
+                            if (err.path && err.path.length > 0) {
+                                // Get the last part of the path for field name
+                                const fieldName = err.path[err.path.length - 1];
+                                errorFields.add(fieldName);
+                            }
+                        });
+                        
+                        errorFields.forEach(field => {
+                            userMessage += `\n• ${field}`;
+                        });
+                    } else if (typeof errorData === 'object' && errorData.error) {
+                        userMessage = errorData.error;
+                    }
+                }
+                
+                throw new Error(userMessage);
             }
+    
 
             toast({
                 title: "Success",
@@ -106,10 +138,11 @@ export default function EditPet() {
                 variant: "success"
             });
             resetForm();
-        } catch (error) {
+        } catch (error: any) {
             toast({
-                title: "Error",
-                description: "Failed to save changes"
+                title: "Update failed",
+                description: error.message || "Failed to save changes",
+                variant: "destructive"
             });
         }
     }

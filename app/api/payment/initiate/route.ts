@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
       name,
       email,
       phoneNumber,
+      donatorId, // Donator.userId
       shelterId, // Shelter.userId
     } = await req.json()
 
@@ -41,17 +42,27 @@ export async function POST(req: NextRequest) {
       }
     )
 
+    // Create donation data object
+    const donationData = {
+      id: donationId,
+      pidx: khaltiRes.data.pidx,
+      transactionId: '',
+      shelterId,
+      amount,
+      donatorName: name,
+      payment_status: 'pending',
+      paymentDetails: JSON.stringify({ initiated: true }),
+    }
+
+    // Only add donatorId if it exists and is not empty
+    if (donatorId && donatorId.trim() !== '') {
+      // @ts-ignore
+      donationData.donatorId = donatorId
+    }
+
     await prisma.donation.create({
-      data: {
-        id: donationId,
-        pidx: khaltiRes.data.pidx,
-        transactionId: '',
-        shelterId,
-        amount,
-        donatorName:name,
-        payment_status: 'pending',
-        paymentDetails: JSON.stringify({ initiated: true }),
-      },
+      data: donationData,
+
     })
 
     return NextResponse.json({

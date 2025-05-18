@@ -48,8 +48,8 @@ const RehomeRequestOverlay: React.FC<RehomeRequestOverlayProps> = ({ request, on
             if (response.ok) {
                 setStatus("approved");
                 toast({
-                    title: "Rehome Request Accepted",
-                    description: "The rehome request has been accepted successfully.",
+                    title: "Rehome Request Approved",
+                    description: "The rehome request has been approved successfully.",
                     variant: "success"
                 });
                 refreshRequests();
@@ -57,10 +57,10 @@ const RehomeRequestOverlay: React.FC<RehomeRequestOverlayProps> = ({ request, on
             }
         }
         catch (error) {
-            console.error("Error accepting rehome request:", error);
+            console.error("Error approving rehome request:", error);
             toast({
                 title: "Error",
-                description: "Failed to accept request",
+                description: "Failed to approve request",
                 variant: "destructive"
             });
         }
@@ -163,24 +163,43 @@ const RehomeRequestOverlay: React.FC<RehomeRequestOverlayProps> = ({ request, on
                 </div>
             </section>
 
-            {request.status !== "unprocessed" ?
+            {request.status === "rejected" ? (
+                <div className="flex justify-between mt-4">
+                    <Button className="bg-red-500 text-white hover:bg-red-600" disabled>
+                        Rejected
+                    </Button>
+                    <Button disabled>
+                        Approve
+                    </Button>
+                </div>
+            ) : request.status === "approved" ? (
+                <div className="flex justify-between mt-4">
+                    <Button className="bg-green-500 text-white hover:bg-green-600" disabled>
+                        Reject
+                    </Button>
+                    <Button disabled>
+                        Approved
+                    </Button>
+                </div>
+            ) : request.status !== "unprocessed" ? (
                 <div className="flex justify-between mt-4">
                     <Button className="bg-red-500 text-white hover:bg-red-600" disabled>
                         Reject
                     </Button>
                     <Button disabled>
-                        Accepted
+                        Approve
                     </Button>
-                </div> :
+                </div>
+            ) : (
                 <div className="flex justify-between mt-4">
                     <Button onClick={handleReject} className="bg-red-500 text-white hover:bg-red-600">
                         Reject
                     </Button>
-                    <Button onClick={handleAccept} >
-                        Accept
+                    <Button onClick={handleAccept}>
+                        Approve
                     </Button>
                 </div>
-            }
+            )}
 
 
         </div>

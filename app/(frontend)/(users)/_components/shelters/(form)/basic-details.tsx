@@ -24,6 +24,12 @@ const species = [
     { value: "Others", label: "Others" },
 ];
 
+const status = [
+    { value: "available", label: "Available" },
+    { value: "reserved", label: "Reserved" },
+    { value: "adopted", label: "Adopted" },
+    { value: "rainbow", label: "Rainbow" },
+];
 const sex = [
     { value: "Male", label: "Male" },
     { value: "Female", label: "Female" },
@@ -229,6 +235,24 @@ export default function BasicDetails({ isEditing }: FormsProps) {
                                             <Combobox
                                                 options={speciesValue ? sizeOptions[speciesValue] || sizeOptions.others : []}
                                                 placeholder="Select size..."
+                                                selectedValue={field.value}
+                                                onSelect={(value) => field.onChange(value)}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="status"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Status<span style={{ color: 'red' }}> *</span></FormLabel>
+                                        <FormControl>
+                                            <Combobox
+                                                options={status}
+                                                placeholder="Select status..."
                                                 selectedValue={field.value}
                                                 onSelect={(value) => field.onChange(value)}
                                             />

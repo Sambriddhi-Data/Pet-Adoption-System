@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"; // Utility for class merging
 import { MyProfile } from "../../../_components/my-profile";
 import MyEnquiries from "../../../_components/my-enquiries";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import MyDonations from "../../../_components/my-donations";
 
 export default function CustomerProfile() {
   // State to track active section
@@ -16,11 +17,11 @@ export default function CustomerProfile() {
   const active = searchParams.get("active"); 
 
   // Default state if no query is provided
-  const [activeSection, setActiveSection] = useState<"editProfile" | "myProfile" | "myEnquiries" | "myFavorites">("myProfile");
+  const [activeSection, setActiveSection] = useState<"editProfile" | "myProfile" | "myEnquiries" | "myDonations">("myProfile");
 
   useEffect(() => {
-    if (active && ["editProfile", "myEnquiries", "myProfile", "myFavorites"].includes(active)) {
-      setActiveSection(active as "editProfile" | "myProfile" | "myEnquiries" | "myFavorites");
+    if (active && ["editProfile", "myEnquiries", "myProfile", "myDonations"].includes(active)) {
+      setActiveSection(active as "editProfile" | "myProfile" | "myEnquiries" | "myDonations");
     }
   }, [active]); // Set activeSection when query parameter changes
 
@@ -31,7 +32,7 @@ export default function CustomerProfile() {
 
         {/* Navigation Tabs */}
         <div className="flex border-b">
-          {["editProfile", "myEnquiries", "myProfile", "myFavorites"].map((section) => (
+          {["editProfile", "myEnquiries", "myProfile", "myDonations"].map((section) => (
             <button
               key={section}
               className={cn(
@@ -40,7 +41,7 @@ export default function CustomerProfile() {
               )}
               onClick={() => setActiveSection(section as any)}
             >
-              {section === "editProfile" ? "Edit Profile" : section === "myProfile" ? "My Profile" : section === "myEnquiries" ? "My Enquiries" : "My Favorites"}
+              {section === "editProfile" ? "Edit Profile" : section === "myProfile" ? "My Profile" : section === "myEnquiries" ? "My Enquiries" : "My Donations"}
             </button>
           ))}
         </div>
@@ -50,7 +51,7 @@ export default function CustomerProfile() {
           {activeSection === "editProfile" && <AdopterProfileForm />}
           {activeSection === "myProfile" && <MyProfile />}
           {activeSection === "myEnquiries" && <MyEnquiries />}
-          {activeSection === "myFavorites" && <p>My Favorites Content</p>}
+          {activeSection === "myDonations" && <MyDonations/>}
         </div>
       </Card>
     </div>

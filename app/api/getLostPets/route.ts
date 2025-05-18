@@ -3,7 +3,14 @@ import prisma from "@/prisma/client";
 
 export async function GET(req: NextRequest) {
   try {
-    const allPets = await prisma.lostPets.findMany();
+    const allPets = await prisma.lostPets.findMany({
+      where: {
+       OR: [
+          { status: "lost" },
+          { status: "found" }
+        ]
+      }
+    });
 
     return NextResponse.json(allPets, { status: 200 });
   } catch (error) {

@@ -12,6 +12,9 @@ import { useSearchParams } from "next/navigation";
 import { CustomModal } from "@/components/custom-modal";
 import Link from "next/link";
 import confetti from 'canvas-confetti';
+import { Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 const randomInRange = (min: number, max: number) => {
     return Math.random() * (max - min) + min;
@@ -165,6 +168,36 @@ export default function MyEnquiries() {
         }
     }, [modalOpen, selectedAdoptionRequest?.status, selectedRehomeRequest?.status]);
 
+    // deleting a request
+    const handleDeleteRequest = async (requestId: string, type: 'adoption' | 'rehome') => {
+        try {
+            const response = await fetch(`/api/deleteEnquiries?requestId=${requestId}&type=${type}&userId=${userId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete request');
+            }
+
+            toast({
+                title: "Success",
+                description: "Request deleted successfully",
+                variant: "success",
+            });
+
+            // Refetch requests to update UI
+            fetchRequests();
+
+        } catch (error) {
+            console.error("Error deleting request:", error);
+            toast({
+                title: "Error",
+                description: "Failed to delete request",
+                variant: "destructive",
+            });
+        }
+    };
+
 
     return (
         <div className="flex flex-col h-screen">
@@ -176,53 +209,91 @@ export default function MyEnquiries() {
                     <p className="col-span-full text-gray-500">Loading requests...</p>
                 ) : requests.adoptionRequests && requests.adoptionRequests.length > 0 ? (
                     requests.adoptionRequests.map((request) => (
-                        <Card key={request.id} onClick={() => handleOnOpenAdoption(request)} className="p-6 cursor-pointer w-full hover:bg-gray-100">
+                        <Card key={request.id} className="p-6 w-full hover:bg-gray-100">
                             <div className="flex flex-col md:flex-row justify-between p-2 border-b space-x-4">
-                                <div className="flex flex-col items-center w-20">
-                                    <div className="w-16 h-16 outline-2 rounded-full">
-                                        <CldImage
-                                            src={request.animals.image[0]}
-                                            height="200"
-                                            width="200"
-                                            alt={request.animals.name}
-                                            crop={{
-                                                type: 'fill',
-                                                source: true
-                                            }}
-                                            className="object-cover rounded-full"
-                                        /></div>
-                                    <label htmlFor={request.id} className="mt-2 text-lg">{request.animals.name}</label>
-                                </div>
-                                <div className="flex flex-col items-left mt-2 md:mt-0">
-                                    <span className="text-gray-800">Shelter Name</span>
-                                    <span className="text-gray-600 text-[14px]" >{request.animals.shelter.user.name}</span>
-                                </div>
-                                <div className="flex flex-col items-left mt-2 md:mt-0">
-                                    <span className="text-gray-800">Address</span>
-                                    <span className="text-gray-600 text-[14px]" >{request.animals.shelter.user.location}</span>
-                                </div>
-                                <div className="flex flex-col items-left mt-2 md:mt-0">
-                                    <span className="text-gray-800">Contact number</span>
-                                    <span className="text-gray-600 text-[14px]" >{request.animals.shelter.user.phoneNumber}</span>
-                                </div>
-                                <div className="flex flex-col items-left mt-2 md:mt-0">
-                                    <span className="text-gray-800">Requested On: </span>
-                                    <div className="flex space-x-2">
-                                        <Calendar color="green" size={20} />
-                                        <span className="text-gray-800">
-                                            {new Date(request.createdAt).toISOString().slice(0, 10).replace(/-/g, '/')}
-                                        </span>
+                                <div 
+                                    className="flex-1 flex flex-col md:flex-row justify-between space-x-4 cursor-pointer" 
+                                    onClick={() => handleOnOpenAdoption(request)}
+                                >
+                                    <div className="flex flex-col items-center w-20">
+                                        <div className="w-16 h-16 outline-2 rounded-full">
+                                            <CldImage
+                                                src={request.animals.image[0]}
+                                                height="200"
+                                                width="200"
+                                                alt={request.animals.name}
+                                                crop={{
+                                                    type: 'fill',
+                                                    source: true
+                                                }}
+                                                className="object-cover rounded-full"
+                                            />
+                                        </div>
+                                        <label htmlFor={request.id} className="mt-2 text-lg">{request.animals.name}</label>
+                                    </div>
+                                    <div className="flex flex-col items-left mt-2 md:mt-0">
+                                        <span className="text-gray-800">Shelter Name</span>
+                                        <span className="text-gray-600 text-[14px]" >{request.animals.shelter.user.name}</span>
+                                    </div>
+                                    <div className="flex flex-col items-left mt-2 md:mt-0">
+                                        <span className="text-gray-800">Address</span>
+                                        <span className="text-gray-600 text-[14px]" >{request.animals.shelter.user.location}</span>
+                                    </div>
+                                    <div className="flex flex-col items-left mt-2 md:mt-0">
+                                        <span className="text-gray-800">Contact number</span>
+                                        <span className="text-gray-600 text-[14px]" >{request.animals.shelter.user.phoneNumber}</span>
+                                    </div>
+                                    <div className="flex flex-col items-left mt-2 md:mt-0">
+                                        <span className="text-gray-800">Requested On: </span>
+                                        <div className="flex space-x-2">
+                                            <Calendar color="green" size={20} />
+                                            <span className="text-gray-800">
+                                                {new Date(request.createdAt).toISOString().slice(0, 10).replace(/-/g, '/')}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className={classNames({
+                                        "rounded-lg text-xs w-fit h-fit py-2 px-6 mt-2 ": true,
+                                        "bg-yellow-400 bg-opacity-50": request.status === "unprocessed",
+                                        "bg-red-400 bg-opacity-50": request.status === "rejected",
+                                        "bg-green-400 bg-opacity-50": request.status === "approved"
+                                    })}>
+                                        {request.status.toUpperCase()}
                                     </div>
                                 </div>
-
-                                <div className={classNames({
-                                    "rounded-lg text-xs w-fit h-fit py-2 px-6 mt-2 ": true,
-                                    "bg-yellow-400 bg-opacity-50": request.status === "unprocessed",
-                                    "bg-red-400 bg-opacity-50": request.status === "rejected",
-                                    "bg-green-400 bg-opacity-50": request.status === "approved"
-                                })}>
-                                    {request.status.toUpperCase()}
-                                </div>
+                                
+                                {request.status === "unprocessed" && (
+                                    <div className="flex items-center ml-4">
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button variant="destructive" size="sm">
+                                                    <Trash2 size={16} />
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>Delete Request</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        Are you sure you want to delete this adoption request for {request.animals.name}? This action cannot be undone.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                    <AlertDialogAction 
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handleDeleteRequest(request.id, 'adoption');
+                                                        }}
+                                                        className="bg-red-600 hover:bg-red-700"
+                                                    >
+                                                        Delete
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    </div>
+                                )}
                             </div>
                         </Card>
                     ))
@@ -237,53 +308,91 @@ export default function MyEnquiries() {
                     <p className="col-span-full text-gray-500"></p>
                 ) : requests.rehomingRequests && requests.rehomingRequests.length > 0 ? (
                     requests.rehomingRequests.map((request) => (
-                        <Card key={request.id} onClick={() => handleOnOpenRehome(request)} className="p-6 cursor-pointer w-full hover:bg-gray-100">
+                        <Card key={request.id} className="p-6 w-full hover:bg-gray-100">
                             <div className="flex flex-col md:flex-row justify-between p-2 border-b space-x-4">
-                                <div className="flex flex-col items-center w-20">
-                                    <div className="w-16 h-16 outline-2 rounded-full">
-                                        <CldImage
-                                            src={request.image[0]}
-                                            height="200"
-                                            width="200"
-                                            alt={request.petName}
-                                            crop={{
-                                                type: 'fill',
-                                                source: true
-                                            }}
-                                            className="object-cover rounded-full"
-                                        /></div>
-                                    <label htmlFor={request.id} className="mt-2 text-lg">{request.petName}</label>
-                                </div>
-                                <div className="flex flex-col items-left mt-2 md:mt-0">
-                                    <span className="text-gray-800">Shelter Name</span>
-                                    <span className="text-gray-600 text-[14px]" >{request.shelter.user.name}</span>
-                                </div>
-                                <div className="flex flex-col items-left mt-2 md:mt-0">
-                                    <span className="text-gray-800">Address</span>
-                                    <span className="text-gray-600 text-[14px]" >{request.shelter.user.location}</span>
-                                </div>
-                                <div className="flex flex-col items-left mt-2 md:mt-0">
-                                    <span className="text-gray-800">Contact number</span>
-                                    <span className="text-gray-600 text-[14px]" >{request.shelter.user.phoneNumber}</span>
-                                </div>
-                                <div className="flex flex-col items-left mt-2 md:mt-0">
-                                    <span className="text-gray-800">Requested On: </span>
-                                    <div className="flex space-x-2">
-                                        <Calendar color="green" size={20} />
-                                        <span className="text-gray-800">
-                                            {new Date(request.createdAt).toISOString().slice(0, 10).replace(/-/g, '/')}
-                                        </span>
+                                <div 
+                                    className="flex-1 flex flex-col md:flex-row justify-between space-x-4 cursor-pointer" 
+                                    onClick={() => handleOnOpenRehome(request)}
+                                >
+                                    <div className="flex flex-col items-center w-20">
+                                        <div className="w-16 h-16 outline-2 rounded-full">
+                                            <CldImage
+                                                src={request.image[0]}
+                                                height="200"
+                                                width="200"
+                                                alt={request.petName}
+                                                crop={{
+                                                    type: 'fill',
+                                                    source: true
+                                                }}
+                                                className="object-cover rounded-full"
+                                            />
+                                        </div>
+                                        <label htmlFor={request.id} className="mt-2 text-lg">{request.petName}</label>
+                                    </div>
+                                    <div className="flex flex-col items-left mt-2 md:mt-0">
+                                        <span className="text-gray-800">Shelter Name</span>
+                                        <span className="text-gray-600 text-[14px]" >{request.shelter.user.name}</span>
+                                    </div>
+                                    <div className="flex flex-col items-left mt-2 md:mt-0">
+                                        <span className="text-gray-800">Address</span>
+                                        <span className="text-gray-600 text-[14px]" >{request.shelter.user.location}</span>
+                                    </div>
+                                    <div className="flex flex-col items-left mt-2 md:mt-0">
+                                        <span className="text-gray-800">Contact number</span>
+                                        <span className="text-gray-600 text-[14px]" >{request.shelter.user.phoneNumber}</span>
+                                    </div>
+                                    <div className="flex flex-col items-left mt-2 md:mt-0">
+                                        <span className="text-gray-800">Requested On: </span>
+                                        <div className="flex space-x-2">
+                                            <Calendar color="green" size={20} />
+                                            <span className="text-gray-800">
+                                                {new Date(request.createdAt).toISOString().slice(0, 10).replace(/-/g, '/')}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className={classNames({
+                                        "rounded-lg text-xs w-fit h-fit py-2 px-6 mt-2": true,
+                                        "bg-yellow-400 bg-opacity-50": request.status === "unprocessed",
+                                        "bg-red-400 bg-opacity-50": request.status === "rejected",
+                                        "bg-green-400 bg-opacity-50": request.status === "approved"
+                                    })}>
+                                        {request.status.toUpperCase()}
                                     </div>
                                 </div>
-
-                                <div className={classNames({
-                                    "rounded-lg text-xs w-fit h-fit py-2 px-6 mt-2": true,
-                                    "bg-yellow-400 bg-opacity-50": request.status === "unprocessed",
-                                    "bg-red-400 bg-opacity-50": request.status === "rejected",
-                                    "bg-green-400 bg-opacity-50": request.status === "approved"
-                                })}>
-                                    {request.status.toUpperCase()}
-                                </div>
+                                
+                                {request.status === "unprocessed" && (
+                                    <div className="flex items-center ml-4">
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button variant="destructive" size="sm">
+                                                    <Trash2 size={16} />
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>Delete Request</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        Are you sure you want to delete this rehome request for {request.petName}? This action cannot be undone.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                    <AlertDialogAction 
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handleDeleteRequest(request.id, 'rehome');
+                                                        }}
+                                                        className="bg-red-600 hover:bg-red-700"
+                                                    >
+                                                        Delete
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    </div>
+                                )}
                             </div>
                         </Card>
                     ))

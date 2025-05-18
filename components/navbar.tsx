@@ -22,9 +22,11 @@ export default function Navbar() {
 
   useEffect(() => {
     if (!user) return;
+    let items: { label: string, path: string }[] = [];
 
-    let items = [{ label: 'Profile', path: `/customer-profile/${user.id}` }];
-
+    if (user.user_role === 'customer') {
+      items.push({ label: 'Profile', path: `/customer-profile/${user.id}` });
+    }
     if (user.user_role === 'shelter_manager') {
       items.unshift({ label: 'Shelter Controls', path: '/shelter-homepage' });
     } else if (user.user_role === 'admin') {

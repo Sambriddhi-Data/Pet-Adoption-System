@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
 import z from "zod";
 
-export async function getAdoptedPetCount(status:"adopted") {
+export async function getPetCountByStatus(status:"adopted") {
   try {
     const count = await prisma.animals.count({
       where:{
