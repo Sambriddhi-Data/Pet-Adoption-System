@@ -9,10 +9,10 @@ export async function GET(request: NextRequest) {
   const amount = searchParams.get("amount");
   const orderId = searchParams.get("purchase_order_id");
 
-  if(!pidx){
-    return NextResponse.json({ error: "Payment ID is required" }, { status: 400 });
+  if (!pidx) {
+    console.log("Payment canceled or pidx missing from callback");
+    return NextResponse.redirect("http://localhost:3000/donation-failure?status=canceled");
   }
-  
 
   try {
     // Verify payment with Khalti API
@@ -87,47 +87,47 @@ export async function GET(request: NextRequest) {
 
     // Redirect the user based on payment status
     if (mappedStatus === "paid") {
-  // Get the shelter info including the shelter name from User table
-  const shelterInfo = await prisma.shelter.findUnique({
-    where: { userId: payment.shelterId },
-    include: {
-      user: {
-        select: {
-          name: true
+      // Get the shelter info including the shelter name from User table
+      const shelterInfo = await prisma.shelter.findUnique({
+        where: { userId: payment.shelterId },
+        include: {
+          user: {
+            select: {
+              name: true
+            }
+          }
         }
-      }
-    }
-  });
+      });
 
-  const shelterName = shelterInfo?.user?.name || "Unknown Shelter";
-  const encodedShelterName = encodeURIComponent(shelterName);
-  
-  return NextResponse.redirect(
-    `http://localhost:3000/donation-success?amount=${payment.amount}&shelterName=${encodedShelterName}`
-  );
-}  else {
-  // Get the shelter info including the shelter name
-  const shelterInfo = await prisma.shelter.findUnique({
-    where: { userId: payment.shelterId },
-    include: {
-      user: {
-        select: {
-          name: true
+      const shelterName = shelterInfo?.user?.name || "Unknown Shelter";
+      const encodedShelterName = encodeURIComponent(shelterName);
+
+      return NextResponse.redirect(
+        `http://localhost:3000/donation-success?amount=${payment.amount}&shelterName=${encodedShelterName}`
+      );
+    } else {
+      // Get the shelter info including the shelter name
+      const shelterInfo = await prisma.shelter.findUnique({
+        where: { userId: payment.shelterId },
+        include: {
+          user: {
+            select: {
+              name: true
+            }
+          }
         }
-      }
-    }
-  });
+      });
 
-  const shelterName = shelterInfo?.user?.name || "Unknown Shelter";
-  const encodedShelterName = encodeURIComponent(shelterName);
-  
-  return NextResponse.redirect(
-    `http://localhost:3000/donation-failure?amount=${payment.amount}&shelterName=${encodedShelterName}&status=${mappedStatus}`
-  );
-}
+      const shelterName = shelterInfo?.user?.name || "Unknown Shelter";
+      const encodedShelterName = encodeURIComponent(shelterName);
+
+      return NextResponse.redirect(
+        `http://localhost:3000/donation-failure?amount=${payment.amount}&shelterName=${encodedShelterName}&status=${mappedStatus}`
+      );
+    }
   } catch (error) {
     console.error("Error handling payment callback:", error
-);
-    return NextResponse.redirect("http://localhost:3000/payment-failure");
+    );
+    return NextResponse.redirect("http://localhost:3000/donation-failure");
   }
 }

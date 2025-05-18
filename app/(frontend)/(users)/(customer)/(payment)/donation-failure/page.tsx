@@ -25,9 +25,8 @@ export default function DonationFailure() {
 
                 <div className="text-gray-700 mb-6">
                     <p className="mb-2">
-                        Your donation of <span className="font-bold">Rs. {amount}</span> to:
+                        Your donation was unsuccessful.
                     </p>
-                    <p className="text-lg font-semibold mb-4">{shelterName}</p>
                     <p>Payment status: <span className="font-medium">{status}</span></p>
                 </div>
 

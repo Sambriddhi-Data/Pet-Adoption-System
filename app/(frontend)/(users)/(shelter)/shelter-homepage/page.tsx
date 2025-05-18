@@ -57,9 +57,6 @@ export default async function ShelterHomepage() {
           <AddPetButton />
         </div>
       </div>
-      <div>
-        <Card className="mt-4 p-2 w-11/12 text-left">Filter</Card>
-      </div>
 
       {/* Client Component for Pets */}
       <ShelterHomepagePets shelterId={user.id} />

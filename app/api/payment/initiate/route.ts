@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         purchase_order_id: donationId,
         purchase_order_name: `Donation to Shelter ${shelterId}`,
         customer_info: {
-          name,
+          name:name || 'Anonymous',
           email,
           phone: phoneNumber,
         },
@@ -49,7 +49,6 @@ export async function POST(req: NextRequest) {
       transactionId: '',
       shelterId,
       amount,
-      donatorName: name,
       payment_status: 'pending',
       paymentDetails: JSON.stringify({ initiated: true }),
     }
@@ -59,10 +58,13 @@ export async function POST(req: NextRequest) {
       // @ts-ignore
       donationData.donatorId = donatorId
     }
+    if (name && name.trim() !== '') {
+      // @ts-ignore
+      donationData.donatorName = name
+    }
 
     await prisma.donation.create({
       data: donationData,
-
     })
 
     return NextResponse.json({

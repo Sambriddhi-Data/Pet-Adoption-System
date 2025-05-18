@@ -38,6 +38,7 @@ export default function AdminNavbar() {
     { title: 'Customer Home', href: '/' },
     { title: 'Admin Home', href: '/admin-homepage' },
     { title: 'Add Blog', href: '/add-blog' },
+    { title: 'Pet Alerts', href: '/pet-alerts' },
   ];
 
   return (

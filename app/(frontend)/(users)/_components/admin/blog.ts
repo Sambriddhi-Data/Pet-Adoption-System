@@ -11,8 +11,7 @@ export const blogSchema = z.object({
 
     image: z
         .string()
-        .optional()
-        .or(z.literal(""))
+        .min(1, "An image is required")
 });
 
 export type TBlogSchema = z.infer<typeof blogSchema>;
