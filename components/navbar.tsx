@@ -50,7 +50,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="border-b px-6 lg:px-16 bg-primary">
+    <div className="px-6 lg:px-16 bg-primary">
       <div className="flex items-center justify-between mx-auto h-16">
         {/* Logo */}
         <Link href="/">

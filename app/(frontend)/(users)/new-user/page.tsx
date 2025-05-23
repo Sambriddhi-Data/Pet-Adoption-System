@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import Navbar from "@/components/navbar";
 import { buttonVariants } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { headers } from "next/headers";
 import Link from "next/link";
 
@@ -13,17 +14,13 @@ export default async function NewUser() {
     return (
         <div className="">
             <Navbar />
-            <h1>Greetings {user?.name}!! Welcome to Fur-Ever Friends!!</h1>
-            <Link className={buttonVariants({
-                variant: "default",
-            })}
-                href="/">Click here to go to homepage</Link>
-
-            <h1>Do you have a shelter? Join Fur-Ever Friends Today</h1>
-            <Link className={buttonVariants({
-                variant: "default",
-            })}
-                href="/shelter-sign-up">Click here to go to homepage</Link>
+            <Card className='m-10 p-20 space-y-4 text-center opacity-85'>
+                <h1>Greetings {user?.name}!! Welcome to Fur-Ever Friends!!</h1>
+                <Link className={buttonVariants({
+                    variant: "default",
+                })}
+                    href="/">Click here to go to homepage</Link>
+            </Card>
         </div>
     )
 }

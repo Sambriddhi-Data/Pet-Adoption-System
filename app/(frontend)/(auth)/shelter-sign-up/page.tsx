@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react"
 import LoadingButton from "@/components/loading-button";
 import { API_ROUTES } from "@/lib/apiRoutes";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface UserWithPhoneNumber {
   id: string;
@@ -45,11 +46,12 @@ export default function ShelterSignUp() {
       password: "",
       confirmpassword: "",
       user_role: "shelter_manager",
+      termsAgreed: false
     },
   })
 
   const phoneNumber = form.watch("phoneNumber");
-  
+
   // check if the phone number already exists in the database.
   useEffect(() => {
     if (!phoneNumber) return;
@@ -104,6 +106,7 @@ export default function ShelterSignUp() {
       location: location,
       phoneNumber: phoneNumber,
       isVerifiedUser: false,
+      isDeleted: false,
     }, {
       onRequest: () => {
         setPending(true);
@@ -129,7 +132,7 @@ export default function ShelterSignUp() {
   }
 
   return (
-    <Card className="w-full max-w-md bg-white bg-opacity-85 shadow-lg px-4 ">
+    <Card className="w-full max-w-md bg-white bg-opacity-85 shadow-lg px-4 mt-20">
       <CardHeader className=" flex items-center justify-center">
         <CardTitle>Join Fur-Ever Friends Today!</CardTitle>
         <CardDescription>
@@ -246,6 +249,26 @@ export default function ShelterSignUp() {
                       </button>
                     </div>
                   </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="termsAgreed"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-2 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel className="text-sm text-gray-500 font-normal">
+                      I agree to the <Link href="/terms" className="text-primary hover:underline">Terms of Service</Link> and <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
+                    </FormLabel>
+                    <FormMessage />
+                  </div>
                 </FormItem>
               )}
             />

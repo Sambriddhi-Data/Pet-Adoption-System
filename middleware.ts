@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { Session } from "./auth";
 
 const authRoutes = ["/sign-in", "/sign-up", "/shelter-sign-up", "/email-verified", "/forgot-password", "/reset-password"];
-const publicRoutes = ["/", "/adopt-pet", "/donate", "/donate-to-shelters", "/donation-failure","/donation-success","/payment-failure","/about-us", "/rehome-pet", "/blog", "/new-user", "/pets/"];
+const publicRoutes = ["/", "/adopt-pet", "/donate", "/donate-to-shelters", "/donation-failure","/donation-success","/payment-failure","/about-us", "/rehome-pet", "/blog", "/new-user", "/privacy-policy", "/terms-of-service", "/pets/"];
 const shelterRoutes = [
   "/shelter-homepage",
   "/adoption-requests",

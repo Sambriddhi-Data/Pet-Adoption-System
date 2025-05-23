@@ -15,7 +15,7 @@ export const baseSchema = z.object({
     phoneNumber: z
         .string()
         .trim()
-        .regex( /^9\d{9}$/, { message: "Please enter a valid phone number" }),
+        .regex(/^9\d{9}$/, { message: "Please enter a valid phone number" }),
 
     email: z
         .string()
@@ -34,10 +34,14 @@ export const baseSchema = z.object({
         .string()
         .trim()
         .min(8, { message: "Passwords did not match" }),
-        
+
     user_role: z
-    .enum(["admin","customer","shelter_manager"])
-    
+        .enum(["admin", "customer", "shelter_manager"]),
+
+    termsAgreed: z.boolean().refine(val => val === true, {
+        message: "You must agree to the terms and privacy policy."
+    })
+
 })
 
 export const formSchema = baseSchema.refine(
@@ -61,7 +65,7 @@ export const signUpFormSchema = baseSchema.pick({
     password: true,
     confirmpassword: true,
     user_role: true,
-    
+    termsAgreed: true,
 }).refine(
     (data) => data.password === data.confirmpassword,
     {
@@ -78,8 +82,8 @@ export const forgotPasswordSchema = baseSchema.pick({
 export const resetPasswordSchema = baseSchema.pick({
     password: true,
     confirmpassword: true,
-  })
+})
     .refine((data) => data.password === data.confirmpassword, {
         path: ["confirmPassword"],
-      message: "Passwords do not match",
+        message: "Passwords do not match",
     });

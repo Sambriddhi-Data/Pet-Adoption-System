@@ -19,6 +19,7 @@ import LoadingButton from "@/components/loading-button";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 import Image from "next/image";
 import { API_ROUTES } from "@/lib/apiRoutes";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface UserWithPhoneNumber {
   id: string;
@@ -41,7 +42,8 @@ export default function SignUp() {
       email: "",
       password: "",
       confirmpassword: "",
-      user_role: "customer"
+      user_role: "customer",
+      termsAgreed: false
     },
   })
 
@@ -98,6 +100,7 @@ export default function SignUp() {
       name,
       user_role: user_role,
       isVerifiedUser: false,
+      isDeleted: false,
     }, {
       onRequest: () => {
         setPending(true);
@@ -124,7 +127,7 @@ export default function SignUp() {
 
 
   return (
-    <Card className="w-full max-w-md bg-white bg-opacity-85 shadow-lg px-4 ">
+    <Card className="w-full max-w-md bg-white bg-opacity-85 shadow-lg px-4 mt-16">
       <CardHeader className=" flex items-center justify-center">
         <CardTitle>Join Fur-Ever Friends Today!</CardTitle>
         <CardDescription>
@@ -219,6 +222,26 @@ export default function SignUp() {
                     <Input type="password" placeholder="Re-enter your password" {...field} />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="termsAgreed"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-2 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel className="text-sm text-gray-500 font-normal">
+                      I agree to the <Link href="/terms-of-service" className="text-primary hover:underline " target="_blank" rel="noopener noreferrer">Terms of Service</Link> and <Link href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Privacy Policy</Link>.
+                    </FormLabel>
+                    <FormMessage />
+                  </div>
                 </FormItem>
               )}
             />

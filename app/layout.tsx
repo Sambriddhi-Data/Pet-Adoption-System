@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { LoadingProvider } from "@/providers/LoadingProvider";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: {
@@ -19,12 +20,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`antialiased`}
+        className={`flex flex-col min-h-screen`}
       >
+        <main className="flex-grow">
           <LoadingProvider>
             {children}
           </LoadingProvider>
-        <Toaster />
+          <Toaster />
+        </main>
       </body>
     </html>
   );

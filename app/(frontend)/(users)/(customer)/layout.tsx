@@ -1,6 +1,7 @@
 'use client'
 
-import CustomerNavbar from "@/components/navbar";
+import Footer from "@/components/Footer";
+import Navbar from "@/components/navbar";
 import { LoadingProvider } from "@/providers/LoadingProvider";
 
 export default function CustomerLayout({
@@ -9,13 +10,16 @@ export default function CustomerLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main >
+    <>
+    <main className="flex-grow min-h-screen">
       <div>
-        <CustomerNavbar/>
+        <Navbar/>
         <LoadingProvider>
         {children}
         </LoadingProvider>
       </div>
     </main>
+    <Footer />
+    </>
   );
 }

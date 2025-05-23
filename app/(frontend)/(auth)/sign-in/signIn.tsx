@@ -93,7 +93,7 @@ export const SignIn = () => {
   }
 
   return (
-    <Card className="w-full max-w-md bg-white bg-opacity-85 shadow-lg px-4 ">
+    <Card className="w-full max-w-md bg-white bg-opacity-85 shadow-lg px-4 my-32">
       <CardHeader className="flex items-center justify-center">
         <CardTitle>Welcome back!</CardTitle>
         <CardDescription>Please sign in to continue.</CardDescription>
