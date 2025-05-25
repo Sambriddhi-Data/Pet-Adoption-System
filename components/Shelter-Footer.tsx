@@ -3,7 +3,7 @@ import { Logo } from './Logo';
 
 const ShelterFooter = () => {
   return (
-    <footer className="bg-primary text-white pt-10 pb-4 mt-12">
+    <footer className="bg-primary text-white pt-10 pb-4 mt-12 z-1000">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Logo and Tagline */}
         <div>

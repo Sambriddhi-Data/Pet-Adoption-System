@@ -19,6 +19,7 @@ export default function ShelterLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <>
     <main>
       {/* Mobile and Tablet Navigation (Hidden on large screens) */}
       <div className="lg:hidden">
@@ -39,5 +40,8 @@ export default function ShelterLayout({
         {children}
       </div>
     </main>
+    {/* <ShelterFooter className/> */}
+    </>
+
   );
 }

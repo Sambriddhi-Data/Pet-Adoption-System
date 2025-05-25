@@ -428,7 +428,7 @@ export default function MyEnquiries() {
                         {selectedAdoptionRequest.status === "approved" && (
                             <div className="flex flex-col items-center mt-4">
                                 <span className="text-green-500 text-lg font-semibold">Congratulations! Your application has been approved.</span>
-                                <span className="text-gray-600 text-sm">You can now proceed with the adoption process.<br /> Contact the shelter first at {selectedAdoptionRequest.animals.shelter.user.phoneNumber}.Refer to this blog to checklist if you are ready to welcome the pet home.</span>
+                                <span className="text-gray-600 text-sm">You can now proceed with the adoption process.<br /> Contact the shelter first at {selectedAdoptionRequest.animals.shelter.user.phoneNumber}. Refer to this blog to checklist if you are ready to welcome the pet home: <a href="/blog/cmb3cqfx50000setksxkbk0uu" className="text-blue-600 underline">What to Do After Your Pet Adoption Request Is Approved</a> </span>
 
                             </div>
                         )}

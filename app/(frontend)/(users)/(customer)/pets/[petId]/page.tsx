@@ -200,7 +200,7 @@ function PetInfoPage() {
                 {pet ? (
                     <div className="space-y-4">
                         {/* Main Image Display */}
-                        {selectedImage && (
+                        {selectedImage && selectedImage !== "" && (
                             <div className="flex justify-center">
                                 <img
                                     src={selectedImage}
@@ -214,14 +214,17 @@ function PetInfoPage() {
                         {pet.image.length > 1 && (
                             <div className="flex space-x-2 overflow-x-auto scrollbar-hide py-2">
                                 {pet.image.map((img, index) => (
-                                    <img
-                                        key={index}
-                                        src={img}
-                                        alt={`${pet.name} - ${index + 1}`}
-                                        className={`w-16 h-16 md:w-20 md:h-20 object-cover rounded-md cursor-pointer border-2 transition ${selectedImage === img ? 'border-blue-500 scale-105' : 'border-transparent'
+                                    img ? (
+                                        <img
+                                            key={index}
+                                            src={img}
+                                            alt={`${pet.name} - ${index + 1}`}
+                                            className={`w-16 h-16 md:w-20 md:h-20 object-cover rounded-md cursor-pointer border-2 transition ${
+                                                selectedImage === img ? 'border-blue-500 scale-105' : 'border-transparent'
                                             }`}
-                                        onClick={() => setSelectedImage(img)}
-                                    />
+                                            onClick={() => setSelectedImage(img)}
+                                        />
+                                    ) : null
                                 ))}
                             </div>
                         )}

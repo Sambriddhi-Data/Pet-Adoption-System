@@ -36,29 +36,33 @@ const ShelterHomepagePets = ({ shelterId }: { shelterId: string }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
-
     useEffect(() => {
         if (!shelterId) return;
-
-        const fetchAllPets = async () => {
-            setLoading(true);
-            try {
-                const response = await fetch(`/api/getPet?shelterId=${shelterId}`);
-                if (!response.ok) throw new Error("Failed to fetch pets");
-
-                const data = await response.json();
-                console.log("API Response:", data);
-
-                setPets(Array.isArray(data) ? data : []);
-            } catch (error) {
-                console.error(error);
-                setPets([]);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchAllPets();
-    }, [shelterId]);
+    }, [shelterId, selectedStatuses]); // Added selectedStatuses as dependency
+
+    const fetchAllPets = async () => {
+        setLoading(true);
+        try {
+            // Build status parameter string similar to rehoming.tsx
+            const statusParams = selectedStatuses.length > 0
+                ? selectedStatuses.map(status => `&status=${status}`).join('')
+                : '';
+                
+            const response = await fetch(`/api/getPet?shelterId=${shelterId}${statusParams}`);
+            if (!response.ok) throw new Error("Failed to fetch pets");
+
+            const data = await response.json();
+            console.log("API Response:", data);
+
+            setPets(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error(error);
+            setPets([]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     if (!shelterId) {
         toast({
@@ -67,6 +71,7 @@ const ShelterHomepagePets = ({ shelterId }: { shelterId: string }) => {
         });
         return null;
     }
+    
     const handleStatusChange = (status: string) => {
         setSelectedStatuses(prev => {
             if (prev.includes(status)) {
@@ -77,6 +82,8 @@ const ShelterHomepagePets = ({ shelterId }: { shelterId: string }) => {
                 return [...prev, status];
             }
         });
+        // Reset to page 1 when filters change
+        setCurrentPage(1);
     };
 
     const StatusFilter = () => {
@@ -139,7 +146,7 @@ const ShelterHomepagePets = ({ shelterId }: { shelterId: string }) => {
 
     return (
         <main>
-            <Card className="w-full max-w-xs mx-auto md:w-72 p-4 mt-4 bg-primary text-white">
+            <Card className="w-full max-w-xs mx-auto md:w-72 p-4 mt-4 bg-primary text-white ">
                 <h1>Filter With Status</h1>
                 <StatusFilter />
             </Card>
