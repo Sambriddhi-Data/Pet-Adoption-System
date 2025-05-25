@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 
 interface ShelterInfo {
     shelterDesc?: string;
+    khaltiSecret?: string;
     user: {
         name: string;
         location?: string;
@@ -69,7 +70,13 @@ export function ShelterInfoCard() {
                     </div>
                 </div>
                 <div className="w-24 mr-16">
-                    <LoadingButton pending={pending} onClick={()=>router.push('/donate')}>Donate</LoadingButton>
+                    {shelterInfo?.khaltiSecret ? (
+                        <LoadingButton pending={pending} onClick={() => router.push(`/donate/${id}`)}>Donate</LoadingButton>
+                    ) :
+                        (<div>
+                        </div>
+
+                        )}
                 </div>
             </div>
             <div className="mt-4">

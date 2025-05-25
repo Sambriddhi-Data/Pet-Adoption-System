@@ -1,3 +1,5 @@
+import { get } from "lodash";
+
 // routes.ts
 export const API_ROUTES = {
     adoptionRequests: (page: number, userId: string, statuses: string[]) =>
@@ -25,5 +27,6 @@ export const API_ROUTES = {
         `/api/getShelterRehomeRequestsCount?shelterId=${shelterId}`,
     getUser: (userId: string) => `/api/getUser?userId=${userId}`,
     getPhoneNumbers: (phoneNumber: string) => `/api/getPhoneNumbers?phn=${phoneNumber}`,
+    getPetById: (petId: string) => `/api/getPetById?id=${petId}`,
 };
 

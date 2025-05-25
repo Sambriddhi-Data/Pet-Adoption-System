@@ -5,7 +5,6 @@ import AddPetButton from '../../_components/shelters/(form)/add-pet-button';
 import { getpetcount } from '@/actions/getpetcount';
 import { toast } from '@/hooks/use-toast';
 import type { Metadata } from "next";
-import { Card } from "@/components/ui/card";
 import { redirect } from "next/navigation";
 import ShelterHomepagePets from "./sHomepage";
 
@@ -36,30 +35,32 @@ export default async function ShelterHomepage() {
   const adoptedCount = adoptedCountResponse?.count || 0;
 
   return (
-    <div className="p-4 text-center w-full">
+    <div className="p-3 sm:p-4 text-center w-full max-w-[1600px] mx-auto">
       {/* Stats Section */}
-      <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
-        <div className="w-full sm:w-72 md:w-80">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-center justify-center gap-4 md:gap-8">
+        <div className="w-full max-w-xs mx-auto">
           <InfoCard
             status="Available for Adoption"
             number={availableCount}
             color="#fdef4e"
           />
         </div>
-        <div className="w-full sm:w-72 md:w-80">
+        <div className="w-full max-w-xs mx-auto">
           <InfoCard
             status="Adopted"
             number={adoptedCount}
             color="#12d929"
           />
         </div>
-        <div className="mt-4 md:mt-0">
+        <div className="mt-4 md:mt-0 flex justify-center lg:justify-start">
           <AddPetButton />
         </div>
       </div>
 
       {/* Client Component for Pets */}
-      <ShelterHomepagePets shelterId={user.id} />
+      <div className="mt-6 lg:mt-8">
+        <ShelterHomepagePets shelterId={user.id} />
+      </div>
     </div>
   );
 }

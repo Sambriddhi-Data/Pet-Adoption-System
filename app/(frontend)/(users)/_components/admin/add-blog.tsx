@@ -13,7 +13,6 @@ import Heading from '@tiptap/extension-heading'
 import BulletList from '@tiptap/extension-bullet-list'
 import OrderedList from '@tiptap/extension-ordered-list'
 import ListItem from '@tiptap/extension-list-item'
-
 import { Bold, Italic, Underline as UnderlineIcon, Link as LinkIcon, Strikethrough, List, ListOrdered, Pipette, Heading1, Heading2, Heading3, AlignLeft, AlignCenter, AlignRight } from 'lucide-react'
 import { FontSize } from '@/components/font-size'
 import { useForm } from 'react-hook-form'
@@ -23,6 +22,7 @@ import { useRouter } from 'next/navigation'
 import LoadingButton from '@/components/loading-button'
 import { toast } from '@/hooks/use-toast'
 import { useSignedCloudinaryWidgetLogo } from '../shelters/(form)/custom-widget'
+import { Button, buttonVariants } from '@/components/ui/button'
 
 const RichTextForm = () => {
   const [title, setTitle] = useState('')
@@ -30,6 +30,7 @@ const RichTextForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [isDeleting, setIsDeleting] = useState(false);
+
 
   const router = useRouter()
 
@@ -199,7 +200,7 @@ const RichTextForm = () => {
   }
 
   return (
-
+    <>
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-6">
         <div>
@@ -295,6 +296,7 @@ const RichTextForm = () => {
         Submit
       </LoadingButton>
     </form>
+    </>
   )
 }
 

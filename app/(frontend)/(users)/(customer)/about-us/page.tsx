@@ -1,4 +1,6 @@
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import Link from "next/link";
 import Image from "next/image";
 
 export default function AboutUs() {
@@ -60,7 +62,15 @@ export default function AboutUs() {
                         <p className="text-sm text-gray-800">{faq.answer}</p>
                     </Card>
                 ))}
-
+                <h1 className=" text-3xl text-black pt-16">Donate</h1>
+                <p className="p-2 text-justified w-4/6 mx-auto font-extralight text-sm text-gray-800">Your contributions support shelters and rescues in their mission to care for animals in need. Every donation, big or small, makes a difference in the lives of these animals.</p>
+                <p className="p-2 text-justified w-4/6 mx-auto font-extralight text-sm text-gray-800">To donate, please visit our <a href="/donate" className="text-blue-500 underline">donation page</a>, select a shelter and choose the amount you wish to contribute. Your generosity helps shelters provide food, medical care, and shelter for animals waiting for their forever homes.</p>
+                <Link
+                    href="/donate"
+                    className={buttonVariants({
+                        variant: "default",
+                    })}
+                >Donate Now</Link>
             </main>
         </>
     )

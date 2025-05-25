@@ -40,8 +40,6 @@ export async function getDonationsByTimePeriod(
             createdAt: {
                 gte: startDate,
             },
-            // Based on your schema, payment_status is a String field
-            // I'm using "paid" as that's what was in your original code
             payment_status: "paid"
         },
         orderBy: {

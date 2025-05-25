@@ -104,7 +104,7 @@ export default function LostPetForm() {
                                     name="location"
                                     render={({ field }) => (
                                         <FormItem className="flex flex-col">
-                                            <FormLabel>Location where the pet was lost:<span style={{ color: 'red' }}> *</span></FormLabel>
+                                            <FormLabel>Location where the pet was lost/found:<span style={{ color: 'red' }}> *</span></FormLabel>
                                             <FormControl>
                                                 <Input placeholder="Enter location name" {...field} />
                                             </FormControl>
@@ -119,12 +119,14 @@ export default function LostPetForm() {
                                         <FormItem className="flex flex-col">
                                             <FormLabel>Did you lose this pet or find this pet?:<span style={{ color: 'red' }}> *</span></FormLabel>
                                             <FormControl>
-                                                <Combobox
-                                                    options={status}
-                                                    placeholder="Select option..."
-                                                    selectedValue={field.value} 
-                                                    onSelect={(value) => field.onChange(value)} 
-                                                />
+                                                <div className="relative z-[1002]">
+                                                    <Combobox
+                                                        options={status}
+                                                        placeholder="Select option..."
+                                                        selectedValue={field.value}
+                                                        onSelect={(value) => field.onChange(value)}
+                                                    />
+                                                </div>
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

@@ -255,7 +255,7 @@ export default function SignUp() {
           alt='paw'
           width={30}
           height={30}
-        />Sign in with Google</GoogleSignInButton>
+        />Sign up with Google</GoogleSignInButton>
       </CardContent>
       <CardFooter className='flex justify-center'>
         <p className='text-sm text-muted-foreground'>

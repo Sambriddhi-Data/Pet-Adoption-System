@@ -12,6 +12,7 @@ import { BCombobox } from '../../_components/breed-combo-box';
 import { useRouter } from 'next/navigation';
 import PetCardWrap from '../../_components/pet-card-wrap';
 import PetLoading from '@/components/pet-card-skeleton';
+import axios from 'axios';
 
 const species = [
     { value: "Dog", label: "Dog" },
@@ -102,9 +103,11 @@ export default function AdoptPet() {
         const fetchAllPets = async () => {
             setLoading(true);
             try {
-                const response = await fetch('/api/getallPets');
-                if (!response.ok) throw new Error("Failed to fetch pets");
-                const data = await response.json();
+                const response = await axios.get('/api/getallPets');
+                if (response.status !== 200) {
+                    throw new Error("Failed to fetch pets");
+                }
+                const data = response.data;
                 setPets(data);
             } catch (error) {
                 console.error(error);
@@ -130,7 +133,7 @@ export default function AdoptPet() {
             if (!response.ok) throw new Error("Failed to fetch pets");
             const data = await response.json();
             setPets(data);
-            setCurrentPage(1); 
+            setCurrentPage(1);
         } catch (error) {
             console.error(error);
         } finally {
@@ -242,22 +245,22 @@ export default function AdoptPet() {
                 </Form>
             </div>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6'>
-                {loading ? (
-                    <PetLoading/>
-                ) : currentPets.length > 0 ? (
+                {currentPets.length > 0 ? (
                     currentPets.map((pet) => (
                         <PetCardWrap key={pet.id} pet={pet} />
 
                     ))
                 ) : (
-                    <p>No pets available for adoption that match your preferences. Try other filters!</p>
-                )}
+                    <div className="col-span-full">
+                        <p className="text-gray-500 text-center">No pets available for adoption that match your preferences. Try other filters!</p>
+                    </div>)}
             </div>
-            <div className='flex justify-center mt-6 space-x-2'>
-                <Button disabled={currentPage === 1} onClick={() => setCurrentPage((prev) => prev - 1)}>Previous</Button>
-                <span>Page {currentPage} of {totalPages}</span>
-                <Button disabled={currentPage === totalPages} onClick={() => setCurrentPage((prev) => prev + 1)}>Next</Button>
-            </div>
+            {currentPets.length !== 0 && (
+                <div className='flex justify-center mt-6 space-x-2'>
+                    <Button disabled={currentPage === 1} onClick={() => setCurrentPage((prev) => prev - 1)}>Previous</Button>
+                    <span>Page {currentPage} of {totalPages}</span>
+                    <Button disabled={currentPage === totalPages} onClick={() => setCurrentPage((prev) => prev + 1)}>Next</Button>
+                </div>)}
         </main>
     );
 }

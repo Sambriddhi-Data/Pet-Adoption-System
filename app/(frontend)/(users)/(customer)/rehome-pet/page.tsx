@@ -2,6 +2,7 @@ import { CldImage } from "next-cloudinary";
 import Link from "next/link";
 import CldImageWrapper from "../../_components/CldImageWrapper";
 import Image from "next/image";
+import axios from "axios";
 
 interface Shelter {
   id: string;
@@ -14,10 +15,13 @@ interface Shelter {
 }
 
 async function fetchShelters(): Promise<Shelter[]> {
-  const res = await fetch("http://localhost:3000/api/getShelters");
-  if (!res.ok) throw new Error("Failed to fetch shelters");
-  return res.json();
+  const response = await axios.get<Shelter[]>("http://localhost:3000/api/getShelters");
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch shelters");
+  }
+  return response.data;
 }
+
 
 export default async function ShelterListPage() {
   const shelters = await fetchShelters();

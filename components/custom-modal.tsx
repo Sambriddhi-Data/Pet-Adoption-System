@@ -39,7 +39,18 @@ export const CustomModal: React.FC<CustomModalProps> = ({
   // Close modal if clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      const target = event.target as HTMLElement;
+      
+      // Check if the click is on a combobox dropdown or select element
+      const isComboboxElement = target.closest('[role="combobox"]') || 
+                               target.closest('[role="listbox"]') || 
+                               target.closest('[data-radix-popper-content-wrapper]') ||
+                               target.closest('.select-dropdown') ||
+                               target.getAttribute('data-radix-select-trigger') !== null;
+      
+      if (modalRef.current && 
+          !modalRef.current.contains(event.target as Node) && 
+          !isComboboxElement) {
         onClose();
       }
     };

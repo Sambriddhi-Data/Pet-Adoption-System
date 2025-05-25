@@ -1,7 +1,7 @@
 'use client';
 
 import Navbar from "@/components/navbar"
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "@/components/ui/card";
 import LostPetCarousel from "@/components/lost-pet-carousel";
 import FlipCardComponent from "./(frontend)/(users)/_components/flippableCards";
@@ -12,23 +12,31 @@ import { CustomModal } from "@/components/custom-modal";
 import { Session } from "./(frontend)/(auth)/type";
 import { useRouter } from "next/navigation";
 import { getPetCountByStatus } from "@/actions/getPetCountByStatus";
+import axios from "axios";
+import Link from "next/link";
 
 type HomePageProps = {
     initialSession: Session;
     adoptedPetC: number;
     claimedPetC: number;
+    rehomedPetC: number;
 };
-export const HomePage = ({ initialSession, adoptedPetC, claimedPetC }: HomePageProps) => {
+export const HomePage = ({ initialSession, adoptedPetC, claimedPetC, rehomedPetC }: HomePageProps) => {
     const [session, setSession] = useState(initialSession);
     const [adoptedPetCount, setAdoptedPetCount] = useState(adoptedPetC);
     const [claimedPetCount, setClaimedPetCount] = useState(claimedPetC);
+    const [rehomedPetCount, setRehomedPetCount] = useState(rehomedPetC);
     const [shelters, setShelters] = useState<any[]>([])
+    const [petCount, setPetCount] = useState(0);
     const router = useRouter();
     useEffect(() => {
         const fetchShelters = async () => {
             try {
-                const res = await fetch('/api/getShelters')
-                const data = await res.json()
+                const res = await axios.get<any[]>('/api/getShelters')
+                if (res.status !== 200) {
+                    throw new Error(`Error: ${res.status} ${res.statusText}`);
+                }
+                const data = res.data;
                 setShelters(data)
             } catch (err) {
                 console.error("Failed to fetch shelters:", err)
@@ -37,12 +45,27 @@ export const HomePage = ({ initialSession, adoptedPetC, claimedPetC }: HomePageP
 
         fetchShelters()
     }, [])
+
     const shelterCount = shelters.length;
     //total adopted pet count
-    console.log(adoptedPetCount);
 
-    //total claimed pet count (from lost and found)
-
+    // Fetch all pets on the platform
+    useEffect(() => {
+        const fetchAllPets = async () => {
+            try {
+                const response = await axios.get('/api/getallPets');
+                if (response.status !== 200) {
+                    throw new Error("Failed to fetch pets");
+                }
+                const data = response.data;
+                const petCounts = data.length;
+                setPetCount(petCounts);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchAllPets();
+    }, []);
 
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -99,38 +122,89 @@ export const HomePage = ({ initialSession, adoptedPetC, claimedPetC }: HomePageP
                             </div>
                         )
                     ) : (
-                        <div>
-                            <p>New to the website? </p>
-                            <Button onClick={() => router.push("/'sign up'")}>Register</Button>
+                        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center space-y-4 shadow-md">
+                            <h2 className="text-2xl font-semibold text-gray-800">New to Fur-Ever Friends? 🐾</h2>
+                            <p className="text-gray-600">
+                                Join our growing community and help give adorable pets a second chance at love and care.
+                            </p>
+                            <Button
+                                onClick={() => router.push("/sign-up")}
+                                className="bg-coral text-white hover:bg-coral/90 hover:text-primary transition"
+                            >
+                                Create Your Account
+                            </Button>
                         </div>
+
                     )}
                 </div>
-                <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 ">
-                    <Card className="flex flex-col items-center transition-transform duration-300 hover:scale-105">
-                        <CardHeader>Total Adopted Pets</CardHeader>
-                        <CardContent>{adoptedPetCount}</CardContent>
-                        <CardFooter className="text-sm text-gray-500">Fur-Ever Friends has helped {adoptedPetCount} pets to find their fur-ever home.</CardFooter>
-                    </Card>
+                <section className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {[
+                        {
+                            title: "Total Adopted Pets",
+                            count: adoptedPetCount,
+                            footer: `Fur-Ever Friends has helped ${adoptedPetCount} pets find their fur-ever home.`,
+                            bg: "bg-green-50",
+                            icon: "🐶",
+                        },
+                        {
+                            title: "Adoptable Pets",
+                            count: petCount,
+                            footer: `Currently, ${petCount} lovely pets are waiting for a family like yours!`,
+                            bg: "bg-blue-50",
+                            icon: "🏡",
+                        },
+                        {
+                            title: "Shelters",
+                            count: shelterCount,
+                            footer: `Fur-Ever Friends collaborates with ${shelterCount} trusted shelters.`,
+                            bg: "bg-purple-50",
+                            icon: "🏥",
+                            clickable: true,
+                            route: "/rehome-pet",
+                        },
+                        {
+                            title: "Lost & Found Pets",
+                            count: claimedPetCount,
+                            footer: `Reunited ${claimedPetCount} pets with their loving pawrents.`,
+                            bg: "bg-yellow-50",
+                            icon: "🔍",
+                        },
+                        {
+                            title: "Rehomed Pets",
+                            count: rehomedPetC,
+                            footer: `Helped ${rehomedPetC} families rehome pets safely.`,
+                            bg: "bg-pink-50",
+                            icon: "🏘️",
+                        },
+                    ].map(({ title, count, footer, bg, icon, clickable, route }, index) => (
+                        <Card
+                            key={index}
+                            onClick={clickable ? () => router.push(route!) : undefined}
+                            className={`flex flex-col items-center text-center p-6 shadow-lg rounded-xl transition-transform duration-300 hover:scale-105 cursor-pointer ${bg}`}
+                        >
+                            <div className="text-4xl mb-2">{icon}</div>
+                            <CardHeader className="text-xl font-bold text-coral">{title}</CardHeader>
+                            <CardContent className="text-3xl font-semibold text-gray-800">{count}</CardContent>
+                            <CardFooter className="text-sm text-gray-600">{footer}</CardFooter>
+                        </Card>
+                    ))}
+                </section>
 
-                    <Card className="flex flex-col items-center transition-transform duration-300 hover:scale-105">
-                        <CardHeader>Pets</CardHeader>
-                        <CardContent>Count</CardContent>
-                        <CardFooter className="text-sm text-gray-500">Fur-Ever Friends is a virtual home to { } pets</CardFooter>
-                    </Card>
+                <section className="p-10 bg-orange-50 rounded-xl shadow-md text-center space-y-4 mt-10">
+                    <h2 className="text-3xl font-bold text-coral">
+                        ❤️ Donate to Help Us Help More Pets
+                    </h2>
+                    <p className="text-gray-700 max-w-2xl mx-auto">
+                        Every donation makes a difference. Select a shelter and donate directly to support their mission of rescuing and rehoming pets in need.
+                    </p>
+                    <Link
+                        href="/donate"
+                        className={buttonVariants({ variant: "default", className: "text-white bg-coral hover:bg-coral/90 hover:text-primary px-6 py-2 text-lg" })}
+                    >
+                        Donate Now
+                    </Link>
+                </section>
 
-                    <Card className="flex flex-col items-center transition-transform duration-300 hover:scale-105">
-                        <CardHeader>Shelter</CardHeader>
-                        <CardContent>{shelterCount}</CardContent>
-                        <CardFooter className="text-sm text-gray-500">Fur-Ever Friends is a family of {shelterCount} shelters</CardFooter>
-
-                    </Card>
-                    <Card className="flex flex-col items-center transition-transform duration-300 hover:scale-105">
-                        <CardHeader>Lost and Found Pets</CardHeader>
-                        <CardContent>{shelterCount}</CardContent>
-                        <CardFooter className="text-sm text-gray-500">Fur-Ever Friends has helped reunite {claimedPetCount} pets and pawrents</CardFooter>
-
-                    </Card>
-                </div>
             </div>
 
             <CustomModal

@@ -47,7 +47,7 @@ export function PetCard({ id = "", name = "Unknown", age = "Unknown", status = "
     : "https://res.cloudinary.com/dasa1mcpz/image/upload/v1739022787/FurEverFriendsPetImages/kracd2oevfyabh2scuqk.png";
 
   return (
-    <div className='mt-4 sm:mt-6 md:mt-8 lg:mt-10 cursor-pointer w-full'>
+    <div className='mt-4 sm:mt-6 md:mt-8 lg:mt-10 cursor-pointer w-full max-w-80'>
       <Card className="relative w-full h-64 sm:h-72 md:h-80 text-left bg-white bg-opacity-90 shadow-xl rounded-2xl overflow-hidden transition-transform duration-300 hover:scale-105">
         <div className="relative w-full h-3/5 sm:h-2/3">
           <CldImage

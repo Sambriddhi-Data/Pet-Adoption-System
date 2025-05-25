@@ -14,10 +14,11 @@ const shelterRoutes = [
   "/add-pet-details/images",
   "/pet-details/"
 ];
+
 const customerRoutes= /^\/rehome-pet-request\/[\w-]+$/
 const landingPageRoute = ["/shelter-landing-page"];
 const petIdPattern = /^\/pets\/[\w-]+$/; 
-const adminRoutes = ["/admin-homepage", "/add-blog"]; 
+const adminRoutes = ["/admin-homepage", "/add-blog", "/pet-alerts"]; 
 
 export default async function authMiddleware(request: NextRequest) {
   const pathName = request.nextUrl.pathname;
@@ -31,12 +32,13 @@ export default async function authMiddleware(request: NextRequest) {
   const isShelterPublicPageRoute = shelterPublicPagePattern.test(pathName);
   const isShelterProfileRoute = shelterProfilePattern.test(pathName);
   const blogPagePattern = /^\/blog\/[\w-]+(\?.*)?$/;
+  const DonatePagePattern = /^\/donate\/[\w-]+(\?.*)?$/;
   const isBLogPageRoute = blogPagePattern.test(pathName);
 
   // Check which type of route is being accessed
   const isAuthRoute = authRoutes.includes(pathName);
   const isCustomerRoute = customerRoutes.test(pathName);
-  const isPublicRoute = publicRoutes.includes(pathName) || petIdPattern.test(pathName) || isCustomerProfileRoute || isShelterPublicPageRoute || isBLogPageRoute;
+  const isPublicRoute = publicRoutes.includes(pathName) || petIdPattern.test(pathName) || DonatePagePattern.test(pathName)|| isCustomerProfileRoute || isShelterPublicPageRoute || isBLogPageRoute;
   const isShelterRoute = shelterRoutes.some((route) => pathName.startsWith(route))|| adoptionRequestsPagePattern.test(pathName) || isShelterProfileRoute;
   const isAdminRoute = adminRoutes.includes(pathName);
   const isLandingPageRoute = landingPageRoute.includes(pathName);

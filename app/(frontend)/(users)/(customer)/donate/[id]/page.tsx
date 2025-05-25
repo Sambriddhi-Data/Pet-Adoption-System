@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { donationInformationSchema, TDonationInformationSchema } from "../../../_components/donation_system";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -18,7 +18,6 @@ import LoadingButton from "@/components/loading-button";
 import { toast } from "@/hooks/use-toast";
 import { useSession } from "@/auth-client";
 import { useParams } from "next/navigation";
-import { donationInformationSchema, TDonationInformationSchema } from "../../_components/donation_system";
 
 
 export default function DonatePage() {
@@ -62,7 +61,7 @@ export default function DonatePage() {
         const res = await fetch('/api/getShelters')
         const data = await res.json()
         setShelters(data)
-        
+
         // If shelterId from URL exists, set it in the form
         if (shelterId) {
           form.setValue('shelterId', shelterId);
@@ -177,10 +176,10 @@ export default function DonatePage() {
                   >
                     <option value="">Select a Shelter</option>
                     {shelters
-                      .filter(shelter => shelter.khaltiSecret) 
+                      .filter(shelter => shelter.khaltiSecret)
                       .map(shelter => (
-                        <option 
-                          key={shelter.id} 
+                        <option
+                          key={shelter.id}
                           value={shelter.userId}
                         >
                           {shelter.user.name}

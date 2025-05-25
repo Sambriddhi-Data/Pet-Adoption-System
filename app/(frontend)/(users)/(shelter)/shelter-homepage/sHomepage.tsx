@@ -139,26 +139,27 @@ const ShelterHomepagePets = ({ shelterId }: { shelterId: string }) => {
 
     return (
         <main>
-            <Card className="w-full md:w-72 p-4 mt-4 bg-primary text-white">
+            <Card className="w-full max-w-xs mx-auto md:w-72 p-4 mt-4 bg-primary text-white">
                 <h1>Filter With Status</h1>
                 <StatusFilter />
             </Card>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mt-6">
                 {loading ? (
-                    <p className="col-span-full text-gray-500">Loading pets...</p>
+                    <p className="col-span-full text-center text-gray-500">Loading pets...</p>
                 ) : pets && currentPets.length > 0 ? (
                     currentPets.map((pet: any) => (
                         <PetCardWrapper key={pet.id} pet={pet} />
                     ))
                 ) : (
-                    <p className="col-span-full text-gray-500">No available pets at the moment.</p>
+                    <p className="col-span-full text-center text-gray-500">No available pets at the moment.</p>
                 )}
             </div>
-            <div className='flex justify-center mt-6 space-x-2'>
-                <Button disabled={currentPage === 1} onClick={() => setCurrentPage((prev) => prev - 1)}>Previous</Button>
-                <span>Page {currentPage} of {totalPages}</span>
-                <Button disabled={currentPage === totalPages} onClick={() => setCurrentPage((prev) => prev + 1)}>Next</Button>
-            </div>
+            {currentPets.length !== 0 && (
+                <div className='flex justify-center mt-6 space-x-2'>
+                    <Button disabled={currentPage === 1} onClick={() => setCurrentPage((prev) => prev - 1)}>Previous</Button>
+                    <span className="flex items-center">Page {currentPage} of {Math.max(1, totalPages)}</span>
+                    <Button disabled={currentPage === totalPages || totalPages === 0} onClick={() => setCurrentPage((prev) => prev + 1)}>Next</Button>
+                </div>)}
         </main>
     );
 };

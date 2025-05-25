@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import UsersTable from "../../_components/admin/users-table";
 import UserGrowthChart from "../../_components/admin/user-graph";
 import AnimalLineChart from "../../_components/admin/pet-graph";
+import DonationChart from "../../_components/admin/donation-chart";
+import DonationTable from "../../_components/admin/donation-table";
 
 export default async function AdminDashboard() {
 	return (
@@ -25,10 +27,18 @@ export default async function AdminDashboard() {
 
 				<h1 className="text-4xl font-bold">User Growth Chart</h1>
 
-				<UserGrowthChart/>
+				<UserGrowthChart />
 
-				<h1 className="mt-10 text-4xl font-bold">Animals Registered in the System</h1>
-				<AnimalLineChart/>
+				<h1 className="mt-10 text-4xl font-bold">
+					Animals Registered in the System
+				</h1>
+				<AnimalLineChart />
+
+				<h1 className="mt-10 text-4xl font-bold">Donation Analytics</h1>
+				<DonationChart />
+
+				<h1 className="mt-10 text-4xl font-bold">Donation Summary</h1>
+				<DonationTable />
 			</div>
 		</main>
 	);
