@@ -12,16 +12,25 @@ import { signInFormSchema, TSignInForm } from "@/app/(frontend)/(auth)/auth-sche
 import { toast } from "@/hooks/use-toast";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import Image from 'next/image';
-import { revokeSession, signIn, signOut, useSession } from "@/auth-client";
+import { signIn, useSession } from "@/auth-client";
+import HCaptcha from '@hcaptcha/react-hcaptcha';
+
+
+// type to include captcha
+type ExtendedSignInForm = TSignInForm & {
+  captchaToken?: string;
+};
 
 export const SignIn = () => {
 
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<HCaptcha>(null);
   const session = useSession();
   const role = session?.data?.user?.user_role;
 
@@ -55,8 +64,8 @@ export const SignIn = () => {
       }
     }
   }, [session, router]);
-  //form.
-  const form = useForm<TSignInForm>({
+
+  const form = useForm<ExtendedSignInForm>({
     resolver: zodResolver(signInFormSchema),
     defaultValues: {
       email: "",
@@ -64,8 +73,22 @@ export const SignIn = () => {
     },
   })
 
+  // handle captcha verification
+  const handleVerificationSuccess = (token: string) => {
+    setCaptchaToken(token);
+  };
+
   // a submit handler.
-  async function onSubmit(values: TSignInForm) {
+  async function onSubmit(values: ExtendedSignInForm) {
+    // Check if captcha was completed
+    if (!captchaToken) {
+      toast({
+        title: "Please complete the captcha verification",
+        variant: 'destructive'
+      });
+      return;
+    }
+
     const { email, password } = values;
 
     const { data, error } = await signIn.email(
@@ -79,6 +102,9 @@ export const SignIn = () => {
         },
         onSuccess: () => {
           form.reset();
+          // reset captcha after successful submission
+          captchaRef.current?.resetCaptcha();
+          setCaptchaToken(null);
         },
         onError: (ctx) => {
           toast({ title: ctx.error.message, variant: 'destructive' });
@@ -86,6 +112,9 @@ export const SignIn = () => {
             type: 'manual',
             message: ctx.error.message,
           });
+          // reset captcha on error
+          captchaRef.current?.resetCaptcha();
+          setCaptchaToken(null);
         },
       }
     );
@@ -148,6 +177,16 @@ export const SignIn = () => {
                 Forgot password?
               </Link>
             </div>
+
+            {/* hCaptcha component */}
+            <div className="flex justify-center my-4">
+              <HCaptcha
+                sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || "f108245e-45cc-45b2-b870-6bd6f206d2d2"}
+                onVerify={handleVerificationSuccess}
+                ref={captchaRef}
+              />
+            </div>
+
             <LoadingButton pending={pending}>
               Submit
             </LoadingButton>
