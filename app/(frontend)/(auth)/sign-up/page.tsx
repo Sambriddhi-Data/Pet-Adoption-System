@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { signUpFormSchema } from "@/app/(frontend)/(auth)/auth-schema";
 import { signUp } from "@/auth-client";
 import { toast } from "@/hooks/use-toast";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react"; 
 import { redirect } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import LoadingButton from "@/components/loading-button";
@@ -20,17 +20,25 @@ import GoogleSignInButton from "@/components/GoogleSignInButton";
 import Image from "next/image";
 import { API_ROUTES } from "@/lib/apiRoutes";
 import { Checkbox } from "@/components/ui/checkbox";
+import HCaptcha from '@hcaptcha/react-hcaptcha'; 
 
 interface UserWithPhoneNumber {
   id: string;
   phoneNumber: string;
 }
 
+// type to include captcha
+type ExtendedSignUpForm = z.infer<typeof signUpFormSchema> & {
+  captchaToken?: string;
+};
+
 export default function SignUp() {
 
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [checkPhn, setCheckPhn] = useState<UserWithPhoneNumber | null>();
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);  
+  const captchaRef = useRef<HCaptcha>(null); 
 
   type TSignUpForm = z.infer<typeof signUpFormSchema>
 
@@ -73,9 +81,21 @@ export default function SignUp() {
     fetchPhoneNumber();
   }, [phoneNumber]);
 
+  // handle captcha verification
+  const handleVerificationSuccess = (token: string) => {
+    setCaptchaToken(token);
+  };
 
   // a submit handler.
   async function onSubmit(values: TSignUpForm) {
+    // check if captcha was completed
+    if (!captchaToken) {
+      toast({
+        title: "Please complete the captcha verification",
+        variant: 'destructive'
+      });
+      return;
+    }
 
     if (checkPhn) {
       form.setError("phoneNumber", {
@@ -107,6 +127,9 @@ export default function SignUp() {
       },
       onSuccess: () => {
         form.reset();
+        // reset captcha after successful submission
+        captchaRef.current?.resetCaptcha();
+        setCaptchaToken(null);
         toast({
           title: "Account created",
           description: "Check your email for a verification link to activate your account..",
@@ -119,7 +142,10 @@ export default function SignUp() {
         form.setError('email', {
           type: 'manual',
           message: ctx.error.message
-        })
+        });
+        // reset captcha on error
+        captchaRef.current?.resetCaptcha();
+        setCaptchaToken(null);
       },
     });
     setPending(false);
@@ -134,12 +160,6 @@ export default function SignUp() {
           Sign up to search for your furever friend.
         </CardDescription>
       </CardHeader>
-      {/* 
-        <div className= "p-2 px-6 flex justify-between items-center bg-slate-200 opacity-80 rounded-sm">
-        <CardDescription>Are you a shelter manager? <br/>Please use this link:</CardDescription>
-        <Link href='/shelter-sign-up' className='text-primary font-bold justify-end hover:underline'> Shelter SignUp</Link>
-      </div>
-       */}
       <CardContent>
         <Link href='/shelter-sign-up' className='text-primary flex justify-end hover:underline'>
           Shelter SignUp
@@ -245,6 +265,16 @@ export default function SignUp() {
                 </FormItem>
               )}
             />
+
+            {/* hCaptcha component */}
+            <div className="flex justify-center my-4">
+              <HCaptcha
+                sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || "f108245e-45cc-45b2-b870-6bd6f206d2d2"}
+                onVerify={handleVerificationSuccess}
+                ref={captchaRef}
+              />
+            </div>
+
             <LoadingButton pending={pending}>Sign Up</LoadingButton>
           </form>
         </Form>

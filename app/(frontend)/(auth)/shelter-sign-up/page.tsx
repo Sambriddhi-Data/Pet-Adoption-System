@@ -12,17 +12,23 @@ import { Input } from "@/components/ui/input";
 import { formSchema } from "@/app/(frontend)/(auth)/auth-schema";
 import { signUp } from "@/auth-client";
 import { toast } from "@/hooks/use-toast";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react"
 import LoadingButton from "@/components/loading-button";
 import { API_ROUTES } from "@/lib/apiRoutes";
 import { Checkbox } from "@/components/ui/checkbox";
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 interface UserWithPhoneNumber {
   id: string;
   phoneNumber: string;
 }
+
+// Extended form type to include captcha
+type ExtendedShelterSignUpForm = z.infer<typeof formSchema> & {
+  captchaToken?: string;
+};
 
 export default function ShelterSignUp() {
 
@@ -30,6 +36,8 @@ export default function ShelterSignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showCPassword, setShowCPassword] = useState(false);
   const [checkPhn, setCheckPhn] = useState<UserWithPhoneNumber | null>();
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<HCaptcha>(null);
 
   const router = useRouter();
 
@@ -77,8 +85,21 @@ export default function ShelterSignUp() {
     fetchPhoneNumber();
   }, [phoneNumber]);
 
+  // handle captcha verification
+  const handleVerificationSuccess = (token: string) => {
+    setCaptchaToken(token);
+  };
+
   // a submit handler.
   async function onSubmit(values: TShelterSignUpForm) {
+    // check if captcha was completed
+    if (!captchaToken) {
+      toast({
+        title: "Please complete the captcha verification",
+        variant: 'destructive'
+      });
+      return;
+    }
 
     if (checkPhn) {
       form.setError("phoneNumber", {
@@ -96,7 +117,6 @@ export default function ShelterSignUp() {
     }
 
     const { name, email, password, user_role, location, phoneNumber } = values;
-    console.log('Form values:', values);
 
     const { data, error } = await signUp.email({
       email: email,
@@ -112,7 +132,10 @@ export default function ShelterSignUp() {
         setPending(true);
       },
       onSuccess: () => {
-        form.reset()
+        form.reset();
+        // reset captcha after successful submission
+        captchaRef.current?.resetCaptcha();
+        setCaptchaToken(null);
         toast({
           title: "Account Created",
           description: "Check your email for a verification link. Admin approval is required for shelter manager access and may take some time.",
@@ -125,7 +148,10 @@ export default function ShelterSignUp() {
         form.setError('email', {
           type: 'manual',
           message: ctx.error.message
-        })
+        });
+        // reset captcha on error
+        captchaRef.current?.resetCaptcha();
+        setCaptchaToken(null);
       },
     });
     setPending(false);
@@ -249,6 +275,7 @@ export default function ShelterSignUp() {
                       </button>
                     </div>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -272,6 +299,16 @@ export default function ShelterSignUp() {
                 </FormItem>
               )}
             />
+
+            {/* hCaptcha component */}
+            <div className="flex justify-center my-4">
+              <HCaptcha
+                sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || "f108245e-45cc-45b2-b870-6bd6f206d2d2"}
+                onVerify={handleVerificationSuccess}
+                ref={captchaRef}
+              />
+            </div>
+            
             <LoadingButton pending={pending}>
               Submit
             </LoadingButton>
