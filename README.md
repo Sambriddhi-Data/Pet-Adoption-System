@@ -48,7 +48,7 @@ e
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Sambriddhi-HCK/Pet-Adoption-System.git
+   git clone https://github.com/Sambriddhi-Data/Pet-Adoption-System.git
    cd fur-ever-friends
    
 2. **Install dependencies:**
