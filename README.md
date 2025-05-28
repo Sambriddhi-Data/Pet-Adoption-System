@@ -43,7 +43,7 @@ Built using **Next.js (App Router)** and **TypeScript**, the system supports rol
 | General User    | `/`                   | Browse pets, adopt, rehome, lost pet alerts, donation via Khalti  |
 
 ---
-e
+
 ## 📦 Installation
 
 1. **Clone the repository:**
