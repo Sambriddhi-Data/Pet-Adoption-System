@@ -1,6 +1,6 @@
 # Pet Adoption System - FurEver Friends 🐾
 
-**Fur-Ever Friends** is a full-stack pet adoption platform developed as a Final Year Project for the **BSc (Hons) Computer Science** program at **Herald College Kathmandu**.
+**Fur-Ever Friends** is an intuitive online-based pet adoption platform developed as a Final Year Project for the **BSc (Hons) Computer Science** program at **Herald College Kathmandu**.
 
 Built using **Next.js (App Router)** and **TypeScript**, the system supports role-based access, secure authentication, image uploads, payments, email communication and bot protection — offering a modern and streamlined pet adoption experience.
 
